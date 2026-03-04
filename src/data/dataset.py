@@ -44,4 +44,4 @@ def generate_regression_dataset(
     #Calculates true values of y: X multiplies true weights, @ is a matrix multiplication operator
     y = X @ w_true + b_true + noise
 
-    return X, y
+    return X, y, w_true, b_true
