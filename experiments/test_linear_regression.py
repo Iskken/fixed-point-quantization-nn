@@ -19,6 +19,8 @@ print("achieved bias is:", model.b)
 print("true weight is:", w_true)
 print("true bias is:", b_true)
 
+print("MSE:", np.mean((model.predict(X) - y)**2))
+
 # plt.scatter(X[:,0], y, label="samples")
 
 # x_line = np.linspace(X[:,0].min(), X[:,0].max(), 100)
