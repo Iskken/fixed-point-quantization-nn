@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 w_true = [1.25]
 b_true = 0.0
 
-X, y = generate_regression_dataset(
+X, y, w_true, b_true = generate_regression_dataset(
     w_true=w_true,
     n_samples=200,
     noise_std=1
@@ -28,6 +28,6 @@ y_line = w_true[0] * x_line + b_true
 
 plt.plot(x_line, y_line, color="red", label="true line")
 
+plt.title("Synthetic Regression Dataset")
 plt.legend()
 plt.show()
-plt.title("Synthetic Regression Dataset")
