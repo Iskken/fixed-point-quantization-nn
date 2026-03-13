@@ -31,11 +31,6 @@ class LinearRegression():
                 print("The loss converged at epoch:", epoch)
                 break
 
-            #calculating loss
-            loss = np.mean(error**2)
-            if epoch % 10 == 0:
-                print("epoch:", epoch, "loss:", loss)
-
             #assign new weights and bias
             self.w = self.w - lr * dw
             self.b = self.b - lr * db
