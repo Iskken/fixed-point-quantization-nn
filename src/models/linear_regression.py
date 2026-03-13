@@ -1,4 +1,5 @@
 import numpy as np
+from src.quantization.quantize import fixed_point_quantize
 
 class LinearRegression():
     def __init__(self):
@@ -39,3 +40,33 @@ class LinearRegression():
             #assign new weights and bias
             self.w = self.w - lr * dw
             self.b = self.b - lr * db
+
+    def fit_normal_descent_quantize(self, X, y, epochs, lr, total_bits=8, frac_bits=4):
+        n_samples, n_features = X.shape
+
+        self.w = np.zeros(n_features)
+        self.b = 0.0
+
+        for epoch in range(epochs):
+            y_pred = self.predict(X)
+            error = y_pred - y
+            
+            dw = (2 / n_samples) * X.T @ error 
+            db = (2 / n_samples) * np.sum(error)
+
+            # Standard Update
+            self.w -= lr * dw
+            self.b -= lr * db
+
+            # The QAT Step: Force weights into the fixed-point representation
+            self.w = fixed_point_quantize(self.w, total_bits, frac_bits)
+            self.b = fixed_point_quantize(self.b, total_bits, frac_bits)
+
+            if np.linalg.norm(dw) < self.eps and abs(db) < self.eps:
+                print("The loss converged at epoch:", epoch)
+                break
+
+            #calculating loss
+            loss = np.mean(error**2)
+            if epoch % 10 == 0:
+                print("epoch:", epoch, "loss:", loss)
