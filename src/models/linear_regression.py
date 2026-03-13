@@ -42,10 +42,40 @@ class LinearRegression():
             self.b = self.b - lr * db
 
     def fit_normal_descent_quantize(self, X, y, epochs, lr, total_bits=8, frac_bits=4):
+        '''
+        Performs Quantization-Aware Training (QAT) using Gradient Descent.
+        
+        This function simulates a model training directly on fixed-point embedded 
+        hardware. It forces weights and biases to conform to a specific bit-width 
+        and fractional precision after every update, allowing the optimizer to 
+        attempt to compensate for quantization errors during the learning process.
+
+        Parameters:
+        -----------
+        X : ndarray
+            Training features.
+        y : ndarray
+            Training targets.
+        epochs : int
+            Number of iterations.
+        lr : float
+            Learning rate.
+        total_bits : int
+            Total word length (e.g., 8 or 16 bits).
+        frac_bits : int
+            Number of bits dedicated to the fractional part.
+
+        Returns:
+        --------
+        loss_history : list
+            A record of Mean Squared Error (MSE) at each epoch, capturing 
+            convergence behavior under hardware constraints.
+        '''
         n_samples, n_features = X.shape
 
         self.w = np.zeros(n_features)
         self.b = 0.0
+        loss_history = []
 
         for epoch in range(epochs):
             y_pred = self.predict(X)
@@ -68,5 +98,8 @@ class LinearRegression():
 
             #calculating loss
             loss = np.mean(error**2)
+            loss_history.append(loss)
             if epoch % 10 == 0:
                 print("epoch:", epoch, "loss:", loss)
+
+        return loss_history
