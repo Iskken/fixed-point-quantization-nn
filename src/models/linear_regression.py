@@ -17,6 +17,7 @@ class LinearRegression():
         self.w = np.zeros(n_features)
         self.b = 0.0
 
+        loss_history = []
         for epoch in range(epochs):
             #predict with the current weights and bias
             y_pred = self.predict(X)
@@ -34,12 +35,14 @@ class LinearRegression():
 
             #calculating loss
             loss = np.mean(error**2)
+            loss_history.append(loss)
             if epoch % 10 == 0:
                 print("epoch:", epoch, "loss:", loss)
 
             #assign new weights and bias
             self.w = self.w - lr * dw
             self.b = self.b - lr * db
+        return loss_history
 
     def fit_normal_descent_quantize(self, X, y, epochs, lr, total_bits=8, frac_bits=4):
         '''
