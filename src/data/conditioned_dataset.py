@@ -34,6 +34,8 @@ def generate_conditioned_regression_dataset(
     # Covariance matrix Σ is constructed as QΛQᵀ, where Q is the matrix of eigenvectors and Λ is the diagonal matrix of eigenvalues.
     Sigma = Q @ Lambda @ Q.T
 
+    # Q.t rotates the input matrix, after rotation we select the 3 basis directions, with Q we back rotate it
+
     X = np.random.multivariate_normal(
         mean=np.zeros(dim), 
         cov=Sigma, 

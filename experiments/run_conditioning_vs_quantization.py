@@ -19,7 +19,7 @@ for e in egv:
         X,y, w_true, Sigma = generate_conditioned_regression_dataset(
             n_samples=10000,
             eigenvalues=e,
-            w_true=np.array([1.5432, 0.5725, 0.53125]),
+            w_true=np.array([1.54325, 0.57257, 0.53125]),
             noise_std=0.01,
             random_seed=seed
         )

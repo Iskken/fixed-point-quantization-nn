@@ -19,7 +19,3 @@ print("Covariance matrix of X:\n", np.cov(X, rowvar=False))
 eigvals = np.linalg.eigvals(X.T @ X)
 cond = eigvals.max() / eigvals.min()
 print("Condition number of X:", cond)
-
-print("First 5 rows of X:\n", X[:5])
-
-print("Mean of each feature:\n", np.mean(X, axis=0))
