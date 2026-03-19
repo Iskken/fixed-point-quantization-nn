@@ -100,7 +100,5 @@ class LinearRegression():
             #calculating loss
             loss = np.mean(error**2)
             loss_history.append(loss)
-            if epoch % 10 == 0:
-                print("epoch:", epoch, "loss:", loss)
 
         return loss_history
