@@ -36,8 +36,6 @@ class LinearRegression():
             #calculating loss
             loss = np.mean(error**2)
             loss_history.append(loss)
-            if epoch % 10 == 0:
-                print("epoch:", epoch, "loss:", loss)
 
             #assign new weights and bias
             self.w = self.w - lr * dw
@@ -102,7 +100,5 @@ class LinearRegression():
             #calculating loss
             loss = np.mean(error**2)
             loss_history.append(loss)
-            if epoch % 10 == 0:
-                print("epoch:", epoch, "loss:", loss)
 
         return loss_history
