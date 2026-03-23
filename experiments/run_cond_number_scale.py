@@ -51,7 +51,7 @@ for f in scaling_factors:
         baseline_mse = np.mean((y_pred - y_test)**2)
 
         #Quantize the trained weights and evaluate the MSE with quantized weights
-        w_q = fixed_point_quantize(model.w, total_bits=8, fractional_bits=4)
+        w_q = fixed_point_quantize(model.w, total_bits=32, fractional_bits=16)
         y_q = X_test @ w_q + model.b
         mse_q = np.mean((y_q - y_test)**2)
 
