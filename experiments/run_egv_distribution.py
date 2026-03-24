@@ -37,8 +37,8 @@ for s in set_sizes:
             X,y, w_true, Sigma = generate_conditioned_regression_dataset(
                 n_samples=1000,
                 eigenvalues=e,
-                w_true=np.random.uniform(-2, 2, size=len(e)),
-                noise_std=0.01,
+                w_true=np.ones(len(e)) * 1.5,
+                noise_std=0.1,
                 random_seed=42
             )
 
@@ -54,7 +54,7 @@ for s in set_sizes:
             #Quantize the trained weights and evaluate the MSE with quantized weights
             w_q = fixed_point_quantize(model.w, total_bits=8, fractional_bits=4)
             y_q = X_test @ w_q + model.b
-            mse_q = np.mean((y_q - y_test)**2)
+            mse_q = np.mean(((y_q - y_test)**2)/len(egv_set))
 
             results.append({
                 'cond': e[0],
