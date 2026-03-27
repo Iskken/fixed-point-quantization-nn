@@ -14,7 +14,7 @@ import numpy as np
 
 TOTAL_BITS = 8
 FRAC_BITS = 4
-LEARNING_RATE = 0.1
+LEARNING_RATE = 0.01
 # creating the sample dataset
 w_true_val = [1.54321] 
 b_true_val = 0.0
