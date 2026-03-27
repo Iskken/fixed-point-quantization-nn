@@ -165,3 +165,41 @@ class LinearRegression():
             loss_history.append(loss)
 
         return loss_history
+    
+
+
+    def fit_error_accumulation(self, X, y, epochs, lr, total_bits=8, frac_bits=4):
+        n_samples, n_features = X.shape
+        
+        #Initialize High-Precision "Shadow" Weights
+        w_fp = np.zeros(n_features)
+        b_fp = 0.0
+        
+        # Initialize the Quantized Weights (what we actually use)
+        self.w = np.zeros(n_features)
+        self.b = 0.0
+        
+        loss_history = []
+        lsb = 2**(-frac_bits)
+
+        for epoch in range(epochs):
+            # ALWAYS use the quantized weights for the forward pass 
+            # to simulate the hardware error
+            y_pred = X @ self.w + self.b 
+            error = y_pred - y
+            
+            dw = (2 / n_samples) * X.T @ error
+            db = (2 / n_samples) * np.sum(error)
+
+            # Update the SHADOW weights (High Precision)
+            w_fp -= lr * dw
+            b_fp -= lr * db
+
+            # Update the QUANTIZED weights by snapping the shadow weights
+            self.w = fixed_point_quantize(w_fp, total_bits, frac_bits)
+            self.b = fixed_point_quantize(b_fp, total_bits, frac_bits)
+
+            loss = np.mean(error**2)
+            loss_history.append(loss)
+            
+        return loss_history
