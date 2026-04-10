@@ -168,7 +168,7 @@ class LinearRegression():
     
 
 
-    def fit_error_accumulation(self, X, y, epochs, lr, total_bits=8, frac_bits=4):
+    def fit_with_shadow_weights(self, X, y, epochs, lr, total_bits=8, frac_bits=4):
         n_samples, n_features = X.shape
         
         #Initialize High-Precision "Shadow" Weights
@@ -202,4 +202,63 @@ class LinearRegression():
             loss = np.mean(error**2)
             loss_history.append(loss)
             
+        return loss_history
+    
+    def fit_error_accumulation(self, X, y, epochs, lr, total_bits=8, frac_bits=4):
+        n_samples, n_features = X.shape
+
+        self.w = np.zeros(n_features)
+        self.b = 0.0
+        loss_history = []
+        error_acc_w = np.zeros_like(self.w)
+        error_acc_b = 0
+        lsb = 2**(-frac_bits)
+
+        for epoch in range(epochs):
+            y_pred = self.predict(X)
+            error = y_pred - y
+            
+            dw = (2 / n_samples) * X.T @ error 
+            db = (2 / n_samples) * np.sum(error)
+
+            # calcualte step (error)
+            w_step = -lr * dw
+            b_step = -lr * db
+
+            #accumulate the updates
+            error_acc_w += w_step
+            error_acc_b += b_step
+
+            # detect which weights should be updated
+            mask_up = error_acc_w > (0.5 * lsb)
+            mask_down = error_acc_w < (-0.5 *lsb)
+            
+            # update the weights
+            self.w[mask_up]+=lsb
+            self.w[mask_down]-=lsb
+
+            #substract from the accumulated error for weights
+            error_acc_w[mask_up] -= lsb
+            error_acc_w[mask_down] += lsb
+
+            #same for the bias
+            if error_acc_b > (0.5 * lsb):
+                self.b += lsb
+                error_acc_b -= lsb
+            elif error_acc_b < (-0.5 * lsb):
+                self.b -= lsb
+                error_acc_b += lsb
+
+            
+            self.w = fixed_point_quantize(self.w, total_bits, frac_bits)
+            self.b = fixed_point_quantize(self.b, total_bits, frac_bits)
+
+            if np.linalg.norm(dw) < self.eps and abs(db) < self.eps:
+                print("The loss converged at epoch:", epoch)
+                break
+
+            #calculating loss
+            loss = np.mean(error**2)
+            loss_history.append(loss)
+        
         return loss_history
