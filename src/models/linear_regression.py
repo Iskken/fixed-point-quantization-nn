@@ -204,14 +204,18 @@ class LinearRegression():
             
         return loss_history
     
+    
+    
     def fit_error_accumulation(self, X, y, epochs, lr, total_bits=8, frac_bits=4):
         n_samples, n_features = X.shape
 
         self.w = np.zeros(n_features)
         self.b = 0.0
         loss_history = []
+        
+    
         error_acc_w = np.zeros_like(self.w)
-        error_acc_b = 0
+        error_acc_b = 0.0
         lsb = 2**(-frac_bits)
 
         for epoch in range(epochs):
@@ -221,27 +225,43 @@ class LinearRegression():
             dw = (2 / n_samples) * X.T @ error 
             db = (2 / n_samples) * np.sum(error)
 
-            # calcualte step (error)
+            # step
             w_step = -lr * dw
             b_step = -lr * db
 
-            #accumulate the updates
-            error_acc_w += w_step
-            error_acc_b += b_step
+            # ideal udpate
+            w_temp = self.w + w_step
+            b_temp = self.b + b_step
 
-            # detect which weights should be updated
+            # quantized update
+            w_quan = fixed_point_quantize(w_temp, total_bits, frac_bits)
+            b_quan = fixed_point_quantize(b_temp, total_bits, frac_bits)
+
+            # quantization error
+            w_quant_error = w_temp - w_quan
+            b_quant_error = b_temp - b_quan
+
+            # adding the quantization error to accumulator
+            error_acc_w += w_quant_error
+            error_acc_b += b_quant_error
+
+            # appying hardware allowed weights to physical weights
+            self.w = w_quan
+            self.b = b_quan
+
+            # Did the chopped-off errors build up to a full LSB?
             mask_up = error_acc_w > (0.5 * lsb)
-            mask_down = error_acc_w < (-0.5 *lsb)
+            mask_down = error_acc_w < (-0.5 * lsb)
             
-            # update the weights
-            self.w[mask_up]+=lsb
-            self.w[mask_down]-=lsb
+            # Compensate: Force the weights up/down
+            self.w[mask_up] += lsb
+            self.w[mask_down] -= lsb
 
-            #substract from the accumulated error for weights
+            # empty the accumulators to preven double counting
             error_acc_w[mask_up] -= lsb
             error_acc_w[mask_down] += lsb
 
-            #same for the bias
+            # do same for bias
             if error_acc_b > (0.5 * lsb):
                 self.b += lsb
                 error_acc_b -= lsb
@@ -249,16 +269,11 @@ class LinearRegression():
                 self.b -= lsb
                 error_acc_b += lsb
 
-            
+            # Safety Net: Ensure the manual LSB bumps didn't create floating point drift
             self.w = fixed_point_quantize(self.w, total_bits, frac_bits)
             self.b = fixed_point_quantize(self.b, total_bits, frac_bits)
 
-            if np.linalg.norm(dw) < self.eps and abs(db) < self.eps:
-                print("The loss converged at epoch:", epoch)
-                break
-
-            #calculating loss
             loss = np.mean(error**2)
             loss_history.append(loss)
-        
+
         return loss_history
