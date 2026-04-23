@@ -7,11 +7,46 @@ class LinearRegression():
         self.b = None
         self.eps = 1e-6
 
+    #helper function for calculating the gradient and loss based on the given loss_function
+    def _calculate_grad_and_loss(self, X, n_samples, error, loss_func = "MSE", delta = 2.0):
+        if loss_func == "MSE":
+            loss = np.mean(error**2)
+            #X transpose is taken since it is originally n * 1 along with (y_pred - y), 
+            #so we need to make it (1 * n) dim-s to obtain 1x1 in the end
+            dw = (2 / n_samples) * X.T @ error
+            db = (2 / n_samples) * np.sum(error)
+
+        elif loss_func == "MAE":
+            loss = np.mean(np.abs(error))
+            # The derivative of absolute value is the 'sign' (+1 or -1)
+            dw = (1 / n_samples) * X.T @ np.sign(error)
+            db = (1 / n_samples) * np.sum(np.sign(error))
+
+        elif loss_func == "Huber":
+            # Create a mask to separate small errors from huge outliers
+            is_small_error = np.abs(error) <= delta
+            
+            # Calculate Loss
+            squared_loss = 0.5 * error**2
+            linear_loss = delta * (np.abs(error) - 0.5 * delta)
+            loss = np.mean(np.where(is_small_error, squared_loss, linear_loss))
+            
+            # Calculate Gradients
+            # If small error: gradient is just the error. If large: gradient is delta * sign(error)
+            grad_error = np.where(is_small_error, error, delta * np.sign(error))
+            dw = (1 / n_samples) * X.T @ grad_error
+            db = (1 / n_samples) * np.sum(grad_error)
+        else:
+            raise ValueError("Unknown loss function!")
+        
+        return dw, db, loss
+    
+
     #Outputs the predicted values in a matrix
     def predict(self, X):
         return X @ self.w + self.b
     
-    def fit_gradient_descent(self, X, y, epochs, lr):
+    def fit_gradient_descent(self, X, y, epochs, lr, loss_func = "MSE"):
         n_samples, n_features = X.shape
 
         self.w = np.zeros(n_features)
@@ -24,17 +59,15 @@ class LinearRegression():
 
             #calculate the weight and bias gradient
             error = y_pred - y
-            #X transpose is taken since it is originally n * 1 along with (y_pred - y), 
-            #so we need to make it (1 * n) dim-s to obtain 1x1 in the end
-            dw = (2 / n_samples) * X.T @ (error) 
-            db = (2/n_samples) * np.sum(error)
+            
+            dw, db, loss = self._calculate_grad_and_loss(X, n_samples, error, loss_func=loss_func)
+
 
             if np.linalg.norm(dw) < self.eps and abs(db) < self.eps:
                 print("The loss converged at epoch:", epoch)
                 break
 
             #calculating loss
-            loss = np.mean(error**2)
             loss_history.append(loss)
 
             #assign new weights and bias
@@ -42,7 +75,7 @@ class LinearRegression():
             self.b = self.b - lr * db
         return loss_history
 
-    def fit_normal_descent_quantize(self, X, y, epochs, lr, total_bits=8, frac_bits=4):
+    def fit_normal_descent_quantize(self, X, y, epochs, lr, total_bits=8, frac_bits=4, loss_func="MSE"):
         '''
         Performs Quantization-Aware Training (QAT) using Gradient Descent.
         
@@ -65,7 +98,8 @@ class LinearRegression():
             Total word length (e.g., 8 or 16 bits).
         frac_bits : int
             Number of bits dedicated to the fractional part.
-
+        loss_func : str
+            The type of lose function that should be used
         Returns:
         --------
         loss_history : list
@@ -82,8 +116,7 @@ class LinearRegression():
             y_pred = self.predict(X)
             error = y_pred - y
             
-            dw = (2 / n_samples) * X.T @ error 
-            db = (2 / n_samples) * np.sum(error)
+            dw, db, loss = self._calculate_grad_and_loss(X, n_samples, error, loss_func=loss_func)
 
             # Standard Update
             self.w -= lr * dw
@@ -98,12 +131,11 @@ class LinearRegression():
                 break
 
             #calculating loss
-            loss = np.mean(error**2)
             loss_history.append(loss)
 
         return loss_history
     
-    def fit_normal_descent_quantize_gradient_scaling(self, X, y, epochs, lr, total_bits=8, frac_bits=4, scaling_factor = 100):
+    def fit_normal_descent_quantize_gradient_scaling(self, X, y, epochs, lr, total_bits=8, frac_bits=4, scaling_factor = 100, loss_func = "MSE"):
         '''
         Performs Quantization-Aware Training (QAT) using Gradient Descent with Gradient Scaling.
         
@@ -126,6 +158,8 @@ class LinearRegression():
             Total word length (e.g., 8 or 16 bits).
         frac_bits : int
             Number of bits dedicated to the fractional part.
+        loss_func : str
+            The type of lose function that should be used
 
         Returns:
         --------
@@ -143,8 +177,7 @@ class LinearRegression():
             y_pred = self.predict(X)
             error = y_pred - y
             
-            dw = (2 / n_samples) * X.T @ error 
-            db = (2 / n_samples) * np.sum(error)
+            dw, db, loss = self._calculate_grad_and_loss(X, n_samples, error, loss_func=loss_func)
 
             # Gradient Scaling: Scale gradients to mitigate quantization effects
             dw_scaled = dw * scaling_factor
@@ -161,52 +194,13 @@ class LinearRegression():
                 break
 
             #calculating loss
-            loss = np.mean(error**2)
             loss_history.append(loss)
 
         return loss_history
     
-
-
-    def fit_with_shadow_weights(self, X, y, epochs, lr, total_bits=8, frac_bits=4):
-        n_samples, n_features = X.shape
-        
-        #Initialize High-Precision "Shadow" Weights
-        w_fp = np.zeros(n_features)
-        b_fp = 0.0
-        
-        # Initialize the Quantized Weights (what we actually use)
-        self.w = np.zeros(n_features)
-        self.b = 0.0
-        
-        loss_history = []
-        lsb = 2**(-frac_bits)
-
-        for epoch in range(epochs):
-            # ALWAYS use the quantized weights for the forward pass 
-            # to simulate the hardware error
-            y_pred = X @ self.w + self.b 
-            error = y_pred - y
-            
-            dw = (2 / n_samples) * X.T @ error
-            db = (2 / n_samples) * np.sum(error)
-
-            # Update the SHADOW weights (High Precision)
-            w_fp -= lr * dw
-            b_fp -= lr * db
-
-            # Update the QUANTIZED weights by snapping the shadow weights
-            self.w = fixed_point_quantize(w_fp, total_bits, frac_bits)
-            self.b = fixed_point_quantize(b_fp, total_bits, frac_bits)
-
-            loss = np.mean(error**2)
-            loss_history.append(loss)
-            
-        return loss_history
     
     
-    
-    def fit_error_accumulation(self, X, y, epochs, lr, total_bits=8, frac_bits=4):
+    def fit_error_accumulation(self, X, y, epochs, lr, total_bits=8, frac_bits=4, loss_func="MSE"):
         n_samples, n_features = X.shape
 
         self.w = np.zeros(n_features)
@@ -222,8 +216,7 @@ class LinearRegression():
             y_pred = self.predict(X)
             error = y_pred - y
             
-            dw = (2 / n_samples) * X.T @ error 
-            db = (2 / n_samples) * np.sum(error)
+            dw, db, loss = self._calculate_grad_and_loss(X, n_samples, error, loss_func=loss_func)
 
             # step
             w_step = -lr * dw
@@ -273,7 +266,6 @@ class LinearRegression():
             self.w = fixed_point_quantize(self.w, total_bits, frac_bits)
             self.b = fixed_point_quantize(self.b, total_bits, frac_bits)
 
-            loss = np.mean(error**2)
             loss_history.append(loss)
 
         return loss_history
