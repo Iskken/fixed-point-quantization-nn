@@ -8,7 +8,7 @@ class LinearRegression():
         self.eps = 1e-6
 
     #helper function for calculating the gradient and loss based on the given loss_function
-    def _calculate_grad_and_loss(self, X, n_samples, error, loss_func = "MSE", delta = 1.0):
+    def _calculate_grad_and_loss(self, X, n_samples, error, loss_func = "MSE", delta = 2.0):
         if loss_func == "MSE":
             loss = np.mean(error**2)
             #X transpose is taken since it is originally n * 1 along with (y_pred - y), 
