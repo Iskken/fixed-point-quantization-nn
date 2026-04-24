@@ -383,7 +383,7 @@ class LinearRegression():
                 grad_b_total /= len(sub_batches)
 
                 # Update weights
-                # HARDWARE NOTE:learning rate is the power of two
+                # learning rate is the power of two
                 # this multiplication becomes another fast bit-shift.
                 self.w -= lr * grad_w_total
                 self.b -= lr * grad_b_total

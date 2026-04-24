@@ -139,7 +139,7 @@ if __name__ == "__main__":
 
     #ill conditione dataset
     n_samples = 1000
-    dim = 3
+    dim = 2
     condition_number = 10000
     eigenvalues = np.logspace(0, np.log10(condition_number), num=dim)
     w_true = np.random.randn(dim)
