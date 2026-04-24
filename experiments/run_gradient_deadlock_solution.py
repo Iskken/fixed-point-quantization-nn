@@ -13,13 +13,32 @@ import numpy as np
 # this pipeline will run two experiments: one with gradient scaling and other is error accumulation. We will compare the convergence of both methods and see if they can solve the deadlock issue in quantized training.
 
 
-def plot_convergence(loss_std, loss_qat, loss_ptq_final, loss_qat_accumulation, loss_func="MSE", scale = 1.02): 
+def plot_convergence(loss_std = None, 
+                     loss_qat = None, 
+                     loss_ptq_final = None, 
+                     loss_qat_accumulation = None, 
+                     loss_zoo = None, 
+                     loss_zoo_hardware = None, 
+                     loss_func="MSE", 
+                     scale = 1.02): 
+    
     plt.figure(figsize=(10, 6))
 
     # Plot Standard and QAT history
-    plt.plot(loss_std, label='Standard (FP64)', color='blue', linewidth=2)
-    plt.plot(loss_qat, label=f'Quantization-Aware (Gradiend scalind: {scale})', color='green', linestyle='--')
-    plt.plot(loss_qat_accumulation, label='QAT with Error Accumulation', color='orange', linestyle='-.')
+    if loss_std is not None:
+        plt.plot(loss_std, label='Standard (FP64)', color='blue', linewidth=2)
+    
+    if loss_qat is not None:
+        plt.plot(loss_qat, label=f'Quantization-Aware (Gradiend scalind: {scale})', color='green', linestyle='--')
+
+    if loss_qat_accumulation is not None:
+        plt.plot(loss_qat_accumulation, label='QAT with Error Accumulation', color='orange', linestyle='-.')
+    
+    if loss_zoo is not None:
+        plt.plot(loss_zoo, label='ZOO (standard)', color='purple', linestyle='-.')
+
+    if loss_zoo_hardware is not None:
+        plt.plot(loss_zoo_hardware, label='ZOO (hardware)', color='black', linestyle=':')
 
     # Plot the PTQ failure as a reference point
     if loss_ptq_final is not None:
@@ -60,6 +79,12 @@ def train_qat_with_error_accumulation(X, y, lr, total_bits, frac_bits, epochs=50
     model_qat_accum = LinearRegression()
     loss_qat_accum = model_qat_accum.fit_error_accumulation(X, y, epochs=epochs, lr=lr, total_bits=total_bits, frac_bits=frac_bits, loss_func=loss_func)  
     return loss_qat_accum
+
+def train_qat_with_zoo(X, y, lr_shift, total_bits, frac_bits, epochs=500, loss_func="MSE"):
+    print("\n--- Training with Zero order optimization ---")
+    model_zoo = LinearRegression()
+    loss_zoo, loss_zoo_hardware = model_zoo.fit_zoo(X, y, epochs = epochs, lr_shift = lr_shift, total_bits = total_bits, frac_bits = frac_bits, loss_func = loss_func)
+    return loss_zoo, loss_zoo_hardware
 
 def train_baseline_model(X, y, lr, epochs=500, loss_func="MSE"):
     print("--- Training Baseline Model (FP64) ---")
@@ -102,6 +127,7 @@ if __name__ == "__main__":
     EPOCHS = 500
     LOSS_FUNC = "Huber"
     GR_SCALE = 10
+    lr_shift = 6  ## learning rate for the zoo will be: 0.015625    
     # creating the sample dataset
 
 
@@ -138,5 +164,8 @@ if __name__ == "__main__":
     # Run Qat training with error accumulation
     loss_qat_error_accumulation = train_qat_with_error_accumulation(X, y, LEARNING_RATE, TOTAL_BITS, FRAC_BITS, epochs=EPOCHS, loss_func=LOSS_FUNC)
 
+    # Run QAT training with zoo
+    loss_zoo, loss_zoo_hardware = train_qat_with_zoo(X, y, lr_shift, TOTAL_BITS, FRAC_BITS, epochs=EPOCHS, loss_func=LOSS_FUNC)
+
     #Visualize the convergence of the three methods
-    plot_convergence(loss_std, loss_qat_gradient_scaling, loss_ptq_final, loss_qat_error_accumulation, loss_func=LOSS_FUNC, scale=GR_SCALE)
+    plot_convergence(loss_std, loss_qat_gradient_scaling, loss_ptq_final, loss_qat_error_accumulation, loss_zoo, loss_zoo_hardware, loss_func=LOSS_FUNC, scale=GR_SCALE)

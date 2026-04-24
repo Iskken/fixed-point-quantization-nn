@@ -271,7 +271,7 @@ class LinearRegression():
         return loss_history
 
 
-    def _compute_zoo_cost(self, y_pred, y, loss_func="MSE", delta=2.0):
+    def compute_zoo_cost(self, y_pred, y, loss_func="MSE", delta=2.0):
         """
         Hardware-friendly cost function. 
         Uses SUM instead of MEAN to avoid floating-point division.
