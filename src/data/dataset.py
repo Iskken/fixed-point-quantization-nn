@@ -47,70 +47,50 @@ def generate_regression_dataset(
     return X, y, w_true, b_true
 
 def generate_sine_dataset(
-    # w_true,
+    w_true,
     b_true=0.0,
     n_samples=1000,
     noise_std=0.01,
-    random_seed=42,
-    # function_type="sine"
+    random_seed=42
 ):
     """
-    Generate synthetic NONLINEAR sine regression dataset.
+    Generate a simple nonlinear regression dataset using a sine target.
 
-    y = f(X) + noise
+    y = sin(pi * x0) + noise
 
     Parameters
     ----------
     w_true : array-like
-        Used to determine input dimensionality (not used linearly).
+        Used only to determine input dimensionality.
     b_true : float
-        Optional bias term added after nonlinear transformation.
+        Optional bias term.
     n_samples : int
         Number of samples.
     noise_std : float
         Standard deviation of Gaussian noise.
     random_seed : int
         For reproducibility.
-    function_type : str
-        Type of nonlinear function ("sine", "sine2d", etc.)
 
     Returns
     -------
     X : ndarray
     y : ndarray
-    w_true : ndarray (unchanged, for compatibility)
+    w_true : ndarray
     b_true : float
     """
 
     np.random.seed(random_seed)
 
-    # w_true = np.array(w_true)
-    # n_features = len(w_true)
+    w_true = np.array(w_true)
+    n_features = len(w_true)
 
-    # Same input generation as linear case
+    # Generate input features
     X = np.random.randn(n_samples, n_features)
 
+    # Nonlinear sine target using first feature only
+    y = np.sin(np.pi * X[:, 0])
 
-
-    # Define nonlinear target
-    # if function_type == "sine":
-    #     # Use only first dimension
-    #     y = np.sin(np.pi * X[:, 0])
-
-    # elif function_type == "sine2d":
-    #     # Use first two dimensions (if available)
-    #     if n_features < 2:
-    #         raise ValueError("sine2d requires at least 2 features")
-    #     y = np.sin(np.pi * X[:, 0]) + np.cos(np.pi * X[:, 1])
-
-    # elif function_type == "mixed":
-    #     # Optional: slightly more complex nonlinear function
-    #     y = np.sin(X @ w_true)
-
-    else:
-        raise ValueError(f"Unknown function_type: {function_type}")
-
-    # Add bias + noise
+    # Add noise and bias
     noise = np.random.normal(0, noise_std, size=n_samples)
     y = y + b_true + noise
 
