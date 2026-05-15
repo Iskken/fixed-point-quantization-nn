@@ -1,4 +1,5 @@
 import numpy as np
+from src.quantization.quantize import fixed_point_quantize
 
 class NeuralNetwork:
     def __init__(self, input_dim, hidden_dim, output_dim=1):
@@ -99,4 +100,126 @@ class NeuralNetwork:
         y_hat = self.forward(X)
 
         # Flatten output from (n_samples, 1) → (n_samples,)
+        return y_hat.squeeze()
+    
+    def forward_quantized(
+        self,
+        X,
+        total_bits=8,
+        fractional_bits=4,
+        quantize_input=True,
+        quantize_activations=True,
+        quantize_output=True
+    ):
+        """
+        Quantized forward pass.
+
+        Quantizes:
+        - inputs
+        - weights
+        - activations
+        - outputs
+
+        to simulate low-precision inference.
+        """
+
+        # -------------------------
+        # Quantize input
+        # -------------------------
+        if quantize_input:
+            Xq = fixed_point_quantize(
+                X,
+                total_bits=total_bits,
+                fractional_bits=fractional_bits
+            )
+        else:
+            Xq = X
+
+        # -------------------------
+        # Quantize weights
+        # -------------------------
+        W1q = fixed_point_quantize(
+            self.W1,
+            total_bits=total_bits,
+            fractional_bits=fractional_bits
+        )
+
+        b1q = fixed_point_quantize(
+            self.b1,
+            total_bits=total_bits,
+            fractional_bits=fractional_bits
+        )
+
+        W2q = fixed_point_quantize(
+            self.W2,
+            total_bits=total_bits,
+            fractional_bits=fractional_bits
+        )
+
+        b2q = fixed_point_quantize(
+            self.b2,
+            total_bits=total_bits,
+            fractional_bits=fractional_bits
+        )
+
+        # -------------------------
+        # Layer 1
+        # -------------------------
+        z1 = Xq @ W1q + b1q
+
+        if quantize_activations:
+            z1 = fixed_point_quantize(
+                z1,
+                total_bits=total_bits,
+                fractional_bits=fractional_bits
+            )
+
+        # -------------------------
+        # Activation
+        # -------------------------
+        a1 = np.tanh(z1)
+
+        if quantize_activations:
+            a1 = fixed_point_quantize(
+                a1,
+                total_bits=total_bits,
+                fractional_bits=fractional_bits
+            )
+
+        # -------------------------
+        # Output layer
+        # -------------------------
+        z2 = a1 @ W2q + b2q
+
+        if quantize_output:
+            z2 = fixed_point_quantize(
+                z2,
+                total_bits=total_bits,
+                fractional_bits=fractional_bits
+            )
+
+        return z2
+    
+    def predict_quantized(
+        self,
+        X,
+        total_bits=8,
+        fractional_bits=4,
+        quantize_input=True,
+        quantize_activations=True,
+        quantize_output=True
+    ):
+        """
+        Generate predictions using quantized inference.
+        """
+
+        y_hat = self.forward_quantized(
+            X,
+            total_bits=total_bits,
+            fractional_bits=fractional_bits,
+            quantize_input=quantize_input,
+            quantize_activations=quantize_activations,
+            quantize_output=quantize_output
+        )
+
         return y_hat.squeeze()
