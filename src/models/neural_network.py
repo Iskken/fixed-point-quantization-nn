@@ -35,7 +35,7 @@ class NeuralNetwork:
         # ===== OUTPUT LAYER =====
 
         # dL/dy_hat for MSE
-        dy_hat = (2 * (y_hat - y)) / n_samples
+        dy_hat = (2 / n_samples) * (y_hat - y)
 
         # Since output layer is linear:
         dz2 = dy_hat
