@@ -85,7 +85,7 @@ def generate_sine_dataset(
     n_features = len(w_true)
 
     # Generate input features
-    X = np.random.randn(n_samples, n_features)
+    X = np.random.uniform(-1, 1, size=(n_samples, n_features))
 
     # Nonlinear sine target using first feature only
     y = np.sin(np.pi * X[:, 0])
