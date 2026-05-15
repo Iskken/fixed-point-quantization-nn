@@ -269,3 +269,146 @@ class LinearRegression():
             loss_history.append(loss)
 
         return loss_history
+
+
+    def compute_zoo_cost(self, y_pred, y, loss_func="MSE", delta=2.0):
+        """
+        Hardware-friendly cost function. 
+        Uses SUM instead of MEAN to avoid floating-point division.
+        """
+        error = y_pred - y
+
+        if loss_func == "MSE":
+            return np.sum(error**2) # SSE
+        elif loss_func == "MAE": 
+            return np.sum(np.abs(error)) # SAD (Sum of Absolute Differences)
+        elif loss_func == "Huber":
+            is_small = np.abs(error) <= delta
+            squared = 0.5 * error**2
+            linear = delta * (np.abs(error) - 0.5 * delta)
+            return np.sum(np.where(is_small, squared, linear))
+        else:
+            raise ValueError("Unknown loss function")
+
+    def fit_zoo(
+        self,
+        X,
+        y,
+        epochs=100,
+        lr_shift=6,
+        batch_size=32,
+        sub_batch_size=8,
+        total_bits=8,
+        frac_bits=4,
+        delta = 0.2,
+        loss_func="MSE"
+    ):
+        lr = 2**(-lr_shift)
+
+        n_samples, n_features = X.shape
+
+        self.w = np.zeros(n_features)
+        self.b = 0.0
+
+        lsb = 2 ** (-frac_bits)
+        loss_history = []
+        loss_history_hardware = []
+
+        for epoch in range(epochs):
+
+            #Shuffling the data: Model doesn't memorize the order of the data. 
+            idx = np.random.permutation(n_samples)
+            X_shuffled = X[idx]
+            y_shuffled = y[idx]
+
+            ## Process data in mini batches(32 samples)
+            for i in range(0, n_samples, batch_size):
+                X_batch = X_shuffled[i:i + batch_size]
+                y_batch = y_shuffled[i:i + batch_size]
+                
+                current_batch_size = X_batch.shape[0]
+
+                
+                num_sub_batches = max(1, current_batch_size // sub_batch_size)
+
+                #sub batches for multiple gradient estimates
+                sub_batches = np.array_split(np.arange(current_batch_size), num_sub_batches)
+
+                grad_w_total = np.zeros_like(self.w)
+                grad_b_total = 0.0
+
+                #calculate the gradient for each sub-batch
+                for sub_idx in sub_batches:
+                    X_sub = X_batch[sub_idx]
+                    y_sub = y_batch[sub_idx]
+
+                    ## set the random direction for each weight and bias
+                    direction_w = np.random.choice([-1, 1], size=self.w.shape)
+                    direction_b = np.random.choice([-1, 1])
+
+                    #move weights exactly by one lsb
+                    perturb_w = direction_w * lsb
+                    perturb_b = direction_b * lsb
+
+                    #evalutate f(w + delta u): forward
+                    self.w += perturb_w
+                    self.b += perturb_b
+                    y_pred_plus = self.predict(X_sub)
+                    loss_plus = self.compute_zoo_cost(y_pred_plus, y_sub, loss_func, delta=delta)
+
+                    #evaluate f(w - delta u): backward
+                    self.w -= 2 * perturb_w
+                    self.b -= 2 * perturb_b
+                    y_pred_minus = self.predict(X_sub)
+                    loss_minus = self.compute_zoo_cost(y_pred_minus, y_sub, loss_func, delta=delta) 
+
+                    # restore orgginal weights
+                    self.w += perturb_w
+                    self.b += perturb_b
+
+                    #two points gradient estimate
+                    # (2 * lsb) is always a power of 2. 
+                    # In hardware, dividing by a power of 2 is NOT floating-point division; 
+                    # it is just a simple "right bit-shift" (>>), making this operation virtually free!
+                    grad_est_w = ((loss_plus - loss_minus) / (2 * lsb)) * direction_w
+                    grad_est_b = ((loss_plus - loss_minus) / (2 * lsb)) * direction_b
+
+                    grad_w_total += grad_est_w
+                    grad_b_total += grad_est_b
+
+                #Aggregate gradients
+                # len(sub_batches) is the power of two: 32//8 = 4
+                # this is also just a simple right bit-shift.
+                grad_w_total /= len(sub_batches)
+                grad_b_total /= len(sub_batches)
+
+                # Update weights
+                # learning rate is the power of two
+                # this multiplication becomes another fast bit-shift.
+                self.w -= lr * grad_w_total
+                self.b -= lr * grad_b_total
+
+                # Quantization (simulate hardware registers)
+                self.w = fixed_point_quantize(self.w, total_bits, frac_bits)
+                self.b = fixed_point_quantize(self.b, total_bits, frac_bits)
+
+            #Return standard mean and sum mean that was used in the hardware
+            y_pred_full = self.predict(X)
+            error_full = y_pred_full - y
+            if loss_func == "MSE":
+                loss_hardware = np.sum(error_full**2)
+                loss_epoch = np.mean(error_full**2)
+            elif loss_func == "MAE":
+                loss_epoch = np.mean(np.abs(error_full))
+                loss_hardware = np.sum(np.abs(error_full))
+            else:
+                is_small = np.abs(error_full) <= delta
+                squared = 0.5 * error_full**2
+                linear = delta * (np.abs(error_full) - 0.5 * delta)
+                loss_epoch = np.mean(np.where(is_small, squared, linear))
+                loss_hardware = np.sum(np.where(is_small, squared, linear))
+                
+            loss_history.append(loss_epoch)
+            loss_history_hardware.append(loss_hardware)
+
+        return loss_history, loss_history_hardware
