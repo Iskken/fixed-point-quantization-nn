@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 from src.quantization.quantize import fixed_point_quantize
 
@@ -412,3 +414,99 @@ class LinearRegression():
             loss_history_hardware.append(loss_hardware)
 
         return loss_history, loss_history_hardware
+    
+
+
+
+
+    def _stair_quantize(self, x, total_bits=8, frac_bits=4, alpha=1.0, beta=1.0):
+        lsb = 2 ** (-frac_bits)
+        
+        # Find the physical hardware center (e.g., 0.0625, 0.1250)
+        centers = np.round(x / lsb) * lsb
+        diff = x - centers
+        abs_diff = np.abs(diff)
+
+        # Widths: a + b = lsb
+        a = (alpha * lsb) / (alpha + 1.0)
+        b = lsb / (alpha + 1.0)
+        
+        # Heights: c + d = lsb
+        c = lsb / (1.0 + beta * alpha)
+        d = lsb - c
+
+        #Calculate the true mathematical slopes
+        slope_trap = c / max(a, 1e-9)
+        slope_transition = d / max(b, 1e-9)
+
+        # 3. Define the zones
+        # The trap extends a/2 in physical distance
+        is_trap = abs_diff <= (a / 2.0)
+
+        x_soft = np.where(
+            is_trap,
+            centers + diff * slope_trap, 
+            centers + np.sign(diff) * ((a / 2.0) * slope_trap + (abs_diff - (a / 2.0)) * slope_transition)
+        )
+
+        # We must multiply the integer limits by LSB to get physical bounds
+        qmax_physical = ((2 ** (total_bits - 1)) - 1) * lsb
+        qmin_physical = -(2 ** (total_bits - 1)) * lsb
+        
+        x_q = np.clip(x_soft, qmin_physical, qmax_physical)
+
+        # 5. Backward Pass (The Clamped Gradients)
+        safe_slope_transition = np.clip(slope_transition, a_min=0.0, a_max=1.0)
+        safe_slope_trap = np.clip(slope_trap, a_min=0.1, a_max=1.0)
+
+        grad = np.where(
+            is_trap,
+            safe_slope_trap,       
+            safe_slope_transition  
+        )
+
+        return x_q, grad
+    
+
+    def fit_qat_non_linear(self, X, y, epochs=500, lr=0.01, total_bits=8, frac_bits=4):
+        n_samples, n_features = X.shape
+        self.w = np.zeros(n_features)
+        self.b = 0.0
+        
+        loss_history = []
+        
+        for epoch in range(epochs):
+            linear_progress = epoch / max(1, (epochs - 1))
+            
+            alpha = 0.1 + (99.9 * linear_progress)
+            
+            beta_straight = 1.0 / (alpha ** 2)
+            beta_cliff = 10.0 
+            beta = beta_straight + linear_progress * (beta_cliff - beta_straight)
+            
+            w_q, dw_q = self._stair_quantize(self.w, total_bits, frac_bits, alpha, beta)
+            b_q, db_q = self._stair_quantize(self.b, total_bits, frac_bits, alpha, beta)
+
+
+            y_pred = X @ w_q + b_q
+            
+            #Calculate Loss (MSE for standard Backprop)
+            error = y_pred - y
+            loss_history.append(np.mean(error**2))
+            
+            # Standard Backpropagation (Gradients of the Loss)
+            # These are the gradients with respect to the QUANTIZED weights
+            dL_dw_q = (2 / n_samples) * (X.T @ error) 
+            dL_db_q = (2 / n_samples) * np.sum(error)
+            
+            # We multiply the loss gradient by the local slope of our custom staircase
+            dL_dw_true = dL_dw_q * dw_q
+            dL_db_true = dL_db_q * db_q
+
+            current_lr = lr * 0.5 * (1.0 + math.cos(math.pi * (epoch / epochs)))
+            
+            # Update the TRUE continuous weights using the COOLING learning rate 
+            self.w -= current_lr * dL_dw_true
+            self.b -= current_lr * dL_db_true
+            
+        return loss_history
