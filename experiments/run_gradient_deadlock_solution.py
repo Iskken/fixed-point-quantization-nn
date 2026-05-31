@@ -19,6 +19,7 @@ def plot_convergence(loss_std = None,
                      loss_qat_accumulation = None, 
                      loss_zoo = None, 
                      loss_zoo_hardware = None, 
+                     loss_nlinear = None, 
                      loss_func="MSE", 
                      scale = 1.02): 
     
@@ -43,6 +44,9 @@ def plot_convergence(loss_std = None,
     # Plot the PTQ failure as a reference point
     if loss_ptq_final is not None:
          plt.axhline(y=loss_ptq_final, color='red', linestyle=':', label='Post-Training Quant (PTQ)')
+    
+    if loss_nlinear is not None:
+        plt.plot(loss_nlinear, color='black', linestyle='-', label='Differentiable Quantization')
 
     # Dynamic Y-Axis Labels 
     label_map = {
@@ -85,6 +89,12 @@ def train_qat_with_zoo(X, y, lr_shift, total_bits, frac_bits, epochs=500, loss_f
     model_zoo = LinearRegression()
     loss_zoo, loss_zoo_hardware = model_zoo.fit_zoo(X, y, epochs = epochs, lr_shift = lr_shift, total_bits = total_bits, frac_bits = frac_bits, loss_func = loss_func)
     return loss_zoo, loss_zoo_hardware
+
+def train_qat_with_nlinear(X, y, lr_rate, total_bits, frac_bits, epochs=500, loss_func="MSE"):
+    print("\n --- Training with Differentiable optimization --- ")
+    model_nlinear = LinearRegression()
+    loss_nlinear = model_nlinear.fit_qat_non_linear(X, y, epochs = epochs, lr = lr_rate, total_bits = total_bits, frac_bits = frac_bits)
+    return loss_nlinear
 
 def train_baseline_model(X, y, lr, epochs=500, loss_func="MSE"):
     print("--- Training Baseline Model (FP64) ---")
@@ -162,10 +172,16 @@ if __name__ == "__main__":
     loss_qat_gradient_scaling = train_qat_with_gradient_scaling(X, y, LEARNING_RATE, TOTAL_BITS, FRAC_BITS, scaling_factor=GR_SCALE, epochs=EPOCHS, loss_func=LOSS_FUNC)  # You can experiment with different scaling factors like 10.0, 20.0, etc.
 
     # Run Qat training with error accumulation
-    loss_qat_error_accumulation = train_qat_with_error_accumulation(X, y, LEARNING_RATE, TOTAL_BITS, FRAC_BITS, epochs=EPOCHS, loss_func=LOSS_FUNC)
-
+    # loss_qat_error_accumulation = train_qat_with_error_accumulation(X, y, LEARNING_RATE, TOTAL_BITS, FRAC_BITS, epochs=EPOCHS, loss_func=LOSS_FUNC)
+    loss_qat_error_accumulation = None
+    
     # Run QAT training with zoo
-    loss_zoo, loss_zoo_hardware = train_qat_with_zoo(X, y, lr_shift, TOTAL_BITS, FRAC_BITS, epochs=EPOCHS, loss_func=LOSS_FUNC)
+    # loss_zoo, loss_zoo_hardware = train_qat_with_zoo(X, y, lr_shift, TOTAL_BITS, FRAC_BITS, epochs=EPOCHS, loss_func=LOSS_FUNC)
+    loss_zoo = None
+    loss_zoo_hardware = None
+
+    #Non-linear training
+    loss_nlinear = train_qat_with_nlinear(X, y, LEARNING_RATE, TOTAL_BITS, FRAC_BITS, epochs=EPOCHS, loss_func=LOSS_FUNC)
 
     #Visualize the convergence of the three methods
-    plot_convergence(loss_std, loss_qat_gradient_scaling, loss_ptq_final, loss_qat_error_accumulation, loss_zoo, loss_zoo_hardware, loss_func=LOSS_FUNC, scale=GR_SCALE)
+    plot_convergence(loss_std, loss_qat_gradient_scaling, loss_ptq_final, loss_qat_error_accumulation, loss_zoo, loss_zoo_hardware, loss_nlinear, loss_func=LOSS_FUNC, scale=GR_SCALE)
