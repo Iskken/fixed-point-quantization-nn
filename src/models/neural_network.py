@@ -11,6 +11,9 @@ class NeuralNetwork:
 
         self.W2 = np.random.randn(hidden_dim, output_dim) * 0.01
         self.b2 = np.zeros(output_dim)
+
+        self.freeze_W1 = False
+        self.freeze_W2 = False
     
     def forward(self, X):
         z1 = X @ self.W1 + self.b1
@@ -83,11 +86,15 @@ class NeuralNetwork:
             self.backward(X, y, y_hat)
 
             # ===== PARAMETER UPDATE =====
-            self.W1 -= lr * self.dW1
-            self.b1 -= lr * self.db1
+            # Update first layer only if not frozen
+            if not self.freeze_W1:
+                self.W1 -= lr * self.dW1
+                self.b1 -= lr * self.db1
 
-            self.W2 -= lr * self.dW2
-            self.b2 -= lr * self.db2
+            # Update second layer only if not frozen
+            if not self.freeze_W2:
+                self.W2 -= lr * self.dW2
+                self.b2 -= lr * self.db2
 
             # Optional logging
             if verbose and epoch % 100 == 0:
