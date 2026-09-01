@@ -1,0 +1,98 @@
+{
+  "float_train_mse": 0.10235259674153876,
+  "float_test_mse": 0.15385571128650632,
+  "float_train_r2": 0.8467775627347479,
+  "float_test_r2": 0.753532980688933,
+  "sweep": [
+    {
+      "total_bits": 8,
+      "fractional_bits": 2,
+      "train_mse": 0.8409381065466424,
+      "test_mse": 0.8434352201726714,
+      "train_r2": -0.25888927468715695,
+      "test_r2": -0.3511293338394488,
+      "train_sensitivity": 8.216089609042191,
+      "test_sensitivity": 5.481988371572681
+    },
+    {
+      "total_bits": 8,
+      "fractional_bits": 4,
+      "train_mse": 0.1401119081660527,
+      "test_mse": 0.19927508737656854,
+      "train_r2": 0.7902516522047839,
+      "test_r2": 0.680774042133574,
+      "train_sensitivity": 1.3689140542263323,
+      "test_sensitivity": 1.2952076052963895
+    },
+    {
+      "total_bits": 8,
+      "fractional_bits": 6,
+      "train_mse": 0.36517865791501636,
+      "test_mse": 0.37840641640136924,
+      "train_r2": 0.45332540859430515,
+      "test_r2": 0.3938170981189466,
+      "train_sensitivity": 3.567849468804071,
+      "test_sensitivity": 2.4594889148879897
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 2,
+      "train_mse": 0.8409381065466424,
+      "test_mse": 0.8434352201726714,
+      "train_r2": -0.25888927468715695,
+      "test_r2": -0.3511293338394488,
+      "train_sensitivity": 8.216089609042191,
+      "test_sensitivity": 5.481988371572681
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 4,
+      "train_mse": 0.1401119081660527,
+      "test_mse": 0.19927508737656854,
+      "train_r2": 0.7902516522047839,
+      "test_r2": 0.680774042133574,
+      "train_sensitivity": 1.3689140542263323,
+      "test_sensitivity": 1.2952076052963895
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 6,
+      "train_mse": 0.10424926883814196,
+      "test_mse": 0.15341579787138815,
+      "train_r2": 0.843938233488726,
+      "test_r2": 0.7542376938729449,
+      "train_sensitivity": 1.0185307667512598,
+      "test_sensitivity": 0.99714074042855
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 8,
+      "train_mse": 0.10277009560838439,
+      "test_mse": 0.1542394572549622,
+      "train_r2": 0.8461525644838964,
+      "test_r2": 0.752918244165816,
+      "train_sensitivity": 1.0040790256440675,
+      "test_sensitivity": 1.0024941938472551
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 10,
+      "train_mse": 0.1023972212385488,
+      "test_mse": 0.1536726004818385,
+      "train_r2": 0.8467107596011558,
+      "test_r2": 0.7538263124986705,
+      "train_sensitivity": 1.0004359879322136,
+      "test_sensitivity": 0.9988098537055486
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 12,
+      "train_mse": 0.1023349647914376,
+      "test_mse": 0.1538757210926832,
+      "train_r2": 0.8468039578673996,
+      "test_r2": 0.7535009262579069,
+      "train_sensitivity": 0.9998277332411439,
+      "test_sensitivity": 1.0001300556606547
+    }
+  ]
+}
