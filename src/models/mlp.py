@@ -73,14 +73,29 @@ class MLP:
                 a_prev_activated = self.a_list[i]
                 dz = da_prev * (1 - a_prev_activated ** 2)
 
-    def fit(self, X, y, epochs=1000, lr=0.01, verbose=True):
+    def fit(self, X, y, epochs=1000, lr=0.01, verbose=True, X_val=None, y_val=None):
         """
         Train the network using gradient descent.
+
+        If X_val/y_val are given, validation loss is tracked each epoch in
+        self.val_loss_history, and the weights with the lowest validation
+        loss seen are restored at the end (early-stopping checkpoint) --
+        deeper/overparameterized networks trained to convergence on the
+        training loss alone can otherwise memorize the training set.
         """
 
         y = y.reshape(-1, 1)
+        track_val = X_val is not None and y_val is not None
+        if track_val:
+            y_val = y_val.reshape(-1, 1)
 
         self.loss_history = []
+        self.val_loss_history = [] if track_val else None
+
+        best_val_loss = np.inf
+        best_weights = None
+        best_biases = None
+        best_epoch = None
 
         for epoch in range(epochs):
             y_hat = self.forward(X)
@@ -95,8 +110,30 @@ class MLP:
                     self.weights[i] -= lr * self.grad_weights[i]
                     self.biases[i] -= lr * self.grad_biases[i]
 
+            if track_val:
+                y_val_hat = self.forward(X_val)
+                val_loss = self.compute_loss(y_val_hat, y_val)
+                self.val_loss_history.append(val_loss)
+
+                if val_loss < best_val_loss:
+                    best_val_loss = val_loss
+                    best_weights = [w.copy() for w in self.weights]
+                    best_biases = [b.copy() for b in self.biases]
+                    best_epoch = epoch
+
             if verbose and epoch % 100 == 0:
-                print(f"Epoch {epoch}, Loss: {loss:.6f}")
+                msg = f"Epoch {epoch}, Loss: {loss:.6f}"
+                if track_val:
+                    msg += f", Val Loss: {val_loss:.6f}"
+                print(msg)
+
+        if track_val:
+            self.weights = best_weights
+            self.biases = best_biases
+            self.best_epoch = best_epoch
+            self.best_val_loss = best_val_loss
+            if verbose:
+                print(f"Restored best checkpoint: epoch {best_epoch}, val loss {best_val_loss:.6f}")
 
     def predict(self, X):
         """
@@ -168,3 +205,27 @@ class MLP:
         )
 
         return y_hat.squeeze()
+
+    def save(self, path):
+        """
+        Persist the trained (float) weights so later scripts can load this
+        exact model and apply PTQ techniques to it without retraining.
+        """
+        arrays = {"layer_sizes": np.array(self.layer_sizes)}
+        arrays.update({f"W{i}": w for i, w in enumerate(self.weights)})
+        arrays.update({f"b{i}": b for i, b in enumerate(self.biases)})
+        np.savez(path, **arrays)
+
+    @classmethod
+    def load(cls, path):
+        """
+        Reconstruct an MLP from a checkpoint written by save().
+        """
+        data = np.load(path)
+        layer_sizes = data["layer_sizes"].tolist()
+
+        model = cls(layer_sizes)
+        model.weights = [data[f"W{i}"] for i in range(model.n_layers)]
+        model.biases = [data[f"b{i}"] for i in range(model.n_layers)]
+
+        return model
