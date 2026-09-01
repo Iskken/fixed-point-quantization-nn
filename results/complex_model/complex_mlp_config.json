@@ -1,0 +1,36 @@
+{
+  "dataset_params": {
+    "n_features": 4,
+    "n_samples": 2000,
+    "freq_list": [
+      3.0,
+      6.0
+    ],
+    "noise_std": 0.01,
+    "random_seed": 42
+  },
+  "test_split_params": {
+    "test_size": 0.2,
+    "random_state": 42
+  },
+  "val_split_params": {
+    "test_size": 0.2,
+    "random_state": 42
+  },
+  "layer_sizes": [
+    4,
+    64,
+    64,
+    32,
+    16,
+    1
+  ],
+  "n_params": 7105,
+  "epochs": 10000,
+  "lr": 0.1,
+  "best_epoch": 4374,
+  "train_mse": 0.10235259674153876,
+  "val_mse": 0.14788024375480158,
+  "test_mse": 0.15385571128650632,
+  "checkpoint_path": "results/complex_model/complex_mlp_float.npz"
+}
