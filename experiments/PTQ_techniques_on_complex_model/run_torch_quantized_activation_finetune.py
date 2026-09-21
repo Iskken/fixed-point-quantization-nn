@@ -41,14 +41,14 @@ TOTAL_BITS = 8
 FRACTIONAL_BITS = 4
 
 FINE_TUNE_EPOCHS = 3000
-FINE_TUNE_LR = 0.01        # STEP 4 will replace this with a value picked on validation
+FINE_TUNE_LR = 0.01        # to be replaced with a value picked on validation
 OPTIMIZER = "sgd"          # "adam" is the separate question of whether a better optimizer helps
 
 DTYPE = torch.float64      # matches the NumPy experiments; see experiments/test_torch_mlp.py
 
 
 # ======================================================================
-# STEP 1 -- data (same split the float checkpoint was trained on)
+# Data -- same split the float checkpoint was trained on
 # ======================================================================
 with open(CONFIG_PATH) as f:
     config = json.load(f)
@@ -65,7 +65,7 @@ print(f"train/val/test: {len(X_train)}/{len(X_val)}/{len(X_test)}")
 
 
 # ======================================================================
-# STEP 2 -- float baseline, ported from the NumPy checkpoint
+# Float baseline, ported from the NumPy checkpoint
 # ======================================================================
 model = TorchMLP.from_numpy_checkpoint(CHECKPOINT_PATH, dtype=DTYPE)
 n_layers = model.n_layers
@@ -88,7 +88,7 @@ def deployed(m):
 
 
 # ======================================================================
-# STEP 3 -- reference points every method is judged against
+# Reference points every method is judged against
 # ======================================================================
 float_test_mse, float_test_r2 = evaluate(model.predict(Xte), yte)
 one_shot_test_mse, one_shot_test_r2 = evaluate(deployed(model)(Xte), yte)
@@ -100,7 +100,7 @@ print(f"gap to close   {one_shot_test_mse - float_test_mse:.6f}")
 
 
 # ======================================================================
-# STEP 4 -- the layer-wise loop  [TO BUILD NEXT]
+# The layer-wise loop  [TO BUILD NEXT]
 # ======================================================================
 # for i in range(n_layers):
 #     1. A_train = model.forward_quantized_prefix(Xtr, i - 1, ...)   # under no_grad
@@ -118,11 +118,11 @@ print(f"gap to close   {one_shot_test_mse - float_test_mse:.6f}")
 #     rounded right afterwards; selecting on the post-rounding loss instead
 #     is possible and still needs no gradient through quantization
 progression = []
-print("\n[skeleton] STEP 4 (layer-wise loop) and STEP 5 (comparison) not built yet.")
+print("\n[skeleton] layer-wise loop and comparison not built yet.")
 
 
 # ======================================================================
-# STEP 5 -- comparison + plots  [TO BUILD AFTER STEP 4]
+# Comparison + plots  [TO BUILD AFTER THE LOOP]
 # ======================================================================
 # - head-to-head vs float / one-shot / NumPy float-activation method
 # - progression plot, strategy bar chart, prediction curves
