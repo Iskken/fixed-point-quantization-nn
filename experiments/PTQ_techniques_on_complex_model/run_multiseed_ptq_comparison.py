@@ -240,6 +240,120 @@ def aggregate():
             },
         }, f, indent=2)
 
+    plot_results(runs)
+
+
+def plot_results(runs):
+    """
+    Two figures, both showing the 8-seed evidence rather than any single run.
+
+    The comparison is PAIRED (same seed, same data, same float model), so
+    the per-seed scatter is the honest picture: between-seed spread is large
+    and shared by both methods, which plain error bars would make look like
+    "no difference" even where the paired test is significant.
+    """
+    import matplotlib.pyplot as plt
+    from scipy import stats
+
+    COLORS = {"float_acts": "tab:orange", "quant_acts": "tab:blue"}
+
+    def val_selected(run, variant):
+        return min(run["sweep"][variant], key=lambda r: r["val_mse"])
+
+    fa = np.array([val_selected(r, "float_acts")["test_mse"] for r in runs])
+    qa = np.array([val_selected(r, "quant_acts")["test_mse"] for r in runs])
+    seeds = [r["seed"] for r in runs]
+    t, pval = stats.ttest_rel(fa, qa)
+    wins = int((fa > qa).sum())
+
+    # ---------------- Figure 1: paired per-seed scatter ----------------
+    fig, ax = plt.subplots(figsize=(7.5, 7))
+    lo = min(fa.min(), qa.min()) - 0.004
+    hi = max(fa.max(), qa.max()) + 0.004
+
+    # below the diagonal means quantized-activation MSE is the lower of the two
+    ax.fill_between([lo, hi], [lo, lo], [lo, hi], color="tab:blue", alpha=0.08)
+    ax.text(hi - (hi - lo) * 0.03, lo + (hi - lo) * 0.10,
+            "quantized activations better", color="tab:blue", fontsize=10,
+            style="italic", ha="right")
+    ax.text(lo + (hi - lo) * 0.03, hi - (hi - lo) * 0.04,
+            "float activations better", color="tab:orange", fontsize=10, style="italic")
+
+    ax.plot([lo, hi], [lo, hi], color="black", linestyle="--", linewidth=1, label="equal performance")
+    ax.scatter(fa, qa, s=90, color="tab:blue", edgecolors="black", zorder=5)
+    for x, y, sd in zip(fa, qa, seeds):
+        ax.annotate(f"seed {sd}", (x, y), textcoords="offset points", xytext=(8, -4), fontsize=9)
+
+    ax.set_xlim(lo, hi)
+    ax.set_ylim(lo, hi)
+    ax.set_aspect("equal")
+    ax.set_xlabel("Test MSE — fine-tuned on float activations")
+    ax.set_ylabel("Test MSE — fine-tuned on quantized activations")
+    ax.set_title(f"Paired comparison over {len(runs)} seeds\n"
+                 f"quantized activations better in {wins}/{len(runs)} seeds "
+                 f"(paired t={t:+.2f}, p={pval:.3f})")
+    ax.legend(loc="upper left", bbox_to_anchor=(0.0, 0.94))
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(os.path.join(RESULTS_DIR, "multiseed_paired_scatter.png"), dpi=150)
+
+    # ---------------- Figure 2: mean test MSE vs learning rate ----------------
+    stable = [lr for lr in LEARNING_RATES
+              if max(np.max([next(x for x in r["sweep"][v] if x["lr"] == lr)["test_mse"]
+                             for r in runs]) for v in VARIANTS) < 1.0]
+    diverged = [lr for lr in LEARNING_RATES if lr not in stable]
+
+    fig, ax = plt.subplots(figsize=(9, 6))
+    for variant in VARIANTS:
+        means, sems, counts = [], [], []
+        for lr in stable:
+            vals = np.array([next(x for x in r["sweep"][variant] if x["lr"] == lr)["test_mse"]
+                             for r in runs])
+            means.append(vals.mean())
+            sems.append(vals.std(ddof=1) / np.sqrt(len(vals)))
+            counts.append(vals)
+        label = "Quantized activations" if variant == "quant_acts" else "Float activations"
+        ax.errorbar(stable, means, yerr=sems, marker="o", capsize=4,
+                    color=COLORS[variant], label=label)
+
+    # Paired win counts and p-values: the error bars show between-seed spread,
+    # which is large and shared by both methods, so they would understate a
+    # paired difference. These labels are what the statistics actually test.
+    ax.set_xscale("log")
+    ax.set_xticks(stable)
+    ax.set_xticklabels([str(lr) for lr in stable])
+    ax.minorticks_off()
+    ax.margins(x=0.12)
+
+    y0, y1 = ax.get_ylim()
+    ax.set_ylim(y0 - (y1 - y0) * 0.12, y1)
+    label_y = ax.get_ylim()[0] + (ax.get_ylim()[1] - ax.get_ylim()[0]) * 0.03
+
+    for lr in stable:
+        a = np.array([next(x for x in r["sweep"]["float_acts"] if x["lr"] == lr)["test_mse"] for r in runs])
+        b = np.array([next(x for x in r["sweep"]["quant_acts"] if x["lr"] == lr)["test_mse"] for r in runs])
+        _, p2 = stats.ttest_rel(a, b)
+        star = "**" if p2 < 0.01 else "*" if p2 < 0.05 else ""
+        ax.annotate(f"{int((a > b).sum())}/{len(runs)}{star}", (lr, label_y),
+                    ha="center", fontsize=10,
+                    color="tab:blue" if star else "dimgrey", weight="bold" if star else "normal")
+
+    ax.set_xlabel("Fine-tuning learning rate")
+    ax.set_ylabel(f"Mean test MSE over {len(runs)} seeds (± s.e.m.)")
+    ax.set_title("Where quantized-activation fine-tuning helps\n"
+                 "labels: seeds won by quantized activations (* p<0.05, ** p<0.01, paired)")
+    if diverged:
+        ax.annotate(f"lr={diverged[0]} excluded:\nquantized activations diverge\n(mean MSE 30.9)",
+                    xy=(0.985, 0.97), xycoords="axes fraction", ha="right", va="top", fontsize=9,
+                    bbox=dict(boxstyle="round", facecolor="mistyrose", edgecolor="grey"))
+    ax.legend(loc="upper left")
+    ax.grid(True, which="both", alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(os.path.join(RESULTS_DIR, "multiseed_lr_sensitivity.png"), dpi=150)
+
+    print(f"\nfigures written to {RESULTS_DIR}/multiseed_paired_scatter.png "
+          f"and multiseed_lr_sensitivity.png")
+
 
 if __name__ == "__main__":
     if not os.environ.get("AGGREGATE_ONLY"):
