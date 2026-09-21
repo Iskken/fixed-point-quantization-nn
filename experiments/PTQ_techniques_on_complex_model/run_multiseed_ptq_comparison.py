@@ -44,7 +44,7 @@ LEARNING_RATES = [0.003, 0.01, 0.03, 0.1, 0.3]
 OPTIMIZER = "sgd"
 DTYPE = torch.float64
 
-ALL_SEEDS = [0, 1, 2, 3, 4, 5, 6, 42]
+ALL_SEEDS = list(range(0, 23)) + [42]   # 24 seeds; power analysis put n=8 at only 68%
 
 
 def mse(pred, target):
@@ -280,9 +280,11 @@ def plot_results(runs):
             "float activations better", color="tab:orange", fontsize=10, style="italic")
 
     ax.plot([lo, hi], [lo, hi], color="black", linestyle="--", linewidth=1, label="equal performance")
-    ax.scatter(fa, qa, s=90, color="tab:blue", edgecolors="black", zorder=5)
-    for x, y, sd in zip(fa, qa, seeds):
-        ax.annotate(f"seed {sd}", (x, y), textcoords="offset points", xytext=(8, -4), fontsize=9)
+    ax.scatter(fa, qa, s=70 if len(runs) > 12 else 90, color="tab:blue",
+               edgecolors="black", zorder=5, alpha=0.85)
+    if len(runs) <= 10:   # labels only help while the points are few
+        for x, y, sd in zip(fa, qa, seeds):
+            ax.annotate(f"seed {sd}", (x, y), textcoords="offset points", xytext=(8, -4), fontsize=9)
 
     ax.set_xlim(lo, hi)
     ax.set_ylim(lo, hi)
@@ -343,7 +345,12 @@ def plot_results(runs):
     ax.set_title("Where quantized-activation fine-tuning helps\n"
                  "labels: seeds won by quantized activations (* p<0.05, ** p<0.01, paired)")
     if diverged:
-        ax.annotate(f"lr={diverged[0]} excluded:\nquantized activations diverge\n(mean MSE 30.9)",
+        lr_d = diverged[0]
+        means_d = {v: np.mean([next(x for x in r["sweep"][v] if x["lr"] == lr_d)["test_mse"]
+                               for r in runs]) for v in VARIANTS}
+        ax.annotate(f"lr={lr_d} excluded (unstable for both):\n"
+                    f"quantized acts mean MSE {means_d['quant_acts']:.1f}, "
+                    f"float acts {means_d['float_acts']:.1f}",
                     xy=(0.985, 0.97), xycoords="axes fraction", ha="right", va="top", fontsize=9,
                     bbox=dict(boxstyle="round", facecolor="mistyrose", edgecolor="grey"))
     ax.legend(loc="upper left")
