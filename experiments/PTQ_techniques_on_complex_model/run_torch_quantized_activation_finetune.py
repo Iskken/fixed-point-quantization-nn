@@ -40,7 +40,7 @@ os.makedirs(RESULTS_DIR, exist_ok=True)
 TOTAL_BITS = 8
 FRACTIONAL_BITS = 4
 
-FINE_TUNE_EPOCHS = 3000
+FINE_TUNE_EPOCHS = int(os.environ.get("FINE_TUNE_EPOCHS", 3000))  # env override for quick smoke runs
 FINE_TUNE_LR = 0.01        # to be replaced with a value picked on validation
 OPTIMIZER = "sgd"          # "adam" is the separate question of whether a better optimizer helps
 
@@ -100,25 +100,65 @@ print(f"gap to close   {one_shot_test_mse - float_test_mse:.6f}")
 
 
 # ======================================================================
-# The layer-wise loop  [TO BUILD NEXT]
+# The layer-wise loop
 # ======================================================================
-# for i in range(n_layers):
-#     1. A_train = model.forward_quantized_prefix(Xtr, i - 1, ...)   # under no_grad
-#        A_val   = model.forward_quantized_prefix(Xva, i - 1, ...)
-#     2. train(model, model.layer_parameters(i), A_train, ytr,
-#              epochs=FINE_TUNE_EPOCHS, lr=FINE_TUNE_LR,
-#              X_val=A_val, y_val=yva, optimizer_name=OPTIMIZER, start=i)
-#     3. model.quantize_layer_(i, ...); model.freeze_layer_(i)
-#     4. record model.predict_partially_quantized(Xte, i, ...) -> stage metrics
+# Ordering: fine-tune layers i..n-1 FIRST, then quantize layer i, matching
+# the supervisor's phrasing. Every layer therefore adapts to the exact
+# quantized input it will see before its own weights are rounded, and stage
+# 0 trains the whole network against the quantized input Q(X) -- a lossy
+# step the earlier experiments never trained against.
 #
-# Open decisions to settle while building it:
-#   - ordering: fine-tune layers i.. then quantize layer i (supervisor's
-#     phrasing), vs quantize layer i first then fine-tune i+1..
-#   - early stopping currently selects the best FLOAT suffix, but layer i is
-#     rounded right afterwards; selecting on the post-rounding loss instead
-#     is possible and still needs no gradient through quantization
+# Early stopping scores candidates with the tail still in float, exactly as
+# MLP.fit does, to keep the methodology comparable to the NumPy results.
 progression = []
-print("\n[skeleton] layer-wise loop and comparison not built yet.")
+
+print(f"\n===== LAYER-WISE PTQ, QUANTIZED ACTIVATIONS "
+      f"(lr={FINE_TUNE_LR}, {OPTIMIZER}, {FINE_TUNE_EPOCHS} epochs/stage) =====")
+
+for i in range(n_layers):
+    # 1. What layer i actually receives on hardware: Q(X) pushed through the
+    #    frozen, already-quantized layers 0..i-1. Computed ONCE per stage --
+    #    the frozen prefix never runs during training, and because it is a
+    #    fixed input array no gradient ever crosses a rounding step.
+    with torch.no_grad():
+        A_train = model.forward_quantized_prefix(
+            Xtr, i - 1, total_bits=TOTAL_BITS, fractional_bits=FRACTIONAL_BITS)
+        A_val = model.forward_quantized_prefix(
+            Xva, i - 1, total_bits=TOTAL_BITS, fractional_bits=FRACTIONAL_BITS)
+
+    # 2. Fine-tune layers i..n-1 on it with ordinary float backprop.
+    history = train(
+        model, model.layer_parameters(i), A_train, ytr,
+        epochs=FINE_TUNE_EPOCHS, lr=FINE_TUNE_LR,
+        X_val=A_val, y_val=yva, optimizer_name=OPTIMIZER, start=i,
+    )
+
+    # 3. Round layer i onto the grid and lock it in.
+    model.quantize_layer_(i, total_bits=TOTAL_BITS, fractional_bits=FRACTIONAL_BITS)
+    model.freeze_layer_(i)
+
+    # 4. True current state: layers 0..i quantized, the rest still float.
+    stage_mse, stage_r2 = evaluate(
+        model.predict_partially_quantized(Xte, i, total_bits=TOTAL_BITS, fractional_bits=FRACTIONAL_BITS), yte)
+    val_mse, _ = evaluate(
+        model.predict_partially_quantized(Xva, i, total_bits=TOTAL_BITS, fractional_bits=FRACTIONAL_BITS), yva)
+
+    progression.append({
+        "stage": i + 1, "test_mse": stage_mse, "test_r2": stage_r2, "val_mse": val_mse,
+        "best_epoch": history["best_epoch"],
+    })
+
+    # best_epoch at the cap means the stage was still improving when it ran out
+    capped = " [still improving at cap]" if history["best_epoch"] >= FINE_TUNE_EPOCHS - 1 else ""
+    print(f"  layer {i + 1}/{n_layers}: fine-tuned on quantized input, then quantized | "
+          f"Test MSE={stage_mse:.6f}  R2={stage_r2:.4f}  (best epoch {history['best_epoch']}){capped}")
+
+final_test_mse, final_test_r2 = evaluate(deployed(model)(Xte), yte)
+recovered = (one_shot_test_mse - final_test_mse) / (one_shot_test_mse - float_test_mse) * 100
+
+print(f"\n  FINAL (fully quantized): Test MSE={final_test_mse:.6f}  R2={final_test_r2:.4f}")
+print(f"  recovers {recovered:.1f}% of the one-shot gap "
+      f"(float {float_test_mse:.6f} <- {final_test_mse:.6f} <- one-shot {one_shot_test_mse:.6f})")
 
 
 # ======================================================================
