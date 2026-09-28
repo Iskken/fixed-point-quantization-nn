@@ -1,0 +1,205 @@
+{
+  "fine_tune_epochs": 3000,
+  "optimizer": "sgd",
+  "total_bits": 8,
+  "fractional_bits": 4,
+  "float_test_mse": 0.15385571128650632,
+  "one_shot_test_mse": 0.19927508737656854,
+  "sweep": {
+    "float_acts": [
+      {
+        "variant": "float_acts",
+        "lr": 0.001,
+        "val_mse": 0.17522759226778967,
+        "test_mse": 0.18846169700130366,
+        "best_epochs": [
+          86,
+          2999,
+          2999,
+          2999
+        ],
+        "stages_at_epoch_cap": 3
+      },
+      {
+        "variant": "float_acts",
+        "lr": 0.003,
+        "val_mse": 0.1661711541308915,
+        "test_mse": 0.18848736861989457,
+        "best_epochs": [
+          27,
+          2999,
+          1947,
+          2999
+        ],
+        "stages_at_epoch_cap": 2
+      },
+      {
+        "variant": "float_acts",
+        "lr": 0.01,
+        "val_mse": 0.16914486938759693,
+        "test_mse": 0.1879645683001943,
+        "best_epochs": [
+          7,
+          1425,
+          409,
+          2999
+        ],
+        "stages_at_epoch_cap": 1
+      },
+      {
+        "variant": "float_acts",
+        "lr": 0.03,
+        "val_mse": 0.16595936473959425,
+        "test_mse": 0.18625875270739617,
+        "best_epochs": [
+          1,
+          441,
+          138,
+          2999
+        ],
+        "stages_at_epoch_cap": 1
+      },
+      {
+        "variant": "float_acts",
+        "lr": 0.1,
+        "val_mse": 0.17054029504932794,
+        "test_mse": 0.19120454579984,
+        "best_epochs": [
+          3,
+          141,
+          99,
+          2559
+        ],
+        "stages_at_epoch_cap": 0
+      },
+      {
+        "variant": "float_acts",
+        "lr": 0.3,
+        "val_mse": 0.17864177649710222,
+        "test_mse": 0.18178239051282205,
+        "best_epochs": [
+          0,
+          435,
+          22,
+          4
+        ],
+        "stages_at_epoch_cap": 0
+      }
+    ],
+    "quant_acts": [
+      {
+        "variant": "quant_acts",
+        "lr": 0.001,
+        "val_mse": 0.17113922157522624,
+        "test_mse": 0.1888980426977873,
+        "best_epochs": [
+          126,
+          446,
+          2999,
+          2999,
+          2999
+        ],
+        "stages_at_epoch_cap": 3
+      },
+      {
+        "variant": "quant_acts",
+        "lr": 0.003,
+        "val_mse": 0.17009386511339844,
+        "test_mse": 0.18065240628593884,
+        "best_epochs": [
+          40,
+          147,
+          2999,
+          2999,
+          2999
+        ],
+        "stages_at_epoch_cap": 3
+      },
+      {
+        "variant": "quant_acts",
+        "lr": 0.01,
+        "val_mse": 0.17432676259993157,
+        "test_mse": 0.1921943116268242,
+        "best_epochs": [
+          11,
+          42,
+          2999,
+          132,
+          1039
+        ],
+        "stages_at_epoch_cap": 1
+      },
+      {
+        "variant": "quant_acts",
+        "lr": 0.03,
+        "val_mse": 0.1705867489772872,
+        "test_mse": 0.1943520979041989,
+        "best_epochs": [
+          2,
+          12,
+          1599,
+          11,
+          198
+        ],
+        "stages_at_epoch_cap": 0
+      },
+      {
+        "variant": "quant_acts",
+        "lr": 0.1,
+        "val_mse": 0.16587070845864008,
+        "test_mse": 0.18003346894788308,
+        "best_epochs": [
+          55,
+          58,
+          136,
+          16,
+          206
+        ],
+        "stages_at_epoch_cap": 0
+      },
+      {
+        "variant": "quant_acts",
+        "lr": 0.3,
+        "val_mse": 3.347814050972107,
+        "test_mse": 3.3258344884232294,
+        "best_epochs": [
+          0,
+          4,
+          0,
+          0,
+          0
+        ],
+        "stages_at_epoch_cap": 0
+      }
+    ]
+  },
+  "selected": {
+    "float_acts": {
+      "variant": "float_acts",
+      "lr": 0.03,
+      "val_mse": 0.16595936473959425,
+      "test_mse": 0.18625875270739617,
+      "best_epochs": [
+        1,
+        441,
+        138,
+        2999
+      ],
+      "stages_at_epoch_cap": 1
+    },
+    "quant_acts": {
+      "variant": "quant_acts",
+      "lr": 0.1,
+      "val_mse": 0.16587070845864008,
+      "test_mse": 0.18003346894788308,
+      "best_epochs": [
+        55,
+        58,
+        136,
+        16,
+        206
+      ],
+      "stages_at_epoch_cap": 0
+    }
+  }
+}
