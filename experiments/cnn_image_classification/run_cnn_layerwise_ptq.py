@@ -105,7 +105,7 @@ def _log_error_axis(ax, lowest):
 
 def plot_final(all_results):
     fig, axes = plt.subplots(1, len(all_results), figsize=(6.2 * len(all_results), 4.6), squeeze=False)
-    offsets = {"one_shot": -0.18, "float_acts": 0.0, "quant_acts": 0.18}
+    offsets = {"one_shot": -0.28, "float_acts": 0.0, "quant_acts": 0.28}
     for ax, r in zip(axes[0], all_results):
         float_err = _error(r["float"]["test_acc"])
         ax.axhline(float_err, color=COLOR_REFERENCE, lw=1, zorder=1)
@@ -118,12 +118,12 @@ def plot_final(all_results):
                 errors.append(err)
                 ax.plot([x + offsets[method]], [err], marker=marker, color=color, markersize=10,
                         linestyle="none", label=label if x == 0 else None, zorder=3)
-                ax.text(x + offsets[method] + 0.07, err, f"{err:.2f}%", color=INK, va="center", fontsize=8.5)
+                ax.text(x + offsets[method] + 0.06, err, f"{err:.2f}%", color=INK, va="center", fontsize=8)
         _log_error_axis(ax, min(errors))
         ax.set_ylim(min(errors) / 1.6, max(errors) * 1.8)
         ax.set_xticks(range(len(r["configs"])))
         ax.set_xticklabels([f"{c['total_bits']}-bit" for c in r["configs"]])
-        ax.set_xlim(-0.55, len(r["configs"]) - 0.45)
+        ax.set_xlim(-0.6, len(r["configs"]) - 0.3)
         ax.grid(False, axis="x")
         ax.set_ylabel("test error, fully quantized (log scale)")
         ax.set_title(f"{DISPLAY[r['dataset']]}: layer-wise PTQ vs one-shot")
@@ -134,9 +134,11 @@ def plot_final(all_results):
 
 
 def plot_progression(all_results):
-    panels = [(r, c) for r in all_results for c in r["configs"]]
-    fig, axes = plt.subplots(1, len(panels), figsize=(4.6 * len(panels), 4.3), squeeze=False)
-    for ax, (r, c) in zip(axes[0], panels):
+    n_cols = max(len(r["configs"]) for r in all_results)
+    fig, axes = plt.subplots(len(all_results), n_cols, figsize=(5.2 * n_cols, 4.0 * len(all_results)),
+                             squeeze=False)
+    panels = [(ax, r, c) for row, r in zip(axes, all_results) for ax, c in zip(row, r["configs"])]
+    for ax, r, c in panels:
         stages = r["stage_names"]
         xs = range(1, len(stages) + 1)
         float_err = _error(r["float"]["test_acc"])
@@ -161,7 +163,7 @@ def plot_progression(all_results):
         ax.set_ylabel("test error (log scale)")
         ax.set_title(f"{DISPLAY[r['dataset']]}, {c['total_bits']}-bit")
     handles, labels = axes[0][0].get_legend_handles_labels()
-    fig.tight_layout(w_pad=2.5)
+    fig.tight_layout(w_pad=2.5, h_pad=2.5)
     fig.legend(handles, labels, loc="upper center", bbox_to_anchor=(0.5, 0.0), ncol=2)
     fig.savefig(os.path.join(RESULTS_DIR, "cnn_layerwise_progression.png"))
     plt.close(fig)
