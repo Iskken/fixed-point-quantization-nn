@@ -1,4 +1,5 @@
 import math
+import os
 
 import torch
 import torch.nn as nn
@@ -269,6 +270,20 @@ class TorchCNN(nn.Module):
 # ----------------------------------------------------------------------
 # Training and evaluation
 # ----------------------------------------------------------------------
+
+def use_deterministic_gpu():
+    """
+    Make GPU training bit-reproducible. cuDNN's default convolution-backward
+    algorithms accumulate with atomics, so two identical runs can differ:
+    measured here, quantized-activation fine-tuning on MNIST at 4 bits gave
+    98.75% and 99.01% from the same code, data and seed -- as large as the
+    effects being compared. Call before any CUDA work; costs some speed.
+    """
+    os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
+    torch.use_deterministic_algorithms(True)
+
 
 def evaluate(forward_fn, X, y, batch_size=2000):
     """Accuracy and mean cross-entropy of forward_fn (float images -> logits)."""

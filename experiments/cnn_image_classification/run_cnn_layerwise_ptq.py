@@ -1,14 +1,13 @@
 import json
 import os
-import time
 
 import matplotlib.pyplot as plt
 import torch
 from matplotlib.ticker import NullFormatter
 
 from src.data.image_datasets import load_image_dataset, to_float
-from src.models.layerwise_ptq_cnn import STRATEGIES
-from src.models.torch_cnn import TorchCNN, evaluate
+from src.models.layerwise_ptq_cnn import compare_strategies
+from src.models.torch_cnn import TorchCNN, evaluate, use_deterministic_gpu
 from src.visualization.figure_style import (
     COLOR_REFERENCE, INK, INK_SECONDARY, SLOT_1, SLOT_2, SLOT_3, apply_style,
 )
@@ -73,34 +72,9 @@ def run_dataset(name):
     configs = []
     for tb in TOTAL_BITS[name]:
         formats = base.allocate_bits(calibration, tb, method="mse")
-
-        def fully_quantized(model):
-            def forward(x):
-                return model.forward_quantized(x, tb, formats)
-            val_acc, val_loss = evaluate(forward, data["Xva"], data["yva"])
-            test_acc, test_loss = evaluate(forward, data["Xte"], data["yte"])
-            return {"val_acc": val_acc, "val_loss": val_loss, "test_acc": test_acc, "test_loss": test_loss}
-
-        one_shot = fully_quantized(base)
-        print(f"\n--- {tb}-bit, formats {formats} ---\none-shot: test acc {one_shot['test_acc']:.4f}", flush=True)
-
-        methods = {"one_shot": {"final": one_shot}}
-        for method, strategy in STRATEGIES.items():
-            runs = []
-            for lr in LEARNING_RATES:
-                start = time.time()
-                model, progression = strategy(base, data, lr, EPOCHS_PER_STAGE, tb, formats, seed=SEED)
-                final = fully_quantized(model)
-                runs.append({"lr": lr, "final": final, "progression": progression,
-                             "seconds": time.time() - start})
-                print(f"{method:10s} lr={lr:g}: val acc {final['val_acc']:.4f}  test acc {final['test_acc']:.4f}"
-                      f"  stages at epoch cap {sum(p['at_epoch_cap'] for p in progression)}"
-                      f"  ({time.time() - start:.0f}s)", flush=True)
-            chosen = max(runs, key=lambda r: (r["final"]["val_acc"], -r["final"]["val_loss"]))
-            methods[method] = {"chosen_lr": chosen["lr"], "final": chosen["final"],
-                               "progression": chosen["progression"], "lr_runs": runs}
-            print(f"{method:10s} -> chosen lr {chosen['lr']:g}: test acc {chosen['final']['test_acc']:.4f}", flush=True)
-
+        print(f"\n--- {tb}-bit, formats {formats} ---", flush=True)
+        methods = compare_strategies(base, data, tb, formats, LEARNING_RATES, EPOCHS_PER_STAGE, seed=SEED,
+                                     log=lambda msg: print(msg, flush=True))
         configs.append({"total_bits": tb, "formats": formats.to_dict(), "methods": methods})
 
     results = {"dataset": name, "float": {"val_acc": float_val_acc, "test_acc": float_test_acc},
@@ -201,6 +175,7 @@ def plot_results(all_results):
 
 
 if __name__ == "__main__":
+    use_deterministic_gpu()
     trained = [n for n in DISPLAY if os.path.exists(os.path.join(RESULTS_DIR, f"{n}_cnn_config.json"))]
     names = os.environ.get("DATASETS", ",".join(trained)).split(",")
     if not os.environ.get("PLOT_ONLY"):

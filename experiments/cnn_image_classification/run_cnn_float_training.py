@@ -7,7 +7,7 @@ import torch
 from matplotlib.ticker import MaxNLocator
 
 from src.data.image_datasets import load_image_dataset
-from src.models.torch_cnn import TorchCNN, evaluate, train_classifier
+from src.models.torch_cnn import TorchCNN, evaluate, train_classifier, use_deterministic_gpu
 from src.visualization.figure_style import (
     COLOR_FLOAT, COLOR_REFERENCE, INK, INK_MUTED, INK_SECONDARY, apply_style,
 )
@@ -50,37 +50,46 @@ def paths(name):
             os.path.join(RESULTS_DIR, f"{name}_cnn_config.json"))
 
 
-def train_baseline(name):
+def train_float_model(name, seed, verbose=True):
+    """Split, initialise and train one float baseline; nothing is written to disk."""
     setup = SETUPS[name]
-    data = load_image_dataset(name, seed=SEED, device=DEVICE)
+    data = load_image_dataset(name, seed=seed, device=DEVICE)
 
-    torch.manual_seed(SEED)
+    torch.manual_seed(seed)
     model = TorchCNN(in_channels=data["in_channels"], image_size=data["image_size"],
                      conv_channels=setup["conv_channels"], hidden=setup["hidden"],
                      n_classes=data["n_classes"]).to(DEVICE)
     n_params = sum(p.numel() for p in model.parameters())
-    print(f"\n===== {DISPLAY[name]}: {len(data['ytr'])} train / {len(data['yva'])} val / "
-          f"{len(data['yte'])} test, {n_params:,} parameters =====", flush=True)
+    if verbose:
+        print(f"\n===== {DISPLAY[name]} (seed {seed}): {len(data['ytr'])} train / {len(data['yva'])} val / "
+              f"{len(data['yte'])} test, {n_params:,} parameters =====", flush=True)
 
     start = time.time()
     history = train_classifier(model, model.layer_parameters(0), data, epochs=setup["epochs"],
-                               lr=setup["lr"], batch_size=setup["batch_size"], seed=SEED, verbose=True)
-    seconds = time.time() - start
-
+                               lr=setup["lr"], batch_size=setup["batch_size"], seed=seed, verbose=verbose)
     model.eval()
-    test_acc, test_loss = evaluate(model, data["Xte"], data["yte"])
     val_acc, val_loss = evaluate(model, data["Xva"], data["yva"])
-    print(f"best epoch {history['best_epoch']}  val acc {val_acc:.4f}  "
-          f"test acc {test_acc:.4f}  test loss {test_loss:.4f}  ({seconds:.0f}s)", flush=True)
+    test_acc, test_loss = evaluate(model, data["Xte"], data["yte"])
+    scores = {"n_params": n_params, "best_epoch": history["best_epoch"], "train_seconds": time.time() - start,
+              "val_acc": val_acc, "val_loss": val_loss, "test_acc": test_acc, "test_loss": test_loss}
+    if verbose:
+        print(f"best epoch {history['best_epoch']}  val acc {val_acc:.4f}  test acc {test_acc:.4f}  "
+              f"test loss {test_loss:.4f}  ({scores['train_seconds']:.0f}s)", flush=True)
+    return model, data, history, scores
+
+
+def train_baseline(name):
+    setup = SETUPS[name]
+    model, data, history, scores = train_float_model(name, SEED)
 
     checkpoint_path, config_path = paths(name)
     model.save(checkpoint_path)
     config = {
         "dataset": name, "split_seed": SEED, "val_fraction": 0.1,
-        "model_config": model.config, "n_params": n_params,
+        "model_config": model.config, "n_params": scores["n_params"],
         **{k: setup[k] for k in ("epochs", "lr", "batch_size")}, "optimizer": "adam",
-        "best_epoch": history["best_epoch"], "train_seconds": seconds,
-        "val_acc": val_acc, "val_loss": val_loss, "test_acc": test_acc, "test_loss": test_loss,
+        "best_epoch": history["best_epoch"], "train_seconds": scores["train_seconds"],
+        **{k: scores[k] for k in ("val_acc", "val_loss", "test_acc", "test_loss")},
         "history": history, "checkpoint_path": checkpoint_path,
     }
     with open(config_path, "w") as f:
@@ -114,6 +123,7 @@ def plot_results(configs):
 
 
 if __name__ == "__main__":
+    use_deterministic_gpu()
     names = os.environ.get("DATASETS", "mnist,svhn").split(",")
     if not os.environ.get("PLOT_ONLY"):
         for name in names:

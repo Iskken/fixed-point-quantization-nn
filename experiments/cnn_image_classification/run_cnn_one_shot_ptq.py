@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import torch
 
 from src.data.image_datasets import load_image_dataset, to_float
-from src.models.torch_cnn import TorchCNN, evaluate
+from src.models.torch_cnn import TorchCNN, evaluate, use_deterministic_gpu
 from src.visualization.figure_style import (
     BIT_WIDTH_RAMP, COLOR_REFERENCE, INK, INK_SECONDARY, SLOT_1, SLOT_2, SLOT_3, apply_style,
 )
@@ -215,6 +215,7 @@ def plot_results(results):
 
 
 if __name__ == "__main__":
+    use_deterministic_gpu()
     if os.environ.get("PLOT_ONLY"):
         with open(RESULTS_PATH) as f:
             all_results = json.load(f)

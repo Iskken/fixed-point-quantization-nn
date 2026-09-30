@@ -1,4 +1,5 @@
 import copy
+import time
 
 from src.models.torch_cnn import evaluate, train_classifier
 
@@ -84,3 +85,41 @@ def quantized_activations(base, data, lr, epochs, total_bits, fractional_bits, s
 
 
 STRATEGIES = {"float_acts": float_activations, "quant_acts": quantized_activations}
+
+
+def fully_quantized_scores(model, data, total_bits, fractional_bits):
+    def forward(x):
+        return model.forward_quantized(x, total_bits, fractional_bits)
+
+    val_acc, val_loss = evaluate(forward, data["Xva"], data["yva"])
+    test_acc, test_loss = evaluate(forward, data["Xte"], data["yte"])
+    return {"val_acc": val_acc, "val_loss": val_loss, "test_acc": test_acc, "test_loss": test_loss}
+
+
+def compare_strategies(base, data, total_bits, fractional_bits, learning_rates, epochs, seed=0, log=print):
+    """
+    One-shot quantization of `base`, then both layer-wise strategies at every
+    learning rate. Each strategy's learning rate is chosen on validation
+    (final, fully quantized accuracy; lower loss breaks ties) and its test
+    scores are reported for that choice only.
+    """
+    one_shot = fully_quantized_scores(base, data, total_bits, fractional_bits)
+    log(f"one-shot: test acc {one_shot['test_acc']:.4f}")
+    methods = {"one_shot": {"final": one_shot}}
+
+    for method, strategy in STRATEGIES.items():
+        runs = []
+        for lr in learning_rates:
+            start = time.time()
+            model, progression = strategy(base, data, lr, epochs, total_bits, fractional_bits, seed=seed)
+            final = fully_quantized_scores(model, data, total_bits, fractional_bits)
+            runs.append({"lr": lr, "final": final, "progression": progression, "seconds": time.time() - start})
+            log(f"{method:10s} lr={lr:g}: val acc {final['val_acc']:.4f}  test acc {final['test_acc']:.4f}"
+                f"  stages at epoch cap {sum(p['at_epoch_cap'] for p in progression)}"
+                f"  ({time.time() - start:.0f}s)")
+        chosen = max(runs, key=lambda r: (r["final"]["val_acc"], -r["final"]["val_loss"]))
+        methods[method] = {"chosen_lr": chosen["lr"], "final": chosen["final"],
+                           "progression": chosen["progression"], "lr_runs": runs}
+        log(f"{method:10s} -> chosen lr {chosen['lr']:g}: test acc {chosen['final']['test_acc']:.4f}")
+
+    return methods
