@@ -1,9 +1,14 @@
 import json
 import os
 
+import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 
+from experiments.quantization_noise_budget.figure_style import (
+    COLOR_16BIT, COLOR_8BIT, COLOR_MODEL_ERROR, COLOR_REFERENCE, GRID_STRONG, INK, INK_SECONDARY,
+    MARKER_16BIT, MARKER_8BIT, MARKER_MODEL_ERROR, apply_style,
+)
 from src.data.dataset import generate_complex_dataset, complex_clean_target
 from src.models.mlp import MLP
 from src.quantization.quantize import fixed_point_quantize
@@ -296,9 +301,162 @@ def main():
     return results
 
 
+def _find(sweep, total_bits, fractional_bits):
+    return next(r for r in sweep if (r["total_bits"], r["fractional_bits"]) == (total_bits, fractional_bits))
+
+
+def plot_crossover(results):
+    """Quantization error vs fractional bits, against the label-noise floor and the model's own error."""
+    sweep, budget = results["sweep"], results["budget"]
+    floor, model_error = budget["noise_floor"], budget["model_error"]
+    crossover = results["crossover"]["fractional_bits"]
+
+    fig, ax = plt.subplots(figsize=(8.5, 5.2))
+    # 16-bit drawn underneath with larger markers, so it stays visible as a ring
+    # around the 8-bit markers wherever the two curves coincide
+    for tb, color, marker, size, lw, z in [(16, COLOR_16BIT, MARKER_16BIT, 10, 2, 2),
+                                           (8, COLOR_8BIT, MARKER_8BIT, 4.5, 1.5, 3)]:
+        rows = [r for r in sweep if r["total_bits"] == tb]
+        ax.plot([r["fractional_bits"] for r in rows], [r["quant_error"] for r in rows],
+                color=color, marker=marker, markersize=size, linewidth=lw, zorder=z, label=f"{tb}-bit total")
+
+    slope = results["crossover"]["sqnr_slope_db_per_bit"]
+    ax.text(-0.3, 12, f"rounding-limited: 8- and 16-bit coincide,\n"
+                      f"error falls ~4\u00d7 per extra bit ({slope:.1f} dB/bit)",
+            color=INK_SECONDARY, va="bottom")
+    ax.text(7.25, 0.94, "8-bit clips:\ntoo few integer bits", color=INK_SECONDARY, va="center")
+    ax.text(14.9, 2.2, "16-bit clips\nat f \u2265 14", color=INK_SECONDARY, ha="right", va="bottom")
+
+    ax.axhline(floor, color=COLOR_REFERENCE, lw=1, zorder=1)
+    ax.text(-0.3, floor * 1.35, f"label-noise floor  \u03c3\u00b2 = {floor:.0e}", color=INK_SECONDARY, va="bottom")
+    ax.axhline(model_error, color=COLOR_MODEL_ERROR, lw=1, zorder=1)
+    ax.text(10.4, model_error / 1.35, f"float model's own error = {model_error:.3f}",
+            color=INK_SECONDARY, va="top", ha="center")
+
+    ax.plot([crossover], [floor], marker="o", markersize=9, markerfacecolor="white",
+            markeredgecolor=INK, markeredgewidth=1.5, zorder=5)
+    ax.annotate(f"crosses the floor at \u2248{crossover:.1f} fractional bits\n"
+                f"(\u2248 9 bits: quantization becomes free)",
+                xy=(crossover, floor), xytext=(4.6, 4e-7), color=INK, ha="left",
+                arrowprops=dict(arrowstyle="-", color=INK_SECONDARY, lw=0.8))
+
+    q84, q85 = _find(sweep, 8, 4), _find(sweep, 8, 5)
+    ax.annotate(f"8/4, used in every earlier PTQ run:\n{q84['quant_error_over_noise_floor']:.0f}\u00d7 the floor",
+                xy=(4, q84["quant_error"]), xytext=(0.0, 6e-4), color=INK, ha="left",
+                arrowprops=dict(arrowstyle="-", color=INK_SECONDARY, lw=0.8))
+    ax.annotate(f"8/5, best 8-bit setting:\n{q85['quant_error_over_noise_floor']:.0f}\u00d7 the floor",
+                xy=(5, q85["quant_error"]), xytext=(6.4, 9e-3), color=INK, ha="left",
+                arrowprops=dict(arrowstyle="-", color=INK_SECONDARY, lw=0.8))
+
+    ax.set_yscale("log")
+    ax.set_ylim(1.5e-7, 3e2)
+    ax.set_xticks(range(0, 16))
+    ax.set_xlim(-0.5, 15.5)
+    ax.grid(False, which="minor")
+    ax.set_xlabel("fractional bits  (rounding step = 2\u207b\u1da0)")
+    ax.set_ylabel("quantization error  MSE(quantized output, float output)")
+    ax.set_title("Quantization error vs. precision, against the dataset's noise floor")
+    ax.legend(loc="lower left")
+    fig.savefig(os.path.join(RESULTS_DIR, "noise_budget_crossover.png"))
+    plt.close(fig)
+
+
+def plot_breakdown(results):
+    """Dot plot of the error terms on one log scale, in units of the noise floor."""
+    sweep, budget = results["sweep"], results["budget"]
+    floor = budget["noise_floor"]
+
+    rows = [
+        ("float model's own error\nMSE(float output, clean target)", budget["model_error"], COLOR_MODEL_ERROR, MARKER_MODEL_ERROR),
+        ("quantization error, 8-bit / 4 frac.", _find(sweep, 8, 4)["quant_error"], COLOR_8BIT, MARKER_8BIT),
+        ("quantization error, 8-bit / 5 frac.", _find(sweep, 8, 5)["quant_error"], COLOR_8BIT, MARKER_8BIT),
+        ("label-noise floor \u03c3\u00b2", floor, COLOR_REFERENCE, "D"),
+        ("quantization error, 16-bit / 9 frac.", _find(sweep, 16, 9)["quant_error"], COLOR_16BIT, MARKER_16BIT),
+    ]
+
+    fig, ax = plt.subplots(figsize=(8.5, 3.8))
+    ax.axvline(floor, color=COLOR_REFERENCE, lw=1, zorder=1)
+    for y, (label, value, color, marker) in enumerate(reversed(rows)):
+        ax.plot([value], [y], marker=marker, color=color, markersize=10, linestyle="none", zorder=3)
+        ratio = value / floor
+        ratio_text = "1\u00d7 (the floor)" if ratio == 1 else (f"{ratio:,.0f}\u00d7 floor" if ratio >= 10 else f"{ratio:.2f}\u00d7 floor")
+        ax.text(value * 1.6, y, f"{value:.2e}   {ratio_text}", va="center", color=INK)
+
+    ax.set_yticks(range(len(rows)))
+    ax.set_yticklabels([r[0] for r in reversed(rows)], color=INK)
+    ax.set_xscale("log")
+    ax.set_xlim(1e-5, 30)
+    ax.set_ylim(-0.6, len(rows) - 0.4)
+    ax.grid(False, which="minor")
+    ax.grid(False, axis="y")
+    ax.set_xlabel("mean squared error (log scale)")
+    ax.set_title("Error budget of the quantized complex model (test set)")
+    fig.savefig(os.path.join(RESULTS_DIR, "noise_budget_breakdown.png"))
+    plt.close(fig)
+
+
+def plot_per_layer(results):
+    """Left: SQNR after each layer with every stage quantized. Right: output error with one stage quantized."""
+    floor = results["budget"]["noise_floor"]
+    style = {(8, 4): (COLOR_8BIT, MARKER_8BIT), (16, 8): (COLOR_16BIT, MARKER_16BIT)}
+
+    fig, (ax_acc, ax_iso) = plt.subplots(1, 2, figsize=(12, 4.8))
+    for entry in results["per_layer"]:
+        key = (entry["total_bits"], entry["fractional_bits"])
+        color, marker = style[key]
+        label = f"{key[0]}-bit / {key[1]} frac."
+
+        acc = entry["accumulated"]
+        ax_acc.plot(range(1, len(acc) + 1), [a["sqnr_db"] for a in acc], color=color, marker=marker, label=label)
+
+        iso = entry["isolated"]
+        ax_iso.plot(range(len(iso)), [r["quant_error"] for r in iso], color=color, marker=marker,
+                    linewidth=1, label=label)
+        # the joint error, every stage at once, sits apart from the per-stage points
+        joint_x = len(iso) + 0.6
+        ax_iso.plot([joint_x], [entry["joint_quant_error"]], color=color, marker=marker,
+                    markersize=10, linestyle="none")
+        ax_iso.text(joint_x + 0.25, entry["joint_quant_error"],
+                    f"{entry['joint_quant_error'] / floor:.3g}\u00d7 floor", color=INK, va="center")
+
+    n_layers = len(results["per_layer"][0]["accumulated"])
+    ax_acc.set_xticks(range(1, n_layers + 1))
+    ax_acc.set_xticklabels([f"layer {i}" if i < n_layers else f"layer {i}\n(output)" for i in range(1, n_layers + 1)])
+    ax_acc.set_ylabel("SQNR after this layer (dB, higher = cleaner)")
+    ax_acc.set_title("Accumulated: signal quality through depth")
+    ax_acc.legend(loc="upper right")
+
+    stages = [r["stage"] for r in results["per_layer"][0]["isolated"]]
+    joint_x = len(stages) + 0.6
+    ax_iso.axhline(floor, color=COLOR_REFERENCE, lw=1, zorder=1)
+    ax_iso.text(-0.2, floor * 1.3, "label-noise floor", color=INK_SECONDARY, ha="left", va="bottom")
+    ax_iso.axvline(len(stages) - 0.2, color=GRID_STRONG, lw=1, zorder=0)
+    ax_iso.set_xticks(list(range(len(stages))) + [joint_x])
+    ax_iso.set_xticklabels(stages[:-1] + [f"{stages[-1]}\n(output)", "all stages\ntogether"])
+    ax_iso.set_xlim(-0.4, joint_x + 1.3)
+    ax_iso.legend(loc="center left")
+    ax_iso.set_yscale("log")
+    ax_iso.grid(False, which="minor")
+    ax_iso.set_ylabel("output quantization error, only this stage quantized")
+    ax_iso.set_title("Isolated: which stage costs the most")
+
+    fig.tight_layout(w_pad=3)
+    fig.savefig(os.path.join(RESULTS_DIR, "noise_budget_per_layer.png"))
+    plt.close(fig)
+
+
+def plot_results(results):
+    apply_style()
+    plot_crossover(results)
+    plot_breakdown(results)
+    plot_per_layer(results)
+    print(f"Saved figures to {RESULTS_DIR}/noise_budget_{{crossover,breakdown,per_layer}}.png")
+
+
 if __name__ == "__main__":
     if os.environ.get("PLOT_ONLY"):
         with open(RESULTS_PATH) as f:
             main_results = json.load(f)
     else:
         main_results = main()
+    plot_results(main_results)
