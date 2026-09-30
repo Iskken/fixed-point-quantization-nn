@@ -4,6 +4,7 @@ import time
 
 import matplotlib.pyplot as plt
 import torch
+from matplotlib.ticker import MaxNLocator
 
 from src.data.image_datasets import load_image_dataset
 from src.models.torch_cnn import TorchCNN, evaluate, train_classifier
@@ -101,10 +102,11 @@ def plot_results(configs):
         ax.text(0.97, 0.55, f"test accuracy {config['test_acc']:.2%}\nvalidation accuracy {config['val_acc']:.2%}\n"
                             f"{config['n_params']:,} parameters",
                 transform=ax.transAxes, ha="right", va="center", color=INK)
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax.set_xlabel("epoch")
         ax.set_ylabel("cross-entropy")
         ax.set_title(f"{DISPLAY[config['dataset']]} float baseline")
-        ax.legend(loc="upper right")
+        ax.legend(loc="upper center")
     fig.tight_layout(w_pad=3)
     fig.savefig(os.path.join(RESULTS_DIR, "cnn_float_training.png"))
     plt.close(fig)
