@@ -1,0 +1,1515 @@
+[
+  {
+    "dataset": "mnist",
+    "float": {
+      "val_acc": 0.9893333333333333,
+      "val_loss": 0.0384977544148763,
+      "test_acc": 0.9898,
+      "test_loss": 0.03342741298675537,
+      "test_flip_rate": 0.0
+    },
+    "ranges": {
+      "input": 1.0,
+      "weights": [
+        0.7197406888008118,
+        0.46878576278686523,
+        0.5239197611808777,
+        0.3384358286857605
+      ],
+      "activations": [
+        2.3389317989349365,
+        12.474550247192383,
+        27.11560821533203,
+        36.07157516479492
+      ]
+    },
+    "stage_names": [
+      "conv1",
+      "conv2",
+      "fc1",
+      "fc2"
+    ],
+    "global_sweep": [
+      {
+        "total_bits": 3,
+        "fractional_bits": 0,
+        "val_acc": 0.09233333333333334,
+        "val_loss": 2.302585205078125,
+        "test_acc": 0.098,
+        "test_loss": 2.302585205078125,
+        "test_flip_rate": 0.9007999897003174
+      },
+      {
+        "total_bits": 3,
+        "fractional_bits": 1,
+        "val_acc": 0.09216666666666666,
+        "val_loss": 2.301720052083333,
+        "test_acc": 0.0973,
+        "test_loss": 2.3019078125,
+        "test_flip_rate": 0.9014999866485596
+      },
+      {
+        "total_bits": 3,
+        "fractional_bits": 2,
+        "val_acc": 0.5201666666666667,
+        "val_loss": 1.8012281901041667,
+        "test_acc": 0.5166,
+        "test_loss": 1.807007568359375,
+        "test_flip_rate": 0.4820999801158905
+      },
+      {
+        "total_bits": 3,
+        "fractional_bits": 3,
+        "val_acc": 0.8451666666666666,
+        "val_loss": 1.8591191813151042,
+        "test_acc": 0.8577,
+        "test_loss": 1.856436865234375,
+        "test_flip_rate": 0.13859999179840088
+      },
+      {
+        "total_bits": 3,
+        "fractional_bits": 4,
+        "val_acc": 0.5991666666666666,
+        "val_loss": 2.118638671875,
+        "test_acc": 0.6012,
+        "test_loss": 2.1178966796875,
+        "test_flip_rate": 0.3967999815940857
+      },
+      {
+        "total_bits": 3,
+        "fractional_bits": 5,
+        "val_acc": 0.12733333333333333,
+        "val_loss": 2.2816525065104165,
+        "test_acc": 0.1326,
+        "test_loss": 2.281101220703125,
+        "test_flip_rate": 0.8667999505996704
+      },
+      {
+        "total_bits": 3,
+        "fractional_bits": 6,
+        "val_acc": 0.093,
+        "val_loss": 2.3029466145833335,
+        "test_acc": 0.0977,
+        "test_loss": 2.30264873046875,
+        "test_flip_rate": 0.9023000001907349
+      },
+      {
+        "total_bits": 4,
+        "fractional_bits": 0,
+        "val_acc": 0.09233333333333334,
+        "val_loss": 2.302585205078125,
+        "test_acc": 0.098,
+        "test_loss": 2.302585205078125,
+        "test_flip_rate": 0.9007999897003174
+      },
+      {
+        "total_bits": 4,
+        "fractional_bits": 1,
+        "val_acc": 0.09216666666666666,
+        "val_loss": 2.3016205240885417,
+        "test_acc": 0.097,
+        "test_loss": 2.301734423828125,
+        "test_flip_rate": 0.9017999768257141
+      },
+      {
+        "total_bits": 4,
+        "fractional_bits": 2,
+        "val_acc": 0.6345,
+        "val_loss": 1.2658662923177084,
+        "test_acc": 0.6292,
+        "test_loss": 1.2778675537109374,
+        "test_flip_rate": 0.3693999946117401
+      },
+      {
+        "total_bits": 4,
+        "fractional_bits": 3,
+        "val_acc": 0.9003333333333333,
+        "val_loss": 1.385645792643229,
+        "test_acc": 0.8999,
+        "test_loss": 1.3839390625,
+        "test_flip_rate": 0.09779999405145645
+      },
+      {
+        "total_bits": 4,
+        "fractional_bits": 4,
+        "val_acc": 0.8693333333333333,
+        "val_loss": 1.8119564615885417,
+        "test_acc": 0.8794,
+        "test_loss": 1.808358447265625,
+        "test_flip_rate": 0.11899999529123306
+      },
+      {
+        "total_bits": 4,
+        "fractional_bits": 5,
+        "val_acc": 0.5588333333333333,
+        "val_loss": 2.1047781575520834,
+        "test_acc": 0.5526,
+        "test_loss": 2.104080224609375,
+        "test_flip_rate": 0.4448999762535095
+      },
+      {
+        "total_bits": 4,
+        "fractional_bits": 6,
+        "val_acc": 0.169,
+        "val_loss": 2.26942041015625,
+        "test_acc": 0.1653,
+        "test_loss": 2.269561865234375,
+        "test_flip_rate": 0.8341000080108643
+      },
+      {
+        "total_bits": 4,
+        "fractional_bits": 7,
+        "val_acc": 0.09433333333333334,
+        "val_loss": 2.3022203776041668,
+        "test_acc": 0.1008,
+        "test_loss": 2.302015478515625,
+        "test_flip_rate": 0.899399995803833
+      },
+      {
+        "total_bits": 5,
+        "fractional_bits": 0,
+        "val_acc": 0.09233333333333334,
+        "val_loss": 2.302585205078125,
+        "test_acc": 0.098,
+        "test_loss": 2.302585205078125,
+        "test_flip_rate": 0.9007999897003174
+      },
+      {
+        "total_bits": 5,
+        "fractional_bits": 1,
+        "val_acc": 0.09216666666666666,
+        "val_loss": 2.301676513671875,
+        "test_acc": 0.097,
+        "test_loss": 2.301768017578125,
+        "test_flip_rate": 0.9017999768257141
+      },
+      {
+        "total_bits": 5,
+        "fractional_bits": 2,
+        "val_acc": 0.7458333333333333,
+        "val_loss": 0.7882469685872396,
+        "test_acc": 0.7399,
+        "test_loss": 0.7980142578125,
+        "test_flip_rate": 0.2586999833583832
+      },
+      {
+        "total_bits": 5,
+        "fractional_bits": 3,
+        "val_acc": 0.9336666666666666,
+        "val_loss": 0.7604228719075521,
+        "test_acc": 0.9285,
+        "test_loss": 0.7614247802734375,
+        "test_flip_rate": 0.06749999523162842
+      },
+      {
+        "total_bits": 5,
+        "fractional_bits": 4,
+        "val_acc": 0.8875,
+        "val_loss": 1.3624597981770834,
+        "test_acc": 0.8921,
+        "test_loss": 1.359148583984375,
+        "test_flip_rate": 0.10520000010728836
+      },
+      {
+        "total_bits": 5,
+        "fractional_bits": 5,
+        "val_acc": 0.9028333333333334,
+        "val_loss": 1.761362752278646,
+        "test_acc": 0.9131,
+        "test_loss": 1.758687353515625,
+        "test_flip_rate": 0.08399999886751175
+      },
+      {
+        "total_bits": 5,
+        "fractional_bits": 6,
+        "val_acc": 0.5488333333333333,
+        "val_loss": 2.09926611328125,
+        "test_acc": 0.5498,
+        "test_loss": 2.098209814453125,
+        "test_flip_rate": 0.44849997758865356
+      },
+      {
+        "total_bits": 5,
+        "fractional_bits": 7,
+        "val_acc": 0.1645,
+        "val_loss": 2.2637542317708332,
+        "test_acc": 0.1623,
+        "test_loss": 2.2641734375,
+        "test_flip_rate": 0.8374999761581421
+      },
+      {
+        "total_bits": 5,
+        "fractional_bits": 8,
+        "val_acc": 0.10916666666666666,
+        "val_loss": 2.3008087565104165,
+        "test_acc": 0.1101,
+        "test_loss": 2.300562646484375,
+        "test_flip_rate": 0.8894999623298645
+      },
+      {
+        "total_bits": 6,
+        "fractional_bits": 0,
+        "val_acc": 0.09233333333333334,
+        "val_loss": 2.302585205078125,
+        "test_acc": 0.098,
+        "test_loss": 2.302585205078125,
+        "test_flip_rate": 0.9007999897003174
+      },
+      {
+        "total_bits": 6,
+        "fractional_bits": 1,
+        "val_acc": 0.09216666666666666,
+        "val_loss": 2.301676513671875,
+        "test_acc": 0.097,
+        "test_loss": 2.301768017578125,
+        "test_flip_rate": 0.9017999768257141
+      },
+      {
+        "total_bits": 6,
+        "fractional_bits": 2,
+        "val_acc": 0.7538333333333334,
+        "val_loss": 0.7167829996744791,
+        "test_acc": 0.7558,
+        "test_loss": 0.7180990478515625,
+        "test_flip_rate": 0.24319998919963837
+      },
+      {
+        "total_bits": 6,
+        "fractional_bits": 3,
+        "val_acc": 0.9615,
+        "val_loss": 0.28930687459309895,
+        "test_acc": 0.961,
+        "test_loss": 0.2916267150878906,
+        "test_flip_rate": 0.03460000082850456
+      },
+      {
+        "total_bits": 6,
+        "fractional_bits": 4,
+        "val_acc": 0.929,
+        "val_loss": 0.7380189615885416,
+        "test_acc": 0.9301,
+        "test_loss": 0.7382257446289062,
+        "test_flip_rate": 0.06679999828338623
+      },
+      {
+        "total_bits": 6,
+        "fractional_bits": 5,
+        "val_acc": 0.9101666666666667,
+        "val_loss": 1.293127685546875,
+        "test_acc": 0.9159,
+        "test_loss": 1.2904126708984376,
+        "test_flip_rate": 0.08100000023841858
+      },
+      {
+        "total_bits": 6,
+        "fractional_bits": 6,
+        "val_acc": 0.8996666666666666,
+        "val_loss": 1.7473015543619792,
+        "test_acc": 0.9079,
+        "test_loss": 1.74360107421875,
+        "test_flip_rate": 0.08909999579191208
+      },
+      {
+        "total_bits": 6,
+        "fractional_bits": 7,
+        "val_acc": 0.5433333333333333,
+        "val_loss": 2.09437548828125,
+        "test_acc": 0.5397,
+        "test_loss": 2.093241162109375,
+        "test_flip_rate": 0.4587000012397766
+      },
+      {
+        "total_bits": 6,
+        "fractional_bits": 8,
+        "val_acc": 0.16766666666666666,
+        "val_loss": 2.260383544921875,
+        "test_acc": 0.1662,
+        "test_loss": 2.26088955078125,
+        "test_flip_rate": 0.8331999778747559
+      },
+      {
+        "total_bits": 6,
+        "fractional_bits": 9,
+        "val_acc": 0.10766666666666666,
+        "val_loss": 2.300041259765625,
+        "test_acc": 0.1064,
+        "test_loss": 2.2998162109375,
+        "test_flip_rate": 0.8931999802589417
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 0,
+        "val_acc": 0.09233333333333334,
+        "val_loss": 2.302585205078125,
+        "test_acc": 0.098,
+        "test_loss": 2.302585205078125,
+        "test_flip_rate": 0.9007999897003174
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 1,
+        "val_acc": 0.09216666666666666,
+        "val_loss": 2.301676513671875,
+        "test_acc": 0.097,
+        "test_loss": 2.301768017578125,
+        "test_flip_rate": 0.9017999768257141
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 2,
+        "val_acc": 0.7491666666666666,
+        "val_loss": 0.7203721313476562,
+        "test_acc": 0.7513,
+        "test_loss": 0.7211108032226563,
+        "test_flip_rate": 0.24769999086856842
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 3,
+        "val_acc": 0.9778333333333333,
+        "val_loss": 0.11311160532633463,
+        "test_acc": 0.9801,
+        "test_loss": 0.11230154571533203,
+        "test_flip_rate": 0.014699999243021011
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 4,
+        "val_acc": 0.9635,
+        "val_loss": 0.24745319112141928,
+        "test_acc": 0.9622,
+        "test_loss": 0.2514004791259766,
+        "test_flip_rate": 0.032899998128414154
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 5,
+        "val_acc": 0.9408333333333333,
+        "val_loss": 0.6595744832356771,
+        "test_acc": 0.9455,
+        "test_loss": 0.6598875610351562,
+        "test_flip_rate": 0.050999999046325684
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 6,
+        "val_acc": 0.9125,
+        "val_loss": 1.2792960611979167,
+        "test_acc": 0.9197,
+        "test_loss": 1.2762653076171875,
+        "test_flip_rate": 0.0778999999165535
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 7,
+        "val_acc": 0.9056666666666666,
+        "val_loss": 1.7393267822265626,
+        "test_acc": 0.9148,
+        "test_loss": 1.73603984375,
+        "test_flip_rate": 0.0828000009059906
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 8,
+        "val_acc": 0.5411666666666667,
+        "val_loss": 2.0911907552083333,
+        "test_acc": 0.5403,
+        "test_loss": 2.0902392578125,
+        "test_flip_rate": 0.45809999108314514
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 9,
+        "val_acc": 0.17633333333333334,
+        "val_loss": 2.257787027994792,
+        "test_acc": 0.1749,
+        "test_loss": 2.2583423828125,
+        "test_flip_rate": 0.8244999647140503
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 10,
+        "val_acc": 0.10516666666666667,
+        "val_loss": 2.2996927897135415,
+        "test_acc": 0.1034,
+        "test_loss": 2.29947578125,
+        "test_flip_rate": 0.8962000012397766
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 0,
+        "val_acc": 0.09233333333333334,
+        "val_loss": 2.302585205078125,
+        "test_acc": 0.098,
+        "test_loss": 2.302585205078125,
+        "test_flip_rate": 0.9007999897003174
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 1,
+        "val_acc": 0.09216666666666666,
+        "val_loss": 2.301676513671875,
+        "test_acc": 0.097,
+        "test_loss": 2.301768017578125,
+        "test_flip_rate": 0.9017999768257141
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 2,
+        "val_acc": 0.7491666666666666,
+        "val_loss": 0.7203721313476562,
+        "test_acc": 0.7513,
+        "test_loss": 0.721110791015625,
+        "test_flip_rate": 0.24769999086856842
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 3,
+        "val_acc": 0.984,
+        "val_loss": 0.05560494740804037,
+        "test_acc": 0.9874,
+        "test_loss": 0.049095475387573244,
+        "test_flip_rate": 0.007899999618530273
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 4,
+        "val_acc": 0.9813333333333333,
+        "val_loss": 0.07306010945638021,
+        "test_acc": 0.982,
+        "test_loss": 0.07156474304199219,
+        "test_flip_rate": 0.011699999682605267
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 5,
+        "val_acc": 0.9706666666666667,
+        "val_loss": 0.20848634338378907,
+        "test_acc": 0.9663,
+        "test_loss": 0.21200742797851563,
+        "test_flip_rate": 0.02850000001490116
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 6,
+        "val_acc": 0.9481666666666667,
+        "val_loss": 0.6442196044921875,
+        "test_acc": 0.9513,
+        "test_loss": 0.6441549072265625,
+        "test_flip_rate": 0.04529999941587448
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 7,
+        "val_acc": 0.9136666666666666,
+        "val_loss": 1.2742029622395834,
+        "test_acc": 0.9228,
+        "test_loss": 1.27183525390625,
+        "test_flip_rate": 0.07459999620914459
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 8,
+        "val_acc": 0.9043333333333333,
+        "val_loss": 1.7346575927734376,
+        "test_acc": 0.9161,
+        "test_loss": 1.73144638671875,
+        "test_flip_rate": 0.08169999718666077
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 9,
+        "val_acc": 0.5355,
+        "val_loss": 2.092778076171875,
+        "test_acc": 0.5342,
+        "test_loss": 2.09184404296875,
+        "test_flip_rate": 0.4641999900341034
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 10,
+        "val_acc": 0.17733333333333334,
+        "val_loss": 2.2568360188802083,
+        "test_acc": 0.1773,
+        "test_loss": 2.257433544921875,
+        "test_flip_rate": 0.8220999836921692
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 11,
+        "val_acc": 0.105,
+        "val_loss": 2.2994407552083334,
+        "test_acc": 0.1033,
+        "test_loss": 2.299226171875,
+        "test_flip_rate": 0.8962999582290649
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 0,
+        "val_acc": 0.09233333333333334,
+        "val_loss": 2.302585205078125,
+        "test_acc": 0.098,
+        "test_loss": 2.302585205078125,
+        "test_flip_rate": 0.9007999897003174
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 1,
+        "val_acc": 0.09216666666666666,
+        "val_loss": 2.301676513671875,
+        "test_acc": 0.097,
+        "test_loss": 2.301768017578125,
+        "test_flip_rate": 0.9017999768257141
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 2,
+        "val_acc": 0.7491666666666666,
+        "val_loss": 0.7203721313476562,
+        "test_acc": 0.7513,
+        "test_loss": 0.721110791015625,
+        "test_flip_rate": 0.24769999086856842
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 3,
+        "val_acc": 0.9836666666666667,
+        "val_loss": 0.05489784622192383,
+        "test_acc": 0.9877,
+        "test_loss": 0.04691425247192383,
+        "test_flip_rate": 0.007799999788403511
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 4,
+        "val_acc": 0.9868333333333333,
+        "val_loss": 0.04293416976928711,
+        "test_acc": 0.9888,
+        "test_loss": 0.03628311080932617,
+        "test_flip_rate": 0.00419999985024333
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 5,
+        "val_acc": 0.9885,
+        "val_loss": 0.039213733673095705,
+        "test_acc": 0.9895,
+        "test_loss": 0.03563882827758789,
+        "test_flip_rate": 0.0026000000070780516
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 6,
+        "val_acc": 0.985,
+        "val_loss": 0.0601601308186849,
+        "test_acc": 0.9855,
+        "test_loss": 0.058179862213134766,
+        "test_flip_rate": 0.0066999997943639755
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 7,
+        "val_acc": 0.9731666666666666,
+        "val_loss": 0.20222808837890624,
+        "test_acc": 0.9702,
+        "test_loss": 0.20513474426269532,
+        "test_flip_rate": 0.02499999850988388
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 8,
+        "val_acc": 0.9486666666666667,
+        "val_loss": 0.6428855387369792,
+        "test_acc": 0.9523,
+        "test_loss": 0.6431293701171875,
+        "test_flip_rate": 0.044199999421834946
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 9,
+        "val_acc": 0.9133333333333333,
+        "val_loss": 1.2713617757161457,
+        "test_acc": 0.9223,
+        "test_loss": 1.2686664794921876,
+        "test_flip_rate": 0.07490000128746033
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 10,
+        "val_acc": 0.9056666666666666,
+        "val_loss": 1.732993693033854,
+        "test_acc": 0.9152,
+        "test_loss": 1.72979033203125,
+        "test_flip_rate": 0.08249999582767487
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 11,
+        "val_acc": 0.5341666666666667,
+        "val_loss": 2.092161539713542,
+        "test_acc": 0.5328,
+        "test_loss": 2.091224169921875,
+        "test_flip_rate": 0.46559998393058777
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 12,
+        "val_acc": 0.178,
+        "val_loss": 2.25605810546875,
+        "test_acc": 0.178,
+        "test_loss": 2.25667490234375,
+        "test_flip_rate": 0.821399986743927
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 13,
+        "val_acc": 0.10483333333333333,
+        "val_loss": 2.299310953776042,
+        "test_acc": 0.1031,
+        "test_loss": 2.299105712890625,
+        "test_flip_rate": 0.8964999914169312
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 0,
+        "val_acc": 0.09233333333333334,
+        "val_loss": 2.302585205078125,
+        "test_acc": 0.098,
+        "test_loss": 2.302585205078125,
+        "test_flip_rate": 0.9007999897003174
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 1,
+        "val_acc": 0.09216666666666666,
+        "val_loss": 2.301676513671875,
+        "test_acc": 0.097,
+        "test_loss": 2.301768017578125,
+        "test_flip_rate": 0.9017999768257141
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 2,
+        "val_acc": 0.7491666666666666,
+        "val_loss": 0.7203721313476562,
+        "test_acc": 0.7513,
+        "test_loss": 0.721110791015625,
+        "test_flip_rate": 0.24769999086856842
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 3,
+        "val_acc": 0.9836666666666667,
+        "val_loss": 0.05489784622192383,
+        "test_acc": 0.9877,
+        "test_loss": 0.04691425247192383,
+        "test_flip_rate": 0.007799999788403511
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 4,
+        "val_acc": 0.9868333333333333,
+        "val_loss": 0.04293416976928711,
+        "test_acc": 0.9888,
+        "test_loss": 0.03628311080932617,
+        "test_flip_rate": 0.00419999985024333
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 5,
+        "val_acc": 0.9883333333333333,
+        "val_loss": 0.03912936019897461,
+        "test_acc": 0.9893,
+        "test_loss": 0.035477633666992185,
+        "test_flip_rate": 0.0023999998811632395
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 6,
+        "val_acc": 0.9885,
+        "val_loss": 0.038621559143066406,
+        "test_acc": 0.9895,
+        "test_loss": 0.033830140495300295,
+        "test_flip_rate": 0.0008999999845400453
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 7,
+        "val_acc": 0.9891666666666666,
+        "val_loss": 0.038398648579915366,
+        "test_acc": 0.9897,
+        "test_loss": 0.03356054801940918,
+        "test_flip_rate": 0.0004999999655410647
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 8,
+        "val_acc": 0.9848333333333333,
+        "val_loss": 0.06132844416300456,
+        "test_acc": 0.9858,
+        "test_loss": 0.05933648834228516,
+        "test_flip_rate": 0.00699999975040555
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 9,
+        "val_acc": 0.9725,
+        "val_loss": 0.2022692667643229,
+        "test_acc": 0.9688,
+        "test_loss": 0.20523583984375,
+        "test_flip_rate": 0.026200000196695328
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 10,
+        "val_acc": 0.9495,
+        "val_loss": 0.6428188680013021,
+        "test_acc": 0.9521,
+        "test_loss": 0.6431416748046875,
+        "test_flip_rate": 0.044199999421834946
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 11,
+        "val_acc": 0.9148333333333334,
+        "val_loss": 1.2697679036458334,
+        "test_acc": 0.922,
+        "test_loss": 1.267215380859375,
+        "test_flip_rate": 0.07519999891519547
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 12,
+        "val_acc": 0.9058333333333334,
+        "val_loss": 1.7319819742838543,
+        "test_acc": 0.9157,
+        "test_loss": 1.7287749755859374,
+        "test_flip_rate": 0.0819999948143959
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 13,
+        "val_acc": 0.5348333333333334,
+        "val_loss": 2.091950927734375,
+        "test_acc": 0.5329,
+        "test_loss": 2.09101708984375,
+        "test_flip_rate": 0.46549999713897705
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 14,
+        "val_acc": 0.179,
+        "val_loss": 2.2558219401041666,
+        "test_acc": 0.1786,
+        "test_loss": 2.25644404296875,
+        "test_flip_rate": 0.8208000063896179
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 15,
+        "val_acc": 0.10483333333333333,
+        "val_loss": 2.2992637532552083,
+        "test_acc": 0.1031,
+        "test_loss": 2.29906005859375,
+        "test_flip_rate": 0.8964999914169312
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 0,
+        "val_acc": 0.09233333333333334,
+        "val_loss": 2.302585205078125,
+        "test_acc": 0.098,
+        "test_loss": 2.302585205078125,
+        "test_flip_rate": 0.9007999897003174
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 1,
+        "val_acc": 0.09216666666666666,
+        "val_loss": 2.301676513671875,
+        "test_acc": 0.097,
+        "test_loss": 2.301768017578125,
+        "test_flip_rate": 0.9017999768257141
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 2,
+        "val_acc": 0.7491666666666666,
+        "val_loss": 0.7203721313476562,
+        "test_acc": 0.7513,
+        "test_loss": 0.721110791015625,
+        "test_flip_rate": 0.24769999086856842
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 3,
+        "val_acc": 0.9836666666666667,
+        "val_loss": 0.05489784622192383,
+        "test_acc": 0.9877,
+        "test_loss": 0.04691425247192383,
+        "test_flip_rate": 0.007799999788403511
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 4,
+        "val_acc": 0.9868333333333333,
+        "val_loss": 0.04293416976928711,
+        "test_acc": 0.9888,
+        "test_loss": 0.03628311080932617,
+        "test_flip_rate": 0.00419999985024333
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 5,
+        "val_acc": 0.9883333333333333,
+        "val_loss": 0.03912936019897461,
+        "test_acc": 0.9893,
+        "test_loss": 0.035477633666992185,
+        "test_flip_rate": 0.0023999998811632395
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 6,
+        "val_acc": 0.9885,
+        "val_loss": 0.038621559143066406,
+        "test_acc": 0.9895,
+        "test_loss": 0.033830140495300295,
+        "test_flip_rate": 0.0008999999845400453
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 7,
+        "val_acc": 0.9891666666666666,
+        "val_loss": 0.03828651428222656,
+        "test_acc": 0.9898,
+        "test_loss": 0.03323172950744629,
+        "test_flip_rate": 0.00039999998989515007
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 8,
+        "val_acc": 0.9893333333333333,
+        "val_loss": 0.038654715855916344,
+        "test_acc": 0.9896,
+        "test_loss": 0.03359141712188721,
+        "test_flip_rate": 0.0005999999702908099
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 9,
+        "val_acc": 0.9893333333333333,
+        "val_loss": 0.03852112325032552,
+        "test_acc": 0.9899,
+        "test_loss": 0.033421163749694824,
+        "test_flip_rate": 9.999999747378752e-05
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 10,
+        "val_acc": 0.9891666666666666,
+        "val_loss": 0.03846939086914063,
+        "test_acc": 0.9898,
+        "test_loss": 0.033401295852661134,
+        "test_flip_rate": 0.0
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 11,
+        "val_acc": 0.9893333333333333,
+        "val_loss": 0.038628403345743814,
+        "test_acc": 0.9895,
+        "test_loss": 0.03377887535095215,
+        "test_flip_rate": 0.00029999998514540493
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 12,
+        "val_acc": 0.985,
+        "val_loss": 0.061273422241210934,
+        "test_acc": 0.9857,
+        "test_loss": 0.059251631927490236,
+        "test_flip_rate": 0.00699999975040555
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 13,
+        "val_acc": 0.9726666666666667,
+        "val_loss": 0.20170887756347655,
+        "test_acc": 0.9692,
+        "test_loss": 0.20470529479980468,
+        "test_flip_rate": 0.02579999901354313
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 14,
+        "val_acc": 0.9495,
+        "val_loss": 0.6420231323242187,
+        "test_acc": 0.9521,
+        "test_loss": 0.6423220703125,
+        "test_flip_rate": 0.044199999421834946
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 15,
+        "val_acc": 0.9148333333333334,
+        "val_loss": 1.2692171223958333,
+        "test_acc": 0.9222,
+        "test_loss": 1.2666576171875,
+        "test_flip_rate": 0.07499999552965164
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 16,
+        "val_acc": 0.9058333333333334,
+        "val_loss": 1.7318558756510416,
+        "test_acc": 0.9156,
+        "test_loss": 1.7286533447265624,
+        "test_flip_rate": 0.08209999650716782
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 17,
+        "val_acc": 0.5346666666666666,
+        "val_loss": 2.0918844401041667,
+        "test_acc": 0.5332,
+        "test_loss": 2.090951025390625,
+        "test_flip_rate": 0.4651999771595001
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 18,
+        "val_acc": 0.179,
+        "val_loss": 2.255773518880208,
+        "test_acc": 0.1786,
+        "test_loss": 2.25639697265625,
+        "test_flip_rate": 0.8208000063896179
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 19,
+        "val_acc": 0.10483333333333333,
+        "val_loss": 2.299252685546875,
+        "test_acc": 0.1031,
+        "test_loss": 2.299049609375,
+        "test_flip_rate": 0.8964999914169312
+      }
+    ],
+    "best_global": [
+      {
+        "total_bits": 3,
+        "fractional_bits": 3,
+        "val_acc": 0.8451666666666666,
+        "val_loss": 1.8591191813151042,
+        "test_acc": 0.8577,
+        "test_loss": 1.856436865234375,
+        "test_flip_rate": 0.13859999179840088
+      },
+      {
+        "total_bits": 4,
+        "fractional_bits": 3,
+        "val_acc": 0.9003333333333333,
+        "val_loss": 1.385645792643229,
+        "test_acc": 0.8999,
+        "test_loss": 1.3839390625,
+        "test_flip_rate": 0.09779999405145645
+      },
+      {
+        "total_bits": 5,
+        "fractional_bits": 3,
+        "val_acc": 0.9336666666666666,
+        "val_loss": 0.7604228719075521,
+        "test_acc": 0.9285,
+        "test_loss": 0.7614247802734375,
+        "test_flip_rate": 0.06749999523162842
+      },
+      {
+        "total_bits": 6,
+        "fractional_bits": 3,
+        "val_acc": 0.9615,
+        "val_loss": 0.28930687459309895,
+        "test_acc": 0.961,
+        "test_loss": 0.2916267150878906,
+        "test_flip_rate": 0.03460000082850456
+      },
+      {
+        "total_bits": 7,
+        "fractional_bits": 3,
+        "val_acc": 0.9778333333333333,
+        "val_loss": 0.11311160532633463,
+        "test_acc": 0.9801,
+        "test_loss": 0.11230154571533203,
+        "test_flip_rate": 0.014699999243021011
+      },
+      {
+        "total_bits": 8,
+        "fractional_bits": 3,
+        "val_acc": 0.984,
+        "val_loss": 0.05560494740804037,
+        "test_acc": 0.9874,
+        "test_loss": 0.049095475387573244,
+        "test_flip_rate": 0.007899999618530273
+      },
+      {
+        "total_bits": 10,
+        "fractional_bits": 5,
+        "val_acc": 0.9885,
+        "val_loss": 0.039213733673095705,
+        "test_acc": 0.9895,
+        "test_loss": 0.03563882827758789,
+        "test_flip_rate": 0.0026000000070780516
+      },
+      {
+        "total_bits": 12,
+        "fractional_bits": 7,
+        "val_acc": 0.9891666666666666,
+        "val_loss": 0.038398648579915366,
+        "test_acc": 0.9897,
+        "test_loss": 0.03356054801940918,
+        "test_flip_rate": 0.0004999999655410647
+      },
+      {
+        "total_bits": 16,
+        "fractional_bits": 9,
+        "val_acc": 0.9893333333333333,
+        "val_loss": 0.03852112325032552,
+        "test_acc": 0.9899,
+        "test_loss": 0.033421163749694824,
+        "test_flip_rate": 9.999999747378752e-05
+      }
+    ],
+    "per_layer": [
+      {
+        "total_bits": 3,
+        "method": "max",
+        "formats": {
+          "input": 2,
+          "weights": [
+            2,
+            3,
+            2,
+            3
+          ],
+          "activations": [
+            0,
+            -2,
+            -3,
+            -4
+          ]
+        },
+        "val_acc": 0.21916666666666668,
+        "val_loss": 1.9285560302734375,
+        "test_acc": 0.2256,
+        "test_loss": 1.93917080078125,
+        "test_flip_rate": 0.7732999920845032
+      },
+      {
+        "total_bits": 3,
+        "method": "mse",
+        "formats": {
+          "input": 2,
+          "weights": [
+            3,
+            4,
+            5,
+            4
+          ],
+          "activations": [
+            1,
+            -1,
+            -2,
+            -3
+          ]
+        },
+        "val_acc": 0.9211666666666667,
+        "val_loss": 0.18706856791178386,
+        "test_acc": 0.9216,
+        "test_loss": 0.15989542388916014,
+        "test_flip_rate": 0.07589999586343765
+      },
+      {
+        "total_bits": 4,
+        "method": "max",
+        "formats": {
+          "input": 3,
+          "weights": [
+            3,
+            4,
+            3,
+            4
+          ],
+          "activations": [
+            1,
+            -1,
+            -2,
+            -3
+          ]
+        },
+        "val_acc": 0.951,
+        "val_loss": 0.11082327779134114,
+        "test_acc": 0.9538,
+        "test_loss": 0.10167874984741211,
+        "test_flip_rate": 0.042899999767541885
+      },
+      {
+        "total_bits": 4,
+        "method": "mse",
+        "formats": {
+          "input": 3,
+          "weights": [
+            4,
+            5,
+            5,
+            5
+          ],
+          "activations": [
+            2,
+            0,
+            -1,
+            -2
+          ]
+        },
+        "val_acc": 0.98,
+        "val_loss": 0.04904977544148763,
+        "test_acc": 0.9818,
+        "test_loss": 0.042868363571166995,
+        "test_flip_rate": 0.012399999424815178
+      },
+      {
+        "total_bits": 5,
+        "method": "max",
+        "formats": {
+          "input": 4,
+          "weights": [
+            4,
+            5,
+            4,
+            5
+          ],
+          "activations": [
+            2,
+            0,
+            -1,
+            -2
+          ]
+        },
+        "val_acc": 0.9803333333333333,
+        "val_loss": 0.05110136922200521,
+        "test_acc": 0.9803,
+        "test_loss": 0.049950535583496096,
+        "test_flip_rate": 0.012299999594688416
+      },
+      {
+        "total_bits": 5,
+        "method": "mse",
+        "formats": {
+          "input": 4,
+          "weights": [
+            5,
+            5,
+            6,
+            6
+          ],
+          "activations": [
+            3,
+            1,
+            0,
+            -1
+          ]
+        },
+        "val_acc": 0.9866666666666667,
+        "val_loss": 0.04004513168334961,
+        "test_acc": 0.9872,
+        "test_loss": 0.0361246374130249,
+        "test_flip_rate": 0.004600000102072954
+      },
+      {
+        "total_bits": 6,
+        "method": "max",
+        "formats": {
+          "input": 5,
+          "weights": [
+            5,
+            6,
+            5,
+            6
+          ],
+          "activations": [
+            3,
+            1,
+            0,
+            -1
+          ]
+        },
+        "val_acc": 0.9861666666666666,
+        "val_loss": 0.038716856002807616,
+        "test_acc": 0.9877,
+        "test_loss": 0.0367203784942627,
+        "test_flip_rate": 0.004999999888241291
+      },
+      {
+        "total_bits": 6,
+        "method": "mse",
+        "formats": {
+          "input": 5,
+          "weights": [
+            5,
+            6,
+            7,
+            6
+          ],
+          "activations": [
+            4,
+            2,
+            0,
+            0
+          ]
+        },
+        "val_acc": 0.987,
+        "val_loss": 0.04072165870666504,
+        "test_acc": 0.9892,
+        "test_loss": 0.033722697830200196,
+        "test_flip_rate": 0.0026000000070780516
+      },
+      {
+        "total_bits": 7,
+        "method": "max",
+        "formats": {
+          "input": 6,
+          "weights": [
+            6,
+            7,
+            6,
+            7
+          ],
+          "activations": [
+            4,
+            2,
+            1,
+            0
+          ]
+        },
+        "val_acc": 0.9881666666666666,
+        "val_loss": 0.03868971252441406,
+        "test_acc": 0.9893,
+        "test_loss": 0.0341314323425293,
+        "test_flip_rate": 0.002300000051036477
+      },
+      {
+        "total_bits": 7,
+        "method": "mse",
+        "formats": {
+          "input": 6,
+          "weights": [
+            6,
+            7,
+            7,
+            7
+          ],
+          "activations": [
+            5,
+            3,
+            1,
+            1
+          ]
+        },
+        "val_acc": 0.9888333333333333,
+        "val_loss": 0.03830494499206543,
+        "test_acc": 0.9898,
+        "test_loss": 0.032826230239868165,
+        "test_flip_rate": 0.00139999995008111
+      },
+      {
+        "total_bits": 8,
+        "method": "max",
+        "formats": {
+          "input": 7,
+          "weights": [
+            7,
+            8,
+            7,
+            8
+          ],
+          "activations": [
+            5,
+            3,
+            2,
+            1
+          ]
+        },
+        "val_acc": 0.9885,
+        "val_loss": 0.03899132792154948,
+        "test_acc": 0.9895,
+        "test_loss": 0.03353229293823242,
+        "test_flip_rate": 0.0015999999595806003
+      },
+      {
+        "total_bits": 8,
+        "method": "mse",
+        "formats": {
+          "input": 7,
+          "weights": [
+            7,
+            8,
+            8,
+            8
+          ],
+          "activations": [
+            6,
+            3,
+            2,
+            2
+          ]
+        },
+        "val_acc": 0.9885,
+        "val_loss": 0.03876945686340332,
+        "test_acc": 0.9897,
+        "test_loss": 0.03366887168884277,
+        "test_flip_rate": 0.00139999995008111
+      },
+      {
+        "total_bits": 10,
+        "method": "max",
+        "formats": {
+          "input": 9,
+          "weights": [
+            9,
+            10,
+            9,
+            10
+          ],
+          "activations": [
+            7,
+            5,
+            4,
+            3
+          ]
+        },
+        "val_acc": 0.9891666666666666,
+        "val_loss": 0.03853045908610026,
+        "test_acc": 0.9901,
+        "test_loss": 0.033435061836242674,
+        "test_flip_rate": 0.0004999999655410647
+      },
+      {
+        "total_bits": 10,
+        "method": "mse",
+        "formats": {
+          "input": 9,
+          "weights": [
+            9,
+            10,
+            10,
+            10
+          ],
+          "activations": [
+            7,
+            5,
+            4,
+            4
+          ]
+        },
+        "val_acc": 0.9893333333333333,
+        "val_loss": 0.03851730219523112,
+        "test_acc": 0.9898,
+        "test_loss": 0.03338744888305664,
+        "test_flip_rate": 0.00039999998989515007
+      },
+      {
+        "total_bits": 12,
+        "method": "max",
+        "formats": {
+          "input": 11,
+          "weights": [
+            11,
+            12,
+            11,
+            12
+          ],
+          "activations": [
+            9,
+            7,
+            6,
+            5
+          ]
+        },
+        "val_acc": 0.9891666666666666,
+        "val_loss": 0.03848424275716146,
+        "test_acc": 0.9897,
+        "test_loss": 0.033422902870178225,
+        "test_flip_rate": 9.999999747378752e-05
+      },
+      {
+        "total_bits": 12,
+        "method": "mse",
+        "formats": {
+          "input": 11,
+          "weights": [
+            11,
+            12,
+            12,
+            12
+          ],
+          "activations": [
+            9,
+            7,
+            6,
+            5
+          ]
+        },
+        "val_acc": 0.9891666666666666,
+        "val_loss": 0.038495281219482425,
+        "test_acc": 0.9896,
+        "test_loss": 0.033394970703125,
+        "test_flip_rate": 0.00019999999494757503
+      },
+      {
+        "total_bits": 16,
+        "method": "max",
+        "formats": {
+          "input": 15,
+          "weights": [
+            15,
+            16,
+            15,
+            16
+          ],
+          "activations": [
+            13,
+            11,
+            10,
+            9
+          ]
+        },
+        "val_acc": 0.9893333333333333,
+        "val_loss": 0.03849922561645508,
+        "test_acc": 0.9898,
+        "test_loss": 0.03342917556762695,
+        "test_flip_rate": 0.0
+      },
+      {
+        "total_bits": 16,
+        "method": "mse",
+        "formats": {
+          "input": 15,
+          "weights": [
+            15,
+            16,
+            15,
+            16
+          ],
+          "activations": [
+            13,
+            11,
+            10,
+            9
+          ]
+        },
+        "val_acc": 0.9893333333333333,
+        "val_loss": 0.03849922561645508,
+        "test_acc": 0.9898,
+        "test_loss": 0.03342917556762695,
+        "test_flip_rate": 0.0
+      }
+    ]
+  }
+]

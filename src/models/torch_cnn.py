@@ -174,33 +174,62 @@ class TorchCNN(nn.Module):
     # ------------------------------------------------------------------
 
     def tensor_ranges(self, x):
+        """Max |value| of every tensor role in calibration_tensors(x)."""
+        t = self.calibration_tensors(x)
+        return {"input": t["input"].abs().max().item(),
+                "weights": [w.abs().max().item() for w in t["weights"]],
+                "activations": [a.abs().max().item() for a in t["activations"]]}
+
+    def calibration_tensors(self, x):
         """
-        Max |value| of every quantized tensor role in a float forward pass
-        over x: the input, each stage's weights+bias, and each stage's
-        pre-activation (which bounds its post-ReLU, post-pool output too).
+        What each format has to represent on a float forward pass over x: the
+        input, each stage's weights and bias, and each stage's activation.
+        Hidden activations are taken after ReLU -- rounding commutes with
+        ReLU, and error on values ReLU zeroes out never reaches the next
+        stage. The output stage contributes its logits.
         """
         with torch.no_grad():
-            ranges = {"input": x.abs().max().item(), "weights": [], "activations": []}
+            tensors = {"input": x, "weights": [], "activations": []}
             a = x
             for i in range(self.n_layers):
                 layer = self.layers[i]
-                ranges["weights"].append(max(layer.weight.abs().max().item(), layer.bias.abs().max().item()))
+                tensors["weights"].append(torch.cat([layer.weight.flatten(), layer.bias.flatten()]))
                 z = layer(self._enter(i, a))
-                ranges["activations"].append(z.abs().max().item())
-                a = z if i == self.n_layers - 1 else self._activate(i, z)
-        return ranges
+                is_output = i == self.n_layers - 1
+                tensors["activations"].append(z if is_output else F.relu(z))
+                a = z if is_output else self._activate(i, z)
+        return tensors
 
-    def allocate_bits(self, x, total_bits):
+    def allocate_bits(self, x, total_bits, method="max"):
         """
-        Per-tensor-role fractional bits with just enough integer bits to
-        cover each role's range on x (a calibration batch of training
-        images) -- the fixed-point analogue of max calibration.
+        Per-tensor-role fractional bits, chosen on x (a calibration batch of
+        training images; no labels involved).
+
+        method="max": just enough integer bits to cover each tensor's
+            largest value -- no clipping ever, the fixed-point analogue of
+            max calibration. Wastes resolution when one outlier sets the range.
+        method="mse": the format with the lowest total quantization error
+            (rounding + clipping) on the tensor. Trades a few clipped
+            outliers for a finer step when that pays.
         """
-        r = self.tensor_ranges(x)
+        tensors = self.calibration_tensors(x)
+
+        def choose(t):
+            f_cover = bits_to_cover(t.abs().max().item(), total_bits)
+            if method == "max":
+                return f_cover
+            if method != "mse":
+                raise ValueError(f"Unknown allocation method: {method}")
+            # beyond f_cover every extra fractional bit halves both the step and the range
+            candidates = range(f_cover, f_cover + total_bits + 1)
+            errors = [torch.mean((fixed_point_quantize(t, total_bits=total_bits, fractional_bits=f) - t) ** 2).item()
+                      for f in candidates]
+            return candidates[errors.index(min(errors))]
+
         return LayerwiseBits(
-            bits_to_cover(r["input"], total_bits),
-            [bits_to_cover(m, total_bits) for m in r["weights"]],
-            [bits_to_cover(m, total_bits) for m in r["activations"]],
+            choose(tensors["input"]),
+            [choose(t) for t in tensors["weights"]],
+            [choose(t) for t in tensors["activations"]],
         )
 
     # ------------------------------------------------------------------

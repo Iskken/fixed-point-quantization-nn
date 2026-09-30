@@ -103,6 +103,21 @@ for name, channels, size, conv in [("MNIST-shaped", 1, 28, (16, 32)), ("SVHN-sha
     check("allocate_bits covers every range (no clipping)", covers, str(alloc))
     check("... and is tight (one fewer integer bit would clip)", tight)
 
+    alloc_mse = model.allocate_bits(x, 4, method="mse")
+    tensors = model.calibration_tensors(x)
+    alloc_max4 = model.allocate_bits(x, 4, method="max")
+
+    def tensor_mse(t, f):
+        return torch.mean((fixed_point_quantize(t, total_bits=4, fractional_bits=f) - t) ** 2).item()
+
+    pairs = [(tensors["input"], alloc_mse.input, alloc_max4.input)] + \
+        list(zip(tensors["weights"], alloc_mse.weights, alloc_max4.weights)) + \
+        list(zip(tensors["activations"], alloc_mse.activations, alloc_max4.activations))
+    check("mse allocation never has more quantization error than max allocation (4-bit)",
+          all(tensor_mse(t, fm) <= tensor_mse(t, fx) for t, fm, fx in pairs), str(alloc_mse))
+    check("... and only ever adds fractional bits (clips, never widens the range)",
+          all(fm >= fx for _, fm, fx in pairs))
+
     print("--- 4. layer-wise helpers ---")
     before = model.forward_quantized(x, TOTAL_BITS, FRAC_BITS)
     m2 = TorchCNN(in_channels=channels, image_size=size, conv_channels=conv)
