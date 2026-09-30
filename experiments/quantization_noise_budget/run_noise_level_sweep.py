@@ -196,7 +196,7 @@ def plot_results(results):
     s0, s1 = 0.03, 0.06
     p0, p1 = ax.transData.transform([(s0, s0 ** 2), (s1, s1 ** 2)])
     angle = np.degrees(np.arctan2(p1[1] - p0[1], p1[0] - p0[0]))
-    ax.text(s0, s0 ** 2 / 1.9, "label-noise floor \u03c3\u00b2", color=INK_SECONDARY,
+    ax.text(s0, s0 ** 2 / 1.9, "label-noise level \u03c3\u00b2 (reference)", color=INK_SECONDARY,
             rotation=angle, rotation_mode="anchor", ha="left", va="top")
     ax.text(baseline_sigma * 1.08, 5e-6, f"this dataset\n(\u03c3 = {baseline_sigma:g})",
             color=INK_SECONDARY, va="bottom")

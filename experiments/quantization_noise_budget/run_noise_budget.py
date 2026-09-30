@@ -328,23 +328,23 @@ def plot_crossover(results):
     ax.text(14.9, 2.2, "16-bit clips\nat f \u2265 14", color=INK_SECONDARY, ha="right", va="bottom")
 
     ax.axhline(floor, color=COLOR_REFERENCE, lw=1, zorder=1)
-    ax.text(-0.3, floor * 1.35, f"label-noise floor  \u03c3\u00b2 = {floor:.0e}", color=INK_SECONDARY, va="bottom")
+    ax.text(-0.3, floor * 1.35, f"label-noise level  \u03c3\u00b2 = {floor:.0e}  (reference)", color=INK_SECONDARY, va="bottom")
     ax.axhline(model_error, color=COLOR_MODEL_ERROR, lw=1, zorder=1)
     ax.text(10.4, model_error / 1.35, f"float model's own error = {model_error:.3f}",
             color=INK_SECONDARY, va="top", ha="center")
 
     ax.plot([crossover], [floor], marker="o", markersize=9, markerfacecolor="white",
             markeredgecolor=INK, markeredgewidth=1.5, zorder=5)
-    ax.annotate(f"crosses the floor at \u2248{crossover:.1f} fractional bits\n"
+    ax.annotate(f"drops below the noise level at \u2248{crossover:.1f} fractional bits\n"
                 f"(\u2248 9 bits: quantization becomes free)",
-                xy=(crossover, floor), xytext=(4.6, 4e-7), color=INK, ha="left",
+                xy=(crossover, floor), xytext=(3.2, 4e-7), color=INK, ha="left",
                 arrowprops=dict(arrowstyle="-", color=INK_SECONDARY, lw=0.8))
 
     q84, q85 = _find(sweep, 8, 4), _find(sweep, 8, 5)
-    ax.annotate(f"8/4, used in every earlier PTQ run:\n{q84['quant_error_over_noise_floor']:.0f}\u00d7 the floor",
+    ax.annotate(f"8/4, used in every earlier PTQ run:\n{q84['quant_error_over_noise_floor']:.0f}\u00d7 the noise level",
                 xy=(4, q84["quant_error"]), xytext=(0.0, 6e-4), color=INK, ha="left",
                 arrowprops=dict(arrowstyle="-", color=INK_SECONDARY, lw=0.8))
-    ax.annotate(f"8/5, best 8-bit setting:\n{q85['quant_error_over_noise_floor']:.0f}\u00d7 the floor",
+    ax.annotate(f"8/5, best 8-bit setting:\n{q85['quant_error_over_noise_floor']:.0f}\u00d7 the noise level",
                 xy=(5, q85["quant_error"]), xytext=(6.4, 9e-3), color=INK, ha="left",
                 arrowprops=dict(arrowstyle="-", color=INK_SECONDARY, lw=0.8))
 
@@ -355,8 +355,12 @@ def plot_crossover(results):
     ax.grid(False, which="minor")
     ax.set_xlabel("fractional bits  (rounding step = 2\u207b\u1da0)")
     ax.set_ylabel("quantization error  MSE(quantized output, float output)")
-    ax.set_title("Quantization error vs. precision, against the dataset's noise floor")
+    ax.set_title("Quantization error vs. precision, against the dataset's noise level")
     ax.legend(loc="lower left")
+    fig.text(0.5, -0.03, "y-axis: quantized model output vs. float model output (not vs. the labels), so it contains no label "
+                         "noise and can fall below \u03c3\u00b2.\nThe \u03c3\u00b2 line is a reference: below it, quantization "
+                         "changes predictions by less than the noise already in the data.",
+             ha="center", va="top", color=INK_SECONDARY, fontsize=9)
     fig.savefig(os.path.join(RESULTS_DIR, "noise_budget_crossover.png"))
     plt.close(fig)
 
@@ -370,7 +374,7 @@ def plot_breakdown(results):
         ("float model's own error\nMSE(float output, clean target)", budget["model_error"], COLOR_MODEL_ERROR, MARKER_MODEL_ERROR),
         ("quantization error, 8-bit / 4 frac.", _find(sweep, 8, 4)["quant_error"], COLOR_8BIT, MARKER_8BIT),
         ("quantization error, 8-bit / 5 frac.", _find(sweep, 8, 5)["quant_error"], COLOR_8BIT, MARKER_8BIT),
-        ("label-noise floor \u03c3\u00b2", floor, COLOR_REFERENCE, "D"),
+        ("label-noise level \u03c3\u00b2 (reference)", floor, COLOR_REFERENCE, "D"),
         ("quantization error, 16-bit / 9 frac.", _find(sweep, 16, 9)["quant_error"], COLOR_16BIT, MARKER_16BIT),
     ]
 
@@ -379,7 +383,7 @@ def plot_breakdown(results):
     for y, (label, value, color, marker) in enumerate(reversed(rows)):
         ax.plot([value], [y], marker=marker, color=color, markersize=10, linestyle="none", zorder=3)
         ratio = value / floor
-        ratio_text = "1\u00d7 (the floor)" if ratio == 1 else (f"{ratio:,.0f}\u00d7 floor" if ratio >= 10 else f"{ratio:.2f}\u00d7 floor")
+        ratio_text = "1\u00d7 (reference)" if ratio == 1 else (f"{ratio:,.0f}\u00d7 noise level" if ratio >= 10 else f"{ratio:.2f}\u00d7 noise level")
         ax.text(value * 1.6, y, f"{value:.2e}   {ratio_text}", va="center", color=INK)
 
     ax.set_yticks(range(len(rows)))
@@ -417,7 +421,7 @@ def plot_per_layer(results):
         ax_iso.plot([joint_x], [entry["joint_quant_error"]], color=color, marker=marker,
                     markersize=10, linestyle="none")
         ax_iso.text(joint_x + 0.25, entry["joint_quant_error"],
-                    f"{entry['joint_quant_error'] / floor:.3g}\u00d7 floor", color=INK, va="center")
+                    f"{entry['joint_quant_error'] / floor:.3g}\u00d7 noise level", color=INK, va="center")
 
     n_layers = len(results["per_layer"][0]["accumulated"])
     ax_acc.set_xticks(range(1, n_layers + 1))
@@ -429,7 +433,7 @@ def plot_per_layer(results):
     stages = [r["stage"] for r in results["per_layer"][0]["isolated"]]
     joint_x = len(stages) + 0.6
     ax_iso.axhline(floor, color=COLOR_REFERENCE, lw=1, zorder=1)
-    ax_iso.text(-0.2, floor * 1.3, "label-noise floor", color=INK_SECONDARY, ha="left", va="bottom")
+    ax_iso.text(-0.2, floor * 1.3, "label-noise level (reference)", color=INK_SECONDARY, ha="left", va="bottom")
     ax_iso.axvline(len(stages) - 0.2, color=GRID_STRONG, lw=1, zorder=0)
     ax_iso.set_xticks(list(range(len(stages))) + [joint_x])
     ax_iso.set_xticklabels(stages[:-1] + [f"{stages[-1]}\n(output)", "all stages\ntogether"])
