@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 """
-Shared look for the noise-budget report figures. Colours are the first three
+Shared look for report figures. Colours are the first three
 slots of a colour-blind-validated categorical palette, and each follows one
 entity across every figure: 16-bit configs are blue, 8-bit configs orange,
 the float model's own error aqua; reference levels are neutral grey.

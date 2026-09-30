@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-from experiments.quantization_noise_budget.figure_style import (
+from src.visualization.figure_style import (
     COLOR_16BIT, COLOR_8BIT, COLOR_MODEL_ERROR, COLOR_REFERENCE, GRID_STRONG, INK, INK_SECONDARY,
     MARKER_16BIT, MARKER_8BIT, MARKER_MODEL_ERROR, apply_style,
 )
