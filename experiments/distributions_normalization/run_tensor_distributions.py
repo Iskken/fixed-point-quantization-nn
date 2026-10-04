@@ -150,7 +150,7 @@ def summarise(model_key, t):
 def plot_model(model_key, t, rows):
     apply_style()
     n = len(t["names"])
-    fig, axes = plt.subplots(2, n, figsize=(3.3 * n, 6.4), squeeze=False)
+    fig, axes = plt.subplots(2, n, figsize=(3.6 * n, 7.6), squeeze=False)
 
     for col, name in enumerate(t["names"]):
         for row_idx, (role, color) in enumerate([("weights", SLOT_1), ("activations", SLOT_2)]):
@@ -163,7 +163,7 @@ def plot_model(model_key, t, rows):
             hi = max(s["max_abs"], s["range"]) * 1.08
             counts, _, _ = ax.hist(shown, bins=120, range=(lo, hi), color=color, log=True, linewidth=0)
             # headroom on the log axis so the statistics box sits above the bars
-            ax.set_ylim(0.6, counts.max() * 10 ** (1.6 if s["relu"] else 1.3))
+            ax.set_ylim(0.6, counts.max() * 10 ** (2.6 if s["relu"] else 2.2))
 
             # the format: clipping limits and the band that rounds to zero
             for edge in (-s["range"], s["range"]):
@@ -173,14 +173,16 @@ def plot_model(model_key, t, rows):
             ax.set_xlim(lo, hi)
             ax.grid(False, which="minor")
 
-            lines = [f"max |x| {s['max_abs']:.3g}   std {s['std']:.3g}",
-                     f"kurtosis {s['excess_kurtosis']:+.1f}   max/p99.9 {s['max_over_p99_9']:.1f}",
-                     f"format f={s['fractional_bits']}: range ±{s['range']:g}, step {s['step']:g}",
-                     f"clipped {100 * s['clipped_fraction']:.2f}%   →0 {100 * s['rounded_to_zero_fraction']:.1f}%"]
+            lines = [f"largest |value|: {s['max_abs']:.3g}   std: {s['std']:.3g}",
+                     f"kurtosis: {s['excess_kurtosis']:+.1f}  (0 = normal)",
+                     f"largest / 99.9th percentile: {s['max_over_p99_9']:.1f}",
+                     f"format f={s['fractional_bits']}: range \u00b1{s['range']:g}, step {s['step']:g}",
+                     f"clipped (too large): {100 * s['clipped_fraction']:.2f}%",
+                     f"rounded to 0 (too small): {100 * s['rounded_to_zero_fraction']:.1f}%"]
             if s["relu"]:
-                lines.append(f"exact zeros (ReLU) {100 * s['exact_zero_fraction']:.0f}%, not shown")
+                lines.append(f"exact zeros from ReLU: {100 * s['exact_zero_fraction']:.0f}% (not shown)")
             ax.text(0.98, 0.98, "\n".join(lines), transform=ax.transAxes, ha="right", va="top",
-                    fontsize=7, color=INK, linespacing=1.35,
+                    fontsize=7.5, color=INK, linespacing=1.35,
                     bbox=dict(facecolor="white", edgecolor="none", alpha=0.9, pad=1.5))
 
             if row_idx == 0:
@@ -192,8 +194,9 @@ def plot_model(model_key, t, rows):
     fig.suptitle(f"{DISPLAY[model_key]}: tensor distributions vs. {t['format_label']} formats",
                  x=0.01, ha="left", fontsize=12, fontweight="semibold", color=INK)
     fig.tight_layout(rect=(0, 0.04, 1, 0.97))
-    fig.text(0.5, 0.01, "grey vertical lines: format range (values beyond them clip)   "
-                        "grey band: |x| < step/2 (rounds to zero)", ha="center", color=INK_SECONDARY, fontsize=9)
+    fig.text(0.5, 0.01, "grey vertical lines: format range (larger values are clipped to the max)   "
+                        "grey band around 0: |x| < step/2 (these values round to 0)",
+             ha="center", color=INK_SECONDARY, fontsize=9)
     path = os.path.join(RESULTS_DIR, f"distributions_{model_key}.png")
     fig.savefig(path)
     plt.close(fig)
