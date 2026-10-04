@@ -1,0 +1,850 @@
+{
+  "dataset": "mnist",
+  "float": {
+    "val_acc": 0.9896666666666667,
+    "test_acc": 0.9901
+  },
+  "epochs_per_stage": 3,
+  "learning_rates": [
+    0.0001,
+    0.0003,
+    0.001
+  ],
+  "seed": 0,
+  "stage_names": [
+    "conv1",
+    "conv2",
+    "fc1",
+    "fc2"
+  ],
+  "configs": [
+    {
+      "total_bits": 4,
+      "formats": {
+        "input": 3,
+        "weights": [
+          4,
+          5,
+          5,
+          5
+        ],
+        "activations": [
+          2,
+          0,
+          -1,
+          -2
+        ]
+      },
+      "methods": {
+        "one_shot": {
+          "final": {
+            "val_acc": 0.981,
+            "val_loss": 0.05464641698201497,
+            "test_acc": 0.9803,
+            "test_loss": 0.048466427612304686
+          }
+        },
+        "float_acts": {
+          "chosen_lr": 0.001,
+          "final": {
+            "val_acc": 0.9865,
+            "val_loss": 0.049795193990071616,
+            "test_acc": 0.9871,
+            "test_loss": 0.041791329193115234
+          },
+          "progression": [
+            {
+              "stage": 1,
+              "val_acc": 0.9875,
+              "val_loss": 0.04820498021443685,
+              "test_acc": 0.9883,
+              "test_loss": 0.039301389694213866,
+              "best_epoch": 2,
+              "at_epoch_cap": true
+            },
+            {
+              "stage": 2,
+              "val_acc": 0.9881666666666666,
+              "val_loss": 0.04473567835489909,
+              "test_acc": 0.9905,
+              "test_loss": 0.035747712898254395,
+              "best_epoch": 2,
+              "at_epoch_cap": true
+            },
+            {
+              "stage": 3,
+              "val_acc": 0.989,
+              "val_loss": 0.04873762639363607,
+              "test_acc": 0.9913,
+              "test_loss": 0.035904364585876467,
+              "best_epoch": 1,
+              "at_epoch_cap": false
+            },
+            {
+              "stage": 4,
+              "val_acc": 0.9865,
+              "val_loss": 0.049795193990071616,
+              "test_acc": 0.9871,
+              "test_loss": 0.041791329193115234,
+              "best_epoch": null,
+              "at_epoch_cap": false
+            }
+          ],
+          "lr_runs": [
+            {
+              "lr": 0.0001,
+              "final": {
+                "val_acc": 0.986,
+                "val_loss": 0.043236180623372394,
+                "test_acc": 0.9867,
+                "test_loss": 0.033774694061279295
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9906666666666667,
+                  "val_loss": 0.03437277921040853,
+                  "test_acc": 0.9906,
+                  "test_loss": 0.02621421642303467,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.9891666666666666,
+                  "val_loss": 0.034436020533243815,
+                  "test_acc": 0.9907,
+                  "test_loss": 0.02831785011291504,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.9891666666666666,
+                  "val_loss": 0.03641345087687174,
+                  "test_acc": 0.9904,
+                  "test_loss": 0.029221208953857422,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.986,
+                  "val_loss": 0.043236180623372394,
+                  "test_acc": 0.9867,
+                  "test_loss": 0.033774694061279295,
+                  "best_epoch": null,
+                  "at_epoch_cap": false
+                }
+              ],
+              "seconds": 11.884066820144653
+            },
+            {
+              "lr": 0.0003,
+              "final": {
+                "val_acc": 0.9863333333333333,
+                "val_loss": 0.04562233098347982,
+                "test_acc": 0.9874,
+                "test_loss": 0.038122073554992676
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9901666666666666,
+                  "val_loss": 0.03682436498006185,
+                  "test_acc": 0.991,
+                  "test_loss": 0.028389175987243654,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.99,
+                  "val_loss": 0.03843837547302246,
+                  "test_acc": 0.9907,
+                  "test_loss": 0.03162992210388184,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.99,
+                  "val_loss": 0.03880246416727702,
+                  "test_acc": 0.9906,
+                  "test_loss": 0.030985889053344727,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.9863333333333333,
+                  "val_loss": 0.04562233098347982,
+                  "test_acc": 0.9874,
+                  "test_loss": 0.038122073554992676,
+                  "best_epoch": null,
+                  "at_epoch_cap": false
+                }
+              ],
+              "seconds": 10.610838413238525
+            },
+            {
+              "lr": 0.001,
+              "final": {
+                "val_acc": 0.9865,
+                "val_loss": 0.049795193990071616,
+                "test_acc": 0.9871,
+                "test_loss": 0.041791329193115234
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9875,
+                  "val_loss": 0.04820498021443685,
+                  "test_acc": 0.9883,
+                  "test_loss": 0.039301389694213866,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.9881666666666666,
+                  "val_loss": 0.04473567835489909,
+                  "test_acc": 0.9905,
+                  "test_loss": 0.035747712898254395,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.989,
+                  "val_loss": 0.04873762639363607,
+                  "test_acc": 0.9913,
+                  "test_loss": 0.035904364585876467,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.9865,
+                  "val_loss": 0.049795193990071616,
+                  "test_acc": 0.9871,
+                  "test_loss": 0.041791329193115234,
+                  "best_epoch": null,
+                  "at_epoch_cap": false
+                }
+              ],
+              "seconds": 11.552177667617798
+            }
+          ]
+        },
+        "quant_acts": {
+          "chosen_lr": 0.001,
+          "final": {
+            "val_acc": 0.9883333333333333,
+            "val_loss": 0.04798136520385742,
+            "test_acc": 0.9889,
+            "test_loss": 0.042214856147766114
+          },
+          "progression": [
+            {
+              "stage": 1,
+              "val_acc": 0.9883333333333333,
+              "val_loss": 0.04420422617594401,
+              "test_acc": 0.9895,
+              "test_loss": 0.036281615447998045,
+              "best_epoch": 1,
+              "at_epoch_cap": false
+            },
+            {
+              "stage": 2,
+              "val_acc": 0.9896666666666667,
+              "val_loss": 0.04305612373352051,
+              "test_acc": 0.9894,
+              "test_loss": 0.0370888090133667,
+              "best_epoch": 2,
+              "at_epoch_cap": true
+            },
+            {
+              "stage": 3,
+              "val_acc": 0.99,
+              "val_loss": 0.04744855117797851,
+              "test_acc": 0.9899,
+              "test_loss": 0.03801424942016601,
+              "best_epoch": 2,
+              "at_epoch_cap": true
+            },
+            {
+              "stage": 4,
+              "val_acc": 0.9883333333333333,
+              "val_loss": 0.04798136520385742,
+              "test_acc": 0.9889,
+              "test_loss": 0.042214856147766114,
+              "best_epoch": 1,
+              "at_epoch_cap": false
+            }
+          ],
+          "lr_runs": [
+            {
+              "lr": 0.0001,
+              "final": {
+                "val_acc": 0.9865,
+                "val_loss": 0.04814827728271484,
+                "test_acc": 0.9872,
+                "test_loss": 0.03655471153259277
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9913333333333333,
+                  "val_loss": 0.0345491517384847,
+                  "test_acc": 0.9908,
+                  "test_loss": 0.026830825805664062,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.9886666666666667,
+                  "val_loss": 0.04042371559143067,
+                  "test_acc": 0.9908,
+                  "test_loss": 0.03054031867980957,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.9885,
+                  "val_loss": 0.041534292856852215,
+                  "test_acc": 0.9907,
+                  "test_loss": 0.03089260730743408,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.9865,
+                  "val_loss": 0.04814827728271484,
+                  "test_acc": 0.9872,
+                  "test_loss": 0.03655471153259277,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                }
+              ],
+              "seconds": 14.363337993621826
+            },
+            {
+              "lr": 0.0003,
+              "final": {
+                "val_acc": 0.9881666666666666,
+                "val_loss": 0.04789155451456706,
+                "test_acc": 0.9888,
+                "test_loss": 0.0373689323425293
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9898333333333333,
+                  "val_loss": 0.04096555201212565,
+                  "test_acc": 0.9909,
+                  "test_loss": 0.03083166332244873,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.99,
+                  "val_loss": 0.04319781939188639,
+                  "test_acc": 0.9899,
+                  "test_loss": 0.03474938201904297,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.9893333333333333,
+                  "val_loss": 0.044887096405029296,
+                  "test_acc": 0.9912,
+                  "test_loss": 0.03521992263793945,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.9881666666666666,
+                  "val_loss": 0.04789155451456706,
+                  "test_acc": 0.9888,
+                  "test_loss": 0.0373689323425293,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                }
+              ],
+              "seconds": 13.884182929992676
+            },
+            {
+              "lr": 0.001,
+              "final": {
+                "val_acc": 0.9883333333333333,
+                "val_loss": 0.04798136520385742,
+                "test_acc": 0.9889,
+                "test_loss": 0.042214856147766114
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9883333333333333,
+                  "val_loss": 0.04420422617594401,
+                  "test_acc": 0.9895,
+                  "test_loss": 0.036281615447998045,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.9896666666666667,
+                  "val_loss": 0.04305612373352051,
+                  "test_acc": 0.9894,
+                  "test_loss": 0.0370888090133667,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.99,
+                  "val_loss": 0.04744855117797851,
+                  "test_acc": 0.9899,
+                  "test_loss": 0.03801424942016601,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.9883333333333333,
+                  "val_loss": 0.04798136520385742,
+                  "test_acc": 0.9889,
+                  "test_loss": 0.042214856147766114,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                }
+              ],
+              "seconds": 16.452289581298828
+            }
+          ]
+        }
+      }
+    },
+    {
+      "total_bits": 3,
+      "formats": {
+        "input": 2,
+        "weights": [
+          3,
+          4,
+          5,
+          4
+        ],
+        "activations": [
+          1,
+          -1,
+          -2,
+          -3
+        ]
+      },
+      "methods": {
+        "one_shot": {
+          "final": {
+            "val_acc": 0.939,
+            "val_loss": 0.18884129333496094,
+            "test_acc": 0.9353,
+            "test_loss": 0.16786985473632812
+          }
+        },
+        "float_acts": {
+          "chosen_lr": 0.0003,
+          "final": {
+            "val_acc": 0.9558333333333333,
+            "val_loss": 0.11784161885579426,
+            "test_acc": 0.9535,
+            "test_loss": 0.11288168334960938
+          },
+          "progression": [
+            {
+              "stage": 1,
+              "val_acc": 0.9888333333333333,
+              "val_loss": 0.03922596677144369,
+              "test_acc": 0.9892,
+              "test_loss": 0.03224107131958008,
+              "best_epoch": 2,
+              "at_epoch_cap": true
+            },
+            {
+              "stage": 2,
+              "val_acc": 0.9858333333333333,
+              "val_loss": 0.049086222330729165,
+              "test_acc": 0.9896,
+              "test_loss": 0.03601845283508301,
+              "best_epoch": 2,
+              "at_epoch_cap": true
+            },
+            {
+              "stage": 3,
+              "val_acc": 0.9836666666666667,
+              "val_loss": 0.053966904958089194,
+              "test_acc": 0.9877,
+              "test_loss": 0.04212449607849121,
+              "best_epoch": 1,
+              "at_epoch_cap": false
+            },
+            {
+              "stage": 4,
+              "val_acc": 0.9558333333333333,
+              "val_loss": 0.11784161885579426,
+              "test_acc": 0.9535,
+              "test_loss": 0.11288168334960938,
+              "best_epoch": null,
+              "at_epoch_cap": false
+            }
+          ],
+          "lr_runs": [
+            {
+              "lr": 0.0001,
+              "final": {
+                "val_acc": 0.9406666666666667,
+                "val_loss": 0.15759579467773438,
+                "test_acc": 0.9401,
+                "test_loss": 0.1384102828979492
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9886666666666667,
+                  "val_loss": 0.0360830192565918,
+                  "test_acc": 0.9901,
+                  "test_loss": 0.0294728630065918,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.9866666666666667,
+                  "val_loss": 0.04447096633911133,
+                  "test_acc": 0.9881,
+                  "test_loss": 0.0353473445892334,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.983,
+                  "val_loss": 0.053399707794189455,
+                  "test_acc": 0.9871,
+                  "test_loss": 0.03992260398864746,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.9406666666666667,
+                  "val_loss": 0.15759579467773438,
+                  "test_acc": 0.9401,
+                  "test_loss": 0.1384102828979492,
+                  "best_epoch": null,
+                  "at_epoch_cap": false
+                }
+              ],
+              "seconds": 11.829265117645264
+            },
+            {
+              "lr": 0.0003,
+              "final": {
+                "val_acc": 0.9558333333333333,
+                "val_loss": 0.11784161885579426,
+                "test_acc": 0.9535,
+                "test_loss": 0.11288168334960938
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9888333333333333,
+                  "val_loss": 0.03922596677144369,
+                  "test_acc": 0.9892,
+                  "test_loss": 0.03224107131958008,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.9858333333333333,
+                  "val_loss": 0.049086222330729165,
+                  "test_acc": 0.9896,
+                  "test_loss": 0.03601845283508301,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.9836666666666667,
+                  "val_loss": 0.053966904958089194,
+                  "test_acc": 0.9877,
+                  "test_loss": 0.04212449607849121,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.9558333333333333,
+                  "val_loss": 0.11784161885579426,
+                  "test_acc": 0.9535,
+                  "test_loss": 0.11288168334960938,
+                  "best_epoch": null,
+                  "at_epoch_cap": false
+                }
+              ],
+              "seconds": 10.793536901473999
+            },
+            {
+              "lr": 0.001,
+              "final": {
+                "val_acc": 0.9513333333333334,
+                "val_loss": 0.14114849853515626,
+                "test_acc": 0.954,
+                "test_loss": 0.12713576507568358
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9866666666666667,
+                  "val_loss": 0.04192503102620443,
+                  "test_acc": 0.9888,
+                  "test_loss": 0.0373904956817627,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.986,
+                  "val_loss": 0.05458362325032552,
+                  "test_acc": 0.9872,
+                  "test_loss": 0.046465051651000976,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.9821666666666666,
+                  "val_loss": 0.061427650451660154,
+                  "test_acc": 0.9847,
+                  "test_loss": 0.04756377792358398,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.9513333333333334,
+                  "val_loss": 0.14114849853515626,
+                  "test_acc": 0.954,
+                  "test_loss": 0.12713576507568358,
+                  "best_epoch": null,
+                  "at_epoch_cap": false
+                }
+              ],
+              "seconds": 11.112606048583984
+            }
+          ]
+        },
+        "quant_acts": {
+          "chosen_lr": 0.001,
+          "final": {
+            "val_acc": 0.9655,
+            "val_loss": 0.09025279235839843,
+            "test_acc": 0.9632,
+            "test_loss": 0.08881880035400391
+          },
+          "progression": [
+            {
+              "stage": 1,
+              "val_acc": 0.9885,
+              "val_loss": 0.03887228012084961,
+              "test_acc": 0.9898,
+              "test_loss": 0.03331927452087402,
+              "best_epoch": 0,
+              "at_epoch_cap": false
+            },
+            {
+              "stage": 2,
+              "val_acc": 0.9858333333333333,
+              "val_loss": 0.05432054901123047,
+              "test_acc": 0.9895,
+              "test_loss": 0.04239029121398926,
+              "best_epoch": 2,
+              "at_epoch_cap": true
+            },
+            {
+              "stage": 3,
+              "val_acc": 0.9836666666666667,
+              "val_loss": 0.05178858311971029,
+              "test_acc": 0.9854,
+              "test_loss": 0.04493877868652344,
+              "best_epoch": 1,
+              "at_epoch_cap": false
+            },
+            {
+              "stage": 4,
+              "val_acc": 0.9655,
+              "val_loss": 0.09025279235839843,
+              "test_acc": 0.9632,
+              "test_loss": 0.08881880035400391,
+              "best_epoch": 0,
+              "at_epoch_cap": false
+            }
+          ],
+          "lr_runs": [
+            {
+              "lr": 0.0001,
+              "final": {
+                "val_acc": 0.9473333333333334,
+                "val_loss": 0.12877008565266926,
+                "test_acc": 0.9472,
+                "test_loss": 0.10317371215820313
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9895,
+                  "val_loss": 0.036584815979003905,
+                  "test_acc": 0.9904,
+                  "test_loss": 0.030092021560668945,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.9878333333333333,
+                  "val_loss": 0.042655925750732425,
+                  "test_acc": 0.9895,
+                  "test_loss": 0.03133699264526367,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.9845,
+                  "val_loss": 0.04758507283528646,
+                  "test_acc": 0.9893,
+                  "test_loss": 0.03273196144104004,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.9473333333333334,
+                  "val_loss": 0.12877008565266926,
+                  "test_acc": 0.9472,
+                  "test_loss": 0.10317371215820313,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                }
+              ],
+              "seconds": 21.538336992263794
+            },
+            {
+              "lr": 0.0003,
+              "final": {
+                "val_acc": 0.9615,
+                "val_loss": 0.09733000946044922,
+                "test_acc": 0.9624,
+                "test_loss": 0.0781440330505371
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9881666666666666,
+                  "val_loss": 0.04214925638834635,
+                  "test_acc": 0.9888,
+                  "test_loss": 0.037345701599121095,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.9858333333333333,
+                  "val_loss": 0.04974458185831706,
+                  "test_acc": 0.989,
+                  "test_loss": 0.0350821834564209,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.9851666666666666,
+                  "val_loss": 0.046594369252522784,
+                  "test_acc": 0.9872,
+                  "test_loss": 0.03900901870727539,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.9615,
+                  "val_loss": 0.09733000946044922,
+                  "test_acc": 0.9624,
+                  "test_loss": 0.0781440330505371,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                }
+              ],
+              "seconds": 16.837838411331177
+            },
+            {
+              "lr": 0.001,
+              "final": {
+                "val_acc": 0.9655,
+                "val_loss": 0.09025279235839843,
+                "test_acc": 0.9632,
+                "test_loss": 0.08881880035400391
+              },
+              "progression": [
+                {
+                  "stage": 1,
+                  "val_acc": 0.9885,
+                  "val_loss": 0.03887228012084961,
+                  "test_acc": 0.9898,
+                  "test_loss": 0.03331927452087402,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 2,
+                  "val_acc": 0.9858333333333333,
+                  "val_loss": 0.05432054901123047,
+                  "test_acc": 0.9895,
+                  "test_loss": 0.04239029121398926,
+                  "best_epoch": 2,
+                  "at_epoch_cap": true
+                },
+                {
+                  "stage": 3,
+                  "val_acc": 0.9836666666666667,
+                  "val_loss": 0.05178858311971029,
+                  "test_acc": 0.9854,
+                  "test_loss": 0.04493877868652344,
+                  "best_epoch": 1,
+                  "at_epoch_cap": false
+                },
+                {
+                  "stage": 4,
+                  "val_acc": 0.9655,
+                  "val_loss": 0.09025279235839843,
+                  "test_acc": 0.9632,
+                  "test_loss": 0.08881880035400391,
+                  "best_epoch": 0,
+                  "at_epoch_cap": false
+                }
+              ],
+              "seconds": 14.501668930053711
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

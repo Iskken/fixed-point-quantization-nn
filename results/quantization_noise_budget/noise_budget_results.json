@@ -1,0 +1,1048 @@
+{
+  "budget": {
+    "noise_std": 0.01,
+    "noise_floor": 0.0001,
+    "noise_floor_empirical_test": 0.00010777998901785508,
+    "clean_signal_var": 0.6244652434104951,
+    "data_snr_db": 37.95508271348917,
+    "float_test_mse": 0.15385571128650632,
+    "float_test_mse_standard_error": 0.00930824483194892,
+    "model_error": 0.15432392843347362,
+    "model_error_over_noise_floor": 1543.239284334736,
+    "n_test": 400
+  },
+  "headline_config": {
+    "total_bits": 8,
+    "fractional_bits": 4,
+    "quant_error": 0.05337543231691504,
+    "quant_error_over_noise_floor": 533.7543231691504,
+    "quant_error_over_model_error": 0.34586621050101296
+  },
+  "crossover": {
+    "total_bits": 16,
+    "fractional_bits": 8.735774208439008,
+    "sqnr_slope_db_per_bit": 5.827775253817131
+  },
+  "sweep": [
+    {
+      "total_bits": 8,
+      "fractional_bits": 0,
+      "test_mse": 4.423853738766626,
+      "quant_error": 4.4081239086660835,
+      "quant_error_over_noise_floor": 44081.23908666083,
+      "quant_error_over_model_error": 28.564098603583368,
+      "output_sqnr_db": -9.251927046313295,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 8,
+      "fractional_bits": 1,
+      "test_mse": 5.308157163622416,
+      "quant_error": 5.152567724059835,
+      "quant_error_over_noise_floor": 51525.67724059834,
+      "quant_error_over_model_error": 33.38800260181957,
+      "output_sqnr_db": -9.929626197090473,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 8,
+      "fractional_bits": 2,
+      "test_mse": 0.8434352201726714,
+      "quant_error": 0.6611777041072324,
+      "quant_error_over_noise_floor": 6611.777041072324,
+      "quant_error_over_model_error": 4.284349878977159,
+      "output_sqnr_db": -1.0125711105467425,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 8,
+      "fractional_bits": 3,
+      "test_mse": 0.41365264935640506,
+      "quant_error": 0.263429798121412,
+      "quant_error_over_noise_floor": 2634.29798121412,
+      "quant_error_over_model_error": 1.706992562951584,
+      "output_sqnr_db": 2.983961899845802,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 8,
+      "fractional_bits": 4,
+      "test_mse": 0.19927508737656854,
+      "quant_error": 0.05337543231691504,
+      "quant_error_over_noise_floor": 533.7543231691504,
+      "quant_error_over_model_error": 0.34586621050101296,
+      "output_sqnr_db": 9.917196834009843,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 8,
+      "fractional_bits": 5,
+      "test_mse": 0.16719365150286658,
+      "quant_error": 0.01746705993314082,
+      "quant_error_over_noise_floor": 174.6705993314082,
+      "quant_error_over_model_error": 0.11318439149681554,
+      "output_sqnr_db": 14.768412786321372,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 1.953125e-05
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.00546875
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0123046875
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0123046875
+    },
+    {
+      "total_bits": 8,
+      "fractional_bits": 6,
+      "test_mse": 0.37840641640136924,
+      "quant_error": 0.19833896186089414,
+      "quant_error_over_noise_floor": 1983.3896186089414,
+      "quant_error_over_model_error": 1.285211981539173,
+      "output_sqnr_db": 4.216530533038213,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.003125,
+          "activations": 0.00177734375
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.02888671875
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0494140625
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.02015625
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0494140625
+    },
+    {
+      "total_bits": 8,
+      "fractional_bits": 7,
+      "test_mse": 1.0378519953932264,
+      "quant_error": 0.9361268711672903,
+      "quant_error_over_noise_floor": 9361.268711672903,
+      "quant_error_over_model_error": 6.065986530214842,
+      "output_sqnr_db": -2.522736226427258,
+      "saturation": {
+        "input": {
+          "activations": 0.00125
+        },
+        "layer 1": {
+          "weights": 0.04375,
+          "activations": 0.0418359375
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.1006640625
+        },
+        "layer 3": {
+          "weights": 0.0004807692307692308,
+          "activations": 0.1469140625
+        },
+        "layer 4": {
+          "weights": 0.001893939393939394,
+          "activations": 0.113125
+        },
+        "layer 5": {
+          "weights": 0.058823529411764705,
+          "activations": 0.055
+        }
+      },
+      "max_stage_saturation": 0.1469140625
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 0,
+      "test_mse": 4.423853738766626,
+      "quant_error": 4.4081239086660835,
+      "quant_error_over_noise_floor": 44081.23908666083,
+      "quant_error_over_model_error": 28.564098603583368,
+      "output_sqnr_db": -9.251927046313295,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 1,
+      "test_mse": 5.308157163622416,
+      "quant_error": 5.152567724059835,
+      "quant_error_over_noise_floor": 51525.67724059834,
+      "quant_error_over_model_error": 33.38800260181957,
+      "output_sqnr_db": -9.929626197090473,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 2,
+      "test_mse": 0.8434352201726714,
+      "quant_error": 0.6611777041072324,
+      "quant_error_over_noise_floor": 6611.777041072324,
+      "quant_error_over_model_error": 4.284349878977159,
+      "output_sqnr_db": -1.0125711105467425,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 3,
+      "test_mse": 0.41365264935640506,
+      "quant_error": 0.263429798121412,
+      "quant_error_over_noise_floor": 2634.29798121412,
+      "quant_error_over_model_error": 1.706992562951584,
+      "output_sqnr_db": 2.983961899845802,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 4,
+      "test_mse": 0.19927508737656854,
+      "quant_error": 0.05337543231691504,
+      "quant_error_over_noise_floor": 533.7543231691504,
+      "quant_error_over_model_error": 0.34586621050101296,
+      "output_sqnr_db": 9.917196834009843,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 5,
+      "test_mse": 0.16719365150286658,
+      "quant_error": 0.01746705993314082,
+      "quant_error_over_noise_floor": 174.6705993314082,
+      "quant_error_over_model_error": 0.11318439149681554,
+      "output_sqnr_db": 14.768412786321372,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 6,
+      "test_mse": 0.15341579787138815,
+      "quant_error": 0.0035449181592218525,
+      "quant_error_over_noise_floor": 35.44918159221852,
+      "quant_error_over_model_error": 0.022970631937677802,
+      "output_sqnr_db": 21.694548758679456,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 7,
+      "test_mse": 0.15552137330966298,
+      "quant_error": 0.0007567714607527609,
+      "quant_error_over_noise_floor": 7.567714607527608,
+      "quant_error_over_model_error": 0.004903785617918559,
+      "output_sqnr_db": 28.40096343380811,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 8,
+      "test_mse": 0.1542394572549622,
+      "quant_error": 0.0003163154296216936,
+      "quant_error_over_noise_floor": 3.163154296216936,
+      "quant_error_over_model_error": 0.0020496849246424654,
+      "output_sqnr_db": 32.1894071205671,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 9,
+      "test_mse": 0.15429942083141637,
+      "quant_error": 6.613029641976604e-05,
+      "quant_error_over_noise_floor": 0.6613029641976604,
+      "quant_error_over_model_error": 0.00042851615488957484,
+      "output_sqnr_db": 38.986606196652644,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 10,
+      "test_mse": 0.1536726004818385,
+      "quant_error": 1.428033952867971e-05,
+      "quant_error_over_noise_floor": 0.14280339528679709,
+      "quant_error_over_model_error": 9.25348367789621e-05,
+      "output_sqnr_db": 45.64322555709583,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 11,
+      "test_mse": 0.15390575784982397,
+      "quant_error": 3.682287523087331e-06,
+      "quant_error_over_noise_floor": 0.036822875230873305,
+      "quant_error_over_model_error": 2.3860768452863105e-05,
+      "output_sqnr_db": 51.52943392643931,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 12,
+      "test_mse": 0.1538757210926832,
+      "quant_error": 9.298053635729646e-07,
+      "quant_error_over_noise_floor": 0.009298053635729645,
+      "quant_error_over_model_error": 6.025023941596897e-06,
+      "output_sqnr_db": 57.50669041959949,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 13,
+      "test_mse": 0.1538690468312625,
+      "quant_error": 3.501470990145579e-07,
+      "quant_error_over_noise_floor": 0.003501470990145579,
+      "quant_error_over_model_error": 2.2689099647012956e-06,
+      "output_sqnr_db": 61.74810556489243,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.00533203125
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.01234375
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.0
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.01234375
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 14,
+      "test_mse": 0.38372436222273393,
+      "quant_error": 0.19869314144371233,
+      "quant_error_over_noise_floor": 1986.9314144371233,
+      "quant_error_over_model_error": 1.287507021500982,
+      "output_sqnr_db": 4.20878212791215,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.003125,
+          "activations": 0.0017578125
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.0291796875
+        },
+        "layer 3": {
+          "weights": 0.0,
+          "activations": 0.0496875
+        },
+        "layer 4": {
+          "weights": 0.0,
+          "activations": 0.021015625
+        },
+        "layer 5": {
+          "weights": 0.0,
+          "activations": 0.0
+        }
+      },
+      "max_stage_saturation": 0.0496875
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 15,
+      "test_mse": 1.0295279930133399,
+      "quant_error": 0.9257474084502729,
+      "quant_error_over_noise_floor": 9257.474084502728,
+      "quant_error_over_model_error": 5.998728893486836,
+      "output_sqnr_db": -2.474314159157476,
+      "saturation": {
+        "input": {
+          "activations": 0.0
+        },
+        "layer 1": {
+          "weights": 0.04375,
+          "activations": 0.04203125
+        },
+        "layer 2": {
+          "weights": 0.0,
+          "activations": 0.1009375
+        },
+        "layer 3": {
+          "weights": 0.0004807692307692308,
+          "activations": 0.146328125
+        },
+        "layer 4": {
+          "weights": 0.001893939393939394,
+          "activations": 0.1128125
+        },
+        "layer 5": {
+          "weights": 0.058823529411764705,
+          "activations": 0.0525
+        }
+      },
+      "max_stage_saturation": 0.146328125
+    }
+  ],
+  "per_layer": [
+    {
+      "total_bits": 8,
+      "fractional_bits": 4,
+      "joint_quant_error": 0.05337543231691504,
+      "sum_of_isolated_errors": 0.06476977943895405,
+      "accumulated": [
+        {
+          "layer": "layer 1",
+          "sqnr_db": 23.163342925060128
+        },
+        {
+          "layer": "layer 2",
+          "sqnr_db": 18.125070129273677
+        },
+        {
+          "layer": "layer 3",
+          "sqnr_db": 16.762163377101334
+        },
+        {
+          "layer": "layer 4",
+          "sqnr_db": 15.1424322672273
+        },
+        {
+          "layer": "layer 5",
+          "sqnr_db": 9.917196834009843
+        }
+      ],
+      "isolated": [
+        {
+          "stage": "input",
+          "quant_error": 0.015356809136706723,
+          "quant_error_over_noise_floor": 153.5680913670672,
+          "share_of_joint_error": 0.2877130632971013,
+          "saturation": {
+            "activations": 0.0
+          }
+        },
+        {
+          "stage": "layer 1",
+          "quant_error": 0.010467660809196755,
+          "quant_error_over_noise_floor": 104.67660809196754,
+          "share_of_joint_error": 0.19611383655021902,
+          "saturation": {
+            "weights": 0.0,
+            "activations": 0.0
+          }
+        },
+        {
+          "stage": "layer 2",
+          "quant_error": 0.020119516427864186,
+          "quant_error_over_noise_floor": 201.19516427864184,
+          "share_of_joint_error": 0.3769433905172918,
+          "saturation": {
+            "weights": 0.0,
+            "activations": 0.0
+          }
+        },
+        {
+          "stage": "layer 3",
+          "quant_error": 0.010622642803862062,
+          "quant_error_over_noise_floor": 106.22642803862061,
+          "share_of_joint_error": 0.19901745696016918,
+          "saturation": {
+            "weights": 0.0,
+            "activations": 0.0
+          }
+        },
+        {
+          "stage": "layer 4",
+          "quant_error": 0.006417900487218705,
+          "quant_error_over_noise_floor": 64.17900487218705,
+          "share_of_joint_error": 0.12024072140741852,
+          "saturation": {
+            "weights": 0.0,
+            "activations": 0.0
+          }
+        },
+        {
+          "stage": "layer 5",
+          "quant_error": 0.0017852497741056277,
+          "quant_error_over_noise_floor": 17.852497741056276,
+          "share_of_joint_error": 0.03344703165129905,
+          "saturation": {
+            "weights": 0.0,
+            "activations": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "total_bits": 16,
+      "fractional_bits": 8,
+      "joint_quant_error": 0.0003163154296216936,
+      "sum_of_isolated_errors": 0.00024840792641010425,
+      "accumulated": [
+        {
+          "layer": "layer 1",
+          "sqnr_db": 46.90690686210813
+        },
+        {
+          "layer": "layer 2",
+          "sqnr_db": 42.495690005986404
+        },
+        {
+          "layer": "layer 3",
+          "sqnr_db": 39.96230270591413
+        },
+        {
+          "layer": "layer 4",
+          "sqnr_db": 38.924757607698524
+        },
+        {
+          "layer": "layer 5",
+          "sqnr_db": 32.1894071205671
+        }
+      ],
+      "isolated": [
+        {
+          "stage": "input",
+          "quant_error": 5.8633110007875075e-05,
+          "quant_error_over_noise_floor": 0.5863311000787508,
+          "share_of_joint_error": 0.18536278827118552,
+          "saturation": {
+            "activations": 0.0
+          }
+        },
+        {
+          "stage": "layer 1",
+          "quant_error": 6.647581218430054e-05,
+          "quant_error_over_noise_floor": 0.6647581218430054,
+          "share_of_joint_error": 0.21015671686899426,
+          "saturation": {
+            "weights": 0.0,
+            "activations": 0.0
+          }
+        },
+        {
+          "stage": "layer 2",
+          "quant_error": 4.557093574953276e-05,
+          "quant_error_over_noise_floor": 0.45570935749532754,
+          "share_of_joint_error": 0.14406801402016528,
+          "saturation": {
+            "weights": 0.0,
+            "activations": 0.0
+          }
+        },
+        {
+          "stage": "layer 3",
+          "quant_error": 3.5406613472180356e-05,
+          "quant_error_over_noise_floor": 0.35406613472180354,
+          "share_of_joint_error": 0.11193451269362958,
+          "saturation": {
+            "weights": 0.0,
+            "activations": 0.0
+          }
+        },
+        {
+          "stage": "layer 4",
+          "quant_error": 3.155654369541305e-05,
+          "quant_error_over_noise_floor": 0.31556543695413053,
+          "share_of_joint_error": 0.09976289722304725,
+          "saturation": {
+            "weights": 0.0,
+            "activations": 0.0
+          }
+        },
+        {
+          "stage": "layer 5",
+          "quant_error": 1.0764911300802487e-05,
+          "quant_error_over_noise_floor": 0.10764911300802486,
+          "share_of_joint_error": 0.03403220422625949,
+          "saturation": {
+            "weights": 0.0,
+            "activations": 0.0
+          }
+        }
+      ]
+    }
+  ]
+}

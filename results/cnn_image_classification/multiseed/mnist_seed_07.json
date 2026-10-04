@@ -1,0 +1,235 @@
+{
+  "dataset": "mnist",
+  "seed": 7,
+  "float": {
+    "n_params": 80202,
+    "best_epoch": 13,
+    "train_seconds": 32.295711040496826,
+    "val_acc": 0.9905,
+    "val_loss": 0.0395857187906901,
+    "test_acc": 0.9913,
+    "test_loss": 0.034710265350341794
+  },
+  "configs": [
+    {
+      "total_bits": 4,
+      "formats": {
+        "input": 3,
+        "weights": [
+          4,
+          5,
+          5,
+          5
+        ],
+        "activations": [
+          2,
+          0,
+          -1,
+          -2
+        ]
+      },
+      "methods": {
+        "one_shot": {
+          "final": {
+            "val_acc": 0.98,
+            "val_loss": 0.0564922129313151,
+            "test_acc": 0.9819,
+            "test_loss": 0.047587418365478515
+          }
+        },
+        "float_acts": {
+          "chosen_lr": 0.001,
+          "final": {
+            "val_acc": 0.9886666666666667,
+            "val_loss": 0.04768011220296224,
+            "test_acc": 0.9898,
+            "test_loss": 0.03987316970825195
+          },
+          "lr_runs": [
+            {
+              "lr": 0.0001,
+              "final": {
+                "val_acc": 0.9868333333333333,
+                "val_loss": 0.047954573313395185,
+                "test_acc": 0.9892,
+                "test_loss": 0.034612548446655275
+              },
+              "stages_at_epoch_cap": 0
+            },
+            {
+              "lr": 0.0003,
+              "final": {
+                "val_acc": 0.9861666666666666,
+                "val_loss": 0.049747553507486976,
+                "test_acc": 0.9892,
+                "test_loss": 0.03859882907867432
+              },
+              "stages_at_epoch_cap": 1
+            },
+            {
+              "lr": 0.001,
+              "final": {
+                "val_acc": 0.9886666666666667,
+                "val_loss": 0.04768011220296224,
+                "test_acc": 0.9898,
+                "test_loss": 0.03987316970825195
+              },
+              "stages_at_epoch_cap": 3
+            }
+          ]
+        },
+        "quant_acts": {
+          "chosen_lr": 0.0001,
+          "final": {
+            "val_acc": 0.989,
+            "val_loss": 0.043800919850667315,
+            "test_acc": 0.9903,
+            "test_loss": 0.03351894359588623
+          },
+          "lr_runs": [
+            {
+              "lr": 0.0001,
+              "final": {
+                "val_acc": 0.989,
+                "val_loss": 0.043800919850667315,
+                "test_acc": 0.9903,
+                "test_loss": 0.03351894359588623
+              },
+              "stages_at_epoch_cap": 1
+            },
+            {
+              "lr": 0.0003,
+              "final": {
+                "val_acc": 0.9883333333333333,
+                "val_loss": 0.048821556091308595,
+                "test_acc": 0.9909,
+                "test_loss": 0.03277125053405762
+              },
+              "stages_at_epoch_cap": 1
+            },
+            {
+              "lr": 0.001,
+              "final": {
+                "val_acc": 0.9888333333333333,
+                "val_loss": 0.043671582539876304,
+                "test_acc": 0.9892,
+                "test_loss": 0.03913684120178223
+              },
+              "stages_at_epoch_cap": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "total_bits": 3,
+      "formats": {
+        "input": 2,
+        "weights": [
+          3,
+          4,
+          4,
+          4
+        ],
+        "activations": [
+          1,
+          -1,
+          -2,
+          -3
+        ]
+      },
+      "methods": {
+        "one_shot": {
+          "final": {
+            "val_acc": 0.941,
+            "val_loss": 0.12941130828857422,
+            "test_acc": 0.9412,
+            "test_loss": 0.11714372253417969
+          }
+        },
+        "float_acts": {
+          "chosen_lr": 0.0003,
+          "final": {
+            "val_acc": 0.9716666666666667,
+            "val_loss": 0.08910698445638021,
+            "test_acc": 0.9736,
+            "test_loss": 0.07378686752319336
+          },
+          "lr_runs": [
+            {
+              "lr": 0.0001,
+              "final": {
+                "val_acc": 0.9691666666666666,
+                "val_loss": 0.08977095540364584,
+                "test_acc": 0.9687,
+                "test_loss": 0.07886090698242187
+              },
+              "stages_at_epoch_cap": 1
+            },
+            {
+              "lr": 0.0003,
+              "final": {
+                "val_acc": 0.9716666666666667,
+                "val_loss": 0.08910698445638021,
+                "test_acc": 0.9736,
+                "test_loss": 0.07378686752319336
+              },
+              "stages_at_epoch_cap": 1
+            },
+            {
+              "lr": 0.001,
+              "final": {
+                "val_acc": 0.9673333333333334,
+                "val_loss": 0.10910202280680338,
+                "test_acc": 0.9714,
+                "test_loss": 0.0873361717224121
+              },
+              "stages_at_epoch_cap": 1
+            }
+          ]
+        },
+        "quant_acts": {
+          "chosen_lr": 0.0001,
+          "final": {
+            "val_acc": 0.9758333333333333,
+            "val_loss": 0.08896410878499349,
+            "test_acc": 0.9769,
+            "test_loss": 0.06528728828430176
+          },
+          "lr_runs": [
+            {
+              "lr": 0.0001,
+              "final": {
+                "val_acc": 0.9758333333333333,
+                "val_loss": 0.08896410878499349,
+                "test_acc": 0.9769,
+                "test_loss": 0.06528728828430176
+              },
+              "stages_at_epoch_cap": 3
+            },
+            {
+              "lr": 0.0003,
+              "final": {
+                "val_acc": 0.9728333333333333,
+                "val_loss": 0.089289794921875,
+                "test_acc": 0.9746,
+                "test_loss": 0.06788946609497071
+              },
+              "stages_at_epoch_cap": 2
+            },
+            {
+              "lr": 0.001,
+              "final": {
+                "val_acc": 0.9726666666666667,
+                "val_loss": 0.08204137929280599,
+                "test_acc": 0.9717,
+                "test_loss": 0.07078787651062012
+              },
+              "stages_at_epoch_cap": 1
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

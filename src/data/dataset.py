@@ -136,12 +136,24 @@ def generate_complex_dataset(
 
     X = np.random.uniform(-1, 1, size=(n_samples, n_features))
 
-    y = np.sin(freq_list[0] * np.pi * X[:, 0]) + 0.5 * np.sin(freq_list[1] * np.pi * X[:, 1])
-
-    if n_features >= 4:
-        y = y + 0.3 * X[:, 2] * X[:, 3]
+    y = complex_clean_target(X, freq_list=freq_list)
 
     noise = np.random.normal(0, noise_std, size=n_samples)
     y = y + noise
 
     return X, y
+
+
+def complex_clean_target(X, freq_list=(3.0, 6.0)):
+    """
+    The noiseless target f(x) behind generate_complex_dataset, i.e. y minus
+    its Gaussian noise. Lets analyses separate the irreducible label noise
+    from the model's own error without replaying the generator's RNG.
+    """
+
+    f = np.sin(freq_list[0] * np.pi * X[:, 0]) + 0.5 * np.sin(freq_list[1] * np.pi * X[:, 1])
+
+    if X.shape[1] >= 4:
+        f = f + 0.3 * X[:, 2] * X[:, 3]
+
+    return f

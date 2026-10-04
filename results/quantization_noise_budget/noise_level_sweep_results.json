@@ -1,0 +1,229 @@
+{
+  "noise_levels": [
+    0.003,
+    0.01,
+    0.03,
+    0.1,
+    0.2,
+    0.3,
+    0.5
+  ],
+  "baseline_reproduced": true,
+  "crossover_noise_std": {
+    "8/4": 0.24637910593334852,
+    "8/5": 0.11944784643940415,
+    "16/8": 0.01621144913493018
+  },
+  "records": [
+    {
+      "noise_std": 0.003,
+      "noise_floor": 9e-06,
+      "noise_floor_empirical_test": 9.700199011606977e-06,
+      "best_epoch": 4096,
+      "loaded_baseline_checkpoint": false,
+      "train_seconds": 100.86632442474365,
+      "float_test_mse": 0.1567845350783411,
+      "model_error": 0.15697933100002798,
+      "quant": [
+        {
+          "total_bits": 8,
+          "fractional_bits": 4,
+          "quant_error": 0.04275717645306181,
+          "test_mse": 0.19460529657404999
+        },
+        {
+          "total_bits": 8,
+          "fractional_bits": 5,
+          "quant_error": 0.016248390627555412,
+          "test_mse": 0.17017061701012537
+        },
+        {
+          "total_bits": 16,
+          "fractional_bits": 8,
+          "quant_error": 0.0002447299853860482,
+          "test_mse": 0.15604122919658198
+        }
+      ]
+    },
+    {
+      "noise_std": 0.01,
+      "noise_floor": 0.0001,
+      "noise_floor_empirical_test": 0.00010777998901785508,
+      "best_epoch": 4374,
+      "loaded_baseline_checkpoint": true,
+      "train_seconds": 0.009604692459106445,
+      "float_test_mse": 0.15385571128650632,
+      "model_error": 0.15432392843347362,
+      "quant": [
+        {
+          "total_bits": 8,
+          "fractional_bits": 4,
+          "quant_error": 0.05337543231691505,
+          "test_mse": 0.19927508737656854
+        },
+        {
+          "total_bits": 8,
+          "fractional_bits": 5,
+          "quant_error": 0.01746705993314082,
+          "test_mse": 0.16719365150286658
+        },
+        {
+          "total_bits": 16,
+          "fractional_bits": 8,
+          "quant_error": 0.00031631542962169343,
+          "test_mse": 0.1542394572549622
+        }
+      ]
+    },
+    {
+      "noise_std": 0.03,
+      "noise_floor": 0.0009,
+      "noise_floor_empirical_test": 0.0009700199011606956,
+      "best_epoch": 3965,
+      "loaded_baseline_checkpoint": false,
+      "train_seconds": 67.08628463745117,
+      "float_test_mse": 0.15636201339215217,
+      "model_error": 0.15755446682845678,
+      "quant": [
+        {
+          "total_bits": 8,
+          "fractional_bits": 4,
+          "quant_error": 0.0470659978340762,
+          "test_mse": 0.1996707286336757
+        },
+        {
+          "total_bits": 8,
+          "fractional_bits": 5,
+          "quant_error": 0.015800540730240464,
+          "test_mse": 0.16018329473833987
+        },
+        {
+          "total_bits": 16,
+          "fractional_bits": 8,
+          "quant_error": 0.00020754944531228863,
+          "test_mse": 0.15835345104330315
+        }
+      ]
+    },
+    {
+      "noise_std": 0.1,
+      "noise_floor": 0.010000000000000002,
+      "noise_floor_empirical_test": 0.010777998901785506,
+      "best_epoch": 3741,
+      "loaded_baseline_checkpoint": false,
+      "train_seconds": 95.76641654968262,
+      "float_test_mse": 0.16271559429400553,
+      "model_error": 0.15910500785664194,
+      "quant": [
+        {
+          "total_bits": 8,
+          "fractional_bits": 4,
+          "quant_error": 0.07964046974364201,
+          "test_mse": 0.23090069771663246
+        },
+        {
+          "total_bits": 8,
+          "fractional_bits": 5,
+          "quant_error": 0.014258126130457507,
+          "test_mse": 0.16419039420674733
+        },
+        {
+          "total_bits": 16,
+          "fractional_bits": 8,
+          "quant_error": 0.00024786343552235805,
+          "test_mse": 0.16227733127451408
+        }
+      ]
+    },
+    {
+      "noise_std": 0.2,
+      "noise_floor": 0.04000000000000001,
+      "noise_floor_empirical_test": 0.043111995607142024,
+      "best_epoch": 3368,
+      "loaded_baseline_checkpoint": false,
+      "train_seconds": 70.82416367530823,
+      "float_test_mse": 0.19296610049580729,
+      "model_error": 0.16495830762239042,
+      "quant": [
+        {
+          "total_bits": 8,
+          "fractional_bits": 4,
+          "quant_error": 0.061278068425790894,
+          "test_mse": 0.23667392793664174
+        },
+        {
+          "total_bits": 8,
+          "fractional_bits": 5,
+          "quant_error": 0.014295848869580508,
+          "test_mse": 0.2114353370456906
+        },
+        {
+          "total_bits": 16,
+          "fractional_bits": 8,
+          "quant_error": 0.00018940296180003236,
+          "test_mse": 0.19399679563295685
+        }
+      ]
+    },
+    {
+      "noise_std": 0.3,
+      "noise_floor": 0.09,
+      "noise_floor_empirical_test": 0.09700199011606955,
+      "best_epoch": 3084,
+      "loaded_baseline_checkpoint": false,
+      "train_seconds": 68.96661305427551,
+      "float_test_mse": 0.2662835124781885,
+      "model_error": 0.19290371636430076,
+      "quant": [
+        {
+          "total_bits": 8,
+          "fractional_bits": 4,
+          "quant_error": 0.06016434247810902,
+          "test_mse": 0.3470965669422986
+        },
+        {
+          "total_bits": 8,
+          "fractional_bits": 5,
+          "quant_error": 0.01690921996866125,
+          "test_mse": 0.28021545302750317
+        },
+        {
+          "total_bits": 16,
+          "fractional_bits": 8,
+          "quant_error": 0.00022578946092976333,
+          "test_mse": 0.2691233288818451
+        }
+      ]
+    },
+    {
+      "noise_std": 0.5,
+      "noise_floor": 0.25,
+      "noise_floor_empirical_test": 0.26944997254463765,
+      "best_epoch": 2405,
+      "loaded_baseline_checkpoint": false,
+      "train_seconds": 67.45892453193665,
+      "float_test_mse": 0.5064745321401278,
+      "model_error": 0.29634323401776913,
+      "quant": [
+        {
+          "total_bits": 8,
+          "fractional_bits": 4,
+          "quant_error": 0.06695965430112576,
+          "test_mse": 0.5556691819283617
+        },
+        {
+          "total_bits": 8,
+          "fractional_bits": 5,
+          "quant_error": 0.01606516228447178,
+          "test_mse": 0.5043465447630412
+        },
+        {
+          "total_bits": 16,
+          "fractional_bits": 8,
+          "quant_error": 0.00018906777724283074,
+          "test_mse": 0.5077402724799656
+        }
+      ]
+    }
+  ]
+}
