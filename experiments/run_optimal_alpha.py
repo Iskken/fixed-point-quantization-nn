@@ -1,5 +1,7 @@
 import os
-
+from experiments.run_mlp_non_linear import plot_qat_loss_comparison
+from experiments.run_mlp_non_linear import plot_schedule_behavior
+from experiments.run_mlp_non_linear import plot_fp_qat_pqt_loss_comparison
 from src.data.dataset import generate_complex_dataset
 from src.models.mlp import MLP
 
@@ -7,6 +9,7 @@ from sklearn.model_selection import train_test_split
 
 import matplotlib.pyplot as plt
 import numpy as np
+
 
 
 def initialize_models(layer_sizes):
@@ -56,26 +59,35 @@ def train_qat(
     lr=0.01,
     total_bits=8,
     frac_bits=4,
-    verbose=True
+    alpha_start=0.1,
+    alpha_end=100.0,
+    transition_epochs=20000,
+    verbose=True,
+    learning_rate_schedule=None,
+    snapshot_alphas=None
 ):
     """
-    Train the QAT model using the specified alpha/beta
-    scheduling strategy and evaluate the final model
-    using actual fixed-point quantization.
-    """
+    Train the QAT model using an alpha-only schedule
+    with beta fixed to 1.0.
 
-    # -----------------------------------------
-    # 1. Train QAT model
-    # -----------------------------------------
+    Gradient statistics and distributions are also
+    collected during training.
+    """
 
     print("\n" + "=" * 60)
     print(f"Training QAT model - {schedule_type}")
     print("=" * 60)
 
+    # -----------------------------------------
+    # 1. Train QAT model
+    # -----------------------------------------
+
     (
         loss_history_qat,
         alpha_history,
-        beta_history
+        beta_history,
+        gradient_history,
+        gradient_snapshots
     ) = qat_model.fit_qat_non_linear(
         X_train,
         y_train,
@@ -84,19 +96,17 @@ def train_qat(
         total_bits=total_bits,
         frac_bits=frac_bits,
         schedule_type=schedule_type,
-        verbose=verbose
+        alpha_start=alpha_start,
+        alpha_end=alpha_end,
+        transition_epochs = transition_epochs,
+        verbose=verbose,
+        learning_rate_schedule=learning_rate_schedule,
+        snapshot_alphas=snapshot_alphas
     )
 
     # -----------------------------------------
-    # 2. Final QAT evaluation
+    # 2. Final quantized evaluation
     # -----------------------------------------
-
-    # The model still contains floating-point
-    # master weights.
-    #
-    # predict_quantized() converts them to the
-    # actual fixed-point representation during
-    # inference.
 
     y_train_qat = qat_model.predict_quantized(
         X_train,
@@ -133,8 +143,14 @@ def train_qat(
         "alpha_history": alpha_history,
         "beta_history": beta_history,
 
+        "gradient_history": gradient_history,
+        "gradient_snapshots": gradient_snapshots,
+
         "model_qat": qat_model
     }
+
+
+
 
 def train_fp_pqt(
     fp_model,
@@ -226,80 +242,6 @@ def train_fp_pqt(
         "model_fp": fp_model
     }
 
-def plot_schedule_behavior(result, results_dir):
-    """
-    Plot alpha, beta and QAT training loss for one schedule.
-    """
-
-    schedule_type = result["schedule_type"]
-
-    alpha_history = result["alpha_history"]
-    beta_history = result["beta_history"]
-    loss_history = result["loss_history_qat"]
-
-    schedule_dir = os.path.join(
-        results_dir,
-        schedule_type
-    )
-
-    os.makedirs(schedule_dir, exist_ok=True)
-
-    epochs = np.arange(len(loss_history))
-
-    fig, axes = plt.subplots(3, 1, figsize=(10, 12))
-
-    # -----------------------------------------
-    # Alpha
-    # -----------------------------------------
-
-    axes[0].plot(epochs, alpha_history)
-
-    axes[0].set_xlabel("Epoch")
-    axes[0].set_ylabel("Alpha")
-    axes[0].set_title(
-        f"Alpha Schedule - {schedule_type}"
-    )
-    axes[0].grid(True)
-
-    # -----------------------------------------
-    # Beta
-    # -----------------------------------------
-
-    axes[1].plot(epochs, beta_history)
-
-    axes[1].set_xlabel("Epoch")
-    axes[1].set_ylabel("Beta")
-    axes[1].set_title(
-        f"Beta Schedule - {schedule_type}"
-    )
-    axes[1].grid(True)
-
-    # -----------------------------------------
-    # QAT training loss
-    # -----------------------------------------
-
-    axes[2].plot(epochs, loss_history)
-
-    axes[2].set_xlabel("Epoch")
-    axes[2].set_ylabel("MSE")
-    axes[2].set_title(
-        f"QAT Training Loss - {schedule_type}"
-    )
-    axes[2].grid(True)
-
-    plt.tight_layout()
-
-    plt.savefig(
-        os.path.join(
-            schedule_dir,
-            "schedule_behavior.png"
-        ),
-        dpi=300,
-        bbox_inches="tight"
-    )
-
-    plt.close()
-
 
 
 def plot_test_mse_comparison(fp_pqt_result, qat_results, results_dir):
@@ -323,64 +265,40 @@ def plot_test_mse_comparison(fp_pqt_result, qat_results, results_dir):
         for qat_result in qat_results
     ]
 
-    x = np.arange(len(schedules))
+    x = np.arange(3)
+
+    bar_list = [qat_mse[0], fp_mse, pqt_mse]
 
     plt.figure(figsize=(12, 6))
 
-    # -----------------------------------------
-    # QAT results
-    # -----------------------------------------
 
     bars = plt.bar(
-        x,
-        qat_mse,
-        width=0.5,
-        label="QAT"
-    )
-    
+            x,
+            bar_list,
+            width=0.5,
+            label="QAT"
+        )
+
     plt.bar_label(
-        bars,
-        fmt="%.4f",
-        padding=3
-    )
-
-    # -----------------------------------------
-    # FP baseline
-    # -----------------------------------------
-
-    plt.axhline(
-        y=fp_mse,
-        linestyle="--",
-        linewidth=2,
-        label=f"FP baseline ({fp_mse:.4f})"
-    )
-
-    # -----------------------------------------
-    # PQT baseline
-    # -----------------------------------------
-
-    plt.axhline(
-        y=pqt_mse,
-        linestyle=":",
-        linewidth=2,
-        label=f"PQT baseline ({pqt_mse:.4f})"
-    )
-
+            bars,
+            fmt="%.4f",
+            padding=3
+        )
     # -----------------------------------------
     # Labels
     # -----------------------------------------
 
     plt.xticks(
         x,
-        schedules,
+        ["QAT", "FP", "PQT"],
         rotation=20
     )
 
-    plt.xlabel("Scheduling Method")
+    plt.xlabel("Training Type")
     plt.ylabel("Test MSE")
 
     plt.title(
-        "QAT Test MSE Compared with FP and PQT Baselines"
+        "Test MSE Comparison of Training Types"
     )
 
     plt.legend()
@@ -403,104 +321,234 @@ def plot_test_mse_comparison(fp_pqt_result, qat_results, results_dir):
 
     plt.close()
 
-
-def plot_qat_loss_comparison(results, results_dir):
+def plot_gradient_statistics(
+        result,
+        results_dir
+    ):
     """
-    Compare QAT training loss across all scheduling methods.
+    Plot mean, median, and maximum absolute gradient
+    throughout QAT training.
     """
 
-    plt.figure(figsize=(12, 6))
+    gradient_history = result["gradient_history"]
 
-    for result in results:
+    epochs = [
+        item["epoch"]
+        for item in gradient_history
+    ]
 
-        schedule_type = result["schedule_type"]
+    mean_grad = [
+        item["mean_abs_gradient"]
+        for item in gradient_history
+    ]
 
-        loss_history = result["loss_history_qat"]
+    median_grad = [
+        item["median_abs_gradient"]
+        for item in gradient_history
+    ]
 
-        plt.plot(
-            loss_history,
-            label=schedule_type
-        )
+    max_grad = [
+        item["max_abs_gradient"]
+        for item in gradient_history
+    ]
 
-    plt.xlabel("Epoch")
-    plt.ylabel("MSE Loss")
-    plt.title(
-        "QAT Training Loss Across Scheduling Methods"
+    plt.figure(figsize=(10, 6))
+
+    plt.plot(
+        epochs,
+        mean_grad,
+        label="Mean |gradient|"
     )
 
-    plt.legend()
-    plt.grid(True)
+    plt.plot(
+        epochs,
+        median_grad,
+        label="Median |gradient|"
+    )
 
+    plt.plot(
+        epochs,
+        max_grad,
+        label="Max |gradient|"
+    )
+
+    plt.xlabel("Epoch")
+    plt.ylabel("Absolute gradient")
+    plt.title(
+        f"Gradient Statistics - "
+        f"{result['schedule_type']}"
+    )
+
+    plt.yscale("log")
+
+    plt.legend()
+    plt.grid(True, alpha=0.3)
     plt.tight_layout()
 
+    filename = os.path.join(
+        results_dir,
+        f"gradient_statistics_"
+        f"{result['schedule_type']}.png"
+    )
+
     plt.savefig(
-        os.path.join(
-            results_dir,
-            "qat_loss_comparison.png"
-        ),
-        dpi=300,
-        bbox_inches="tight"
+        filename,
+        dpi=300
+    )
+
+    plt.close()
+
+def plot_gradient_vs_alpha(
+    result,
+    results_dir
+):
+    """
+    Plot absolute gradient statistics as a function
+    of alpha.
+    """
+
+    gradient_history = result["gradient_history"]
+
+    alpha = [
+        item["alpha"]
+        for item in gradient_history
+    ]
+
+    mean_grad = [
+        item["mean_abs_gradient"]
+        for item in gradient_history
+    ]
+
+    median_grad = [
+        item["median_abs_gradient"]
+        for item in gradient_history
+    ]
+
+    max_grad = [
+        item["max_abs_gradient"]
+        for item in gradient_history
+    ]
+
+    plt.figure(figsize=(10, 6))
+
+    plt.plot(
+        alpha,
+        mean_grad,
+        label="Mean |gradient|"
+    )
+
+    plt.plot(
+        alpha,
+        median_grad,
+        label="Median |gradient|"
+    )
+
+    plt.plot(
+        alpha,
+        max_grad,
+        label="Max |gradient|"
+    )
+
+    plt.xlabel("Alpha")
+    plt.ylabel("Absolute gradient")
+    plt.title(
+        f"Gradient Magnitude vs Alpha - "
+        f"{result['schedule_type']}"
+    )
+
+    plt.xscale("log")
+    plt.yscale("log")
+
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+
+    filename = os.path.join(
+        results_dir,
+        f"gradient_vs_alpha_"
+        f"{result['schedule_type']}.png"
+    )
+
+    plt.savefig(
+        filename,
+        dpi=300
     )
 
     plt.close()
 
 
-def plot_fp_qat_pqt_loss_comparison(fp_pqt_result, qat_result, results_dir):
+def plot_gradient_distributions_combined(
+    result,
+    results_dir,
+    bins=100
+):
     """
-    Compare FP, QAT and PQT performance in one figure.
-
-    FP and QAT are plotted as training-loss curves.
-    PQT is shown as a horizontal line because it is
-    evaluated only after FP training.
+    Plot absolute gradient distributions for all
+    captured alpha values in one figure.
     """
 
+    gradient_snapshots = result["gradient_snapshots"]
 
-    fp_loss = fp_pqt_result["loss_history_fp"]
-    qat_loss = qat_result["loss_history_qat"]
-    pqt_loss = fp_pqt_result["train_mse_pqt"]
+    n_snapshots = len(gradient_snapshots)
 
-    epochs_fp = np.arange(len(fp_loss))
-    epochs_qat = np.arange(len(qat_loss))
+    if n_snapshots == 0:
+        return
 
-    plt.figure(figsize=(12, 6))
-
-    # Floating-point training loss
-    plt.plot(
-        epochs_fp,
-        fp_loss,
-        label="Floating-Point"
+    fig, axes = plt.subplots(
+        n_snapshots,
+        1,
+        figsize=(10, 4 * n_snapshots)
     )
 
-    # QAT training loss
-    plt.plot(
-        epochs_qat,
-        qat_loss,
-        label=f"QAT ({qat_result['schedule_type']})"
-    )
+    if n_snapshots == 1:
+        axes = [axes]
 
-    # PQT final MSE
-    plt.axhline(
-        y=pqt_loss,
-        linestyle="--",
-        label="PQT Train MSE"
-    )
+    for ax, (target_alpha, snapshot) in zip(
+        axes,
+        gradient_snapshots.items()
+    ):
 
-    plt.xlabel("Epoch")
-    plt.ylabel("MSE")
-    plt.title(
-        "Floating-Point vs QAT vs PQT"
-    )
+        gradients = snapshot["gradients"]
 
-    plt.legend()
-    plt.grid(True)
+        ax.hist(
+            gradients,
+            bins=bins,
+            density=True
+        )
+
+        ax.set_xlabel("|Gradient|")
+        ax.set_ylabel("Density")
+
+        ax.set_title(
+            f"α = {target_alpha:.2f} "
+            f"(actual α = "
+            f"{snapshot['alpha']:.4f}, "
+            f"epoch = {snapshot['epoch']})"
+        )
+
+        ax.set_yscale("log")
+
+        ax.grid(
+            True,
+            alpha=0.3
+        )
+
+    fig.suptitle(
+        f"Absolute Gradient Distributions - "
+        f"{result['schedule_type']}",
+        fontsize=14
+    )
 
     plt.tight_layout()
 
+    filename = os.path.join(
+        results_dir,
+        f"gradient_distributions_combined_"
+        f"{result['schedule_type']}.png"
+    )
+
     plt.savefig(
-        os.path.join(
-            results_dir,
-            "fp_qat_pqt_comparison.png"
-        ),
+        filename,
         dpi=300,
         bbox_inches="tight"
     )
@@ -513,7 +561,7 @@ def main():
     # Configuration
     # =========================================
 
-    RESULTS_DIR = "results/complex_model_non_linear"
+    RESULTS_DIR = "results/complex_dataset_optimal_alpha_and_lr"
 
     os.makedirs(
         RESULTS_DIR,
@@ -522,20 +570,29 @@ def main():
 
     layer_sizes = [4, 32, 32, 16, 1]
 
-    epochs = 20000
+    epochs = 50000
     lr = 0.01
 
     total_bits = 8
     frac_bits = 4
 
+    alpha_start = 0.1
+    alpha_end = 10.0
+    beta_start = 0.1
+    beta_end = 100.0
+
+    transition_epochs = 10000
+
+    # if the schedulers will start with prefix "alpha_", then the scheduler will be applied to alpha, and beta will remain constant at 1.0.
     schedules = [
-        "linear",
-        "independent_linear",
-        "step",
-        "warm_up",
-        "alpha_linear",
-        "alpha_step"
+        "alpha_linear"
+        # "alpha_step",
+        # "alpha_warm_up"
     ]
+
+    learning_rate_schedule = "alpha_dependent"
+
+    snapshot_alphas = [0.1, 0.5, 1, 2, 5, 10]
 
     # =========================================
     # Generate dataset
@@ -606,37 +663,34 @@ def main():
             lr=lr,
             total_bits=total_bits,
             frac_bits=frac_bits,
-            verbose=True
+            alpha_start=alpha_start,
+            alpha_end=alpha_end,
+            transition_epochs=transition_epochs,
+            verbose=True,
+            learning_rate_schedule=learning_rate_schedule,
+            snapshot_alphas=snapshot_alphas
         )
 
         qat_results.append(result)
-    
-    # result = run_schedule_experiment(
-    #         schedule_type="linear",
-
-    #         X_train=X_train,
-    #         X_test=X_test,
-
-    #         y_train=y_train,
-    #         y_test=y_test,
-
-    #         layer_sizes=layer_sizes,
-
-    #         epochs=epochs,
-    #         lr=lr,
-
-    #         total_bits=total_bits,
-    #         frac_bits=frac_bits,
-
-    #         results_dir=RESULTS_DIR
-    # )
-    # =========================================
-    # Create plots
-    # =========================================
 
     for result in qat_results:
 
         plot_schedule_behavior(
+            result,
+            RESULTS_DIR
+        )
+
+        plot_gradient_statistics(
+            result,
+            RESULTS_DIR
+        )
+
+        plot_gradient_vs_alpha(
+            result,
+            RESULTS_DIR
+        )
+
+        plot_gradient_distributions_combined(
             result,
             RESULTS_DIR
         )

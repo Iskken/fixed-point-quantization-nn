@@ -377,15 +377,15 @@ class MLP:
                 dz = da_prev * (1 - a_prev_activated ** 2)
                 
 
-    def _get_scheduled_alpha_beta(self, progress, schedule_type="linear"):
+    def _get_scheduled_alpha_beta(self, progress, schedule_type="linear", alpha_start=0.1, alpha_end=100.0, beta_start=0.1, beta_end=100.0):
         """
         Schedule alpha and beta based on training progress.
         """
-        alpha_start = 0.1
-        alpha_end = 100.0
+        alpha_start = alpha_start
+        alpha_end = alpha_end
 
-        beta_start = 0.1    
-        beta_end = 100
+        beta_start = beta_start 
+        beta_end = beta_end
 
         if schedule_type == "linear":
             alpha = 0.1 + 99.9 * progress
@@ -428,6 +428,32 @@ class MLP:
                     beta_end - beta_start
                 ) * transition_progress
 
+        
+        elif schedule_type == "alpha_linear":
+            alpha = alpha_start + (alpha_end - alpha_start) * progress
+            beta = 1.0
+        elif schedule_type == "alpha_step":
+            n_steps = 5
+            step = min(int(progress * n_steps), n_steps - 1)
+            step_progress = step / (n_steps - 1)
+            alpha = alpha_start + (alpha_end - alpha_start) * step_progress
+            beta = 1.0
+        elif schedule_type == "alpha_warm_up":
+            warmup_fraction = 0.1
+
+            if progress < warmup_fraction:
+                alpha = alpha_start
+                beta = 1.0
+            else:
+                transition_progress = (
+                    progress - warmup_fraction
+                ) / (1.0 - warmup_fraction)
+
+                alpha = alpha_start + (
+                    alpha_end - alpha_start
+                ) * transition_progress
+
+                beta = 1.0
 
         else:
             raise ValueError(f"Unknown schedule_type: {schedule_type}")
@@ -435,107 +461,155 @@ class MLP:
         return alpha, beta
 
 
-
-    def fit_qat_non_linear(self, X, y, epochs=1000, lr=0.01, total_bits=8, frac_bits=4, schedule_type="linear", verbose=True):
+    def _get_learning_rate(
+        self,
+        epoch,
+        total_epochs,
+        schedule=None,
+        initial_lr=0.01,
+        alpha=1.0,
+        beta=1.0,
+        alpha_start=0.1
+    ):
         """
-        Train the network using gradient descent with non-linear QAT.
+        Get the learning rate for the current epoch
+        based on the selected schedule.
         """
 
-        y = y.reshape(-1, 1)
+        if schedule is None:
+            return initial_lr
 
-        self.loss_history = []
-        self.alpha_history = []
-        self.beta_history = []
+        if schedule == "linear_decay":
 
+            progress = epoch / max(total_epochs - 1, 1)
+
+            return initial_lr * max(
+                1.0 - progress,
+                0.0
+            )
+
+        elif schedule == "exponential_decay":
+
+            decay_rate = 0.96
+            decay_steps = 1000
+
+            return initial_lr * (
+                decay_rate ** (epoch / decay_steps)
+            )
+
+        elif schedule == "alpha_dependent":
+
+            return initial_lr * (
+                alpha_start / alpha
+            ) ** 0.5
+
+        elif schedule == "beta_dependent":
+
+            return initial_lr / beta
+
+        else:
+            raise ValueError(
+                f"Unknown learning rate schedule: {schedule}"
+            )
+
+
+    def fit_qat_non_linear(
+        self,
+        X,
+        y,
+        epochs=20000,
+        lr=0.01,
+        total_bits=8,
+        frac_bits=4,
+        schedule_type="alpha_linear",
+        alpha_start=0.1,
+        alpha_end=100.0,
+        transition_epochs=20000,
+        verbose=True,
+        learning_rate_schedule=None,
+        snapshot_alphas=None
+    ):
+        """
+        Train the MLP using nonlinear QAT with an alpha schedule.
+
+        For the current experiment:
+            - beta is fixed to 1.0
+            - learning rate is fixed
+            - alpha changes according to schedule_type
+
+        Gradient statistics and gradient distributions are
+        recorded throughout training.
+
+        Parameters
+        ----------
+        snapshot_alphas : list or None
+            Alpha values at which the full absolute gradient
+            distribution should be saved.
+
+            Example:
+                [0.1, 1.0, 5.0, 10.0, 50.0, 100.0]
+        """
+
+        if snapshot_alphas is None:
+            snapshot_alphas = [
+                0.1,
+                1.0,
+                5.0,
+                10.0,
+                50.0,
+                100.0
+            ]
+
+        # Make sure targets are sorted
+        snapshot_alphas = sorted(snapshot_alphas)
+
+        # --------------------------------------------------
+        # Training history
+        # --------------------------------------------------
+
+        loss_history = []
+        alpha_history = []
+        beta_history = []
+
+        # Gradient statistics for every epoch
+        gradient_history = []
+
+        # Full gradient distributions only at selected alpha
+        gradient_snapshots = {}
+
+        # Keep track of which alpha snapshots
+        # have already been captured
+        captured_snapshots = set()
+
+        # --------------------------------------------------
+        # Training loop
+        # --------------------------------------------------
 
         for epoch in range(epochs):
 
-            # ----------------------------
-            # 1. Schedule alpha and beta
-            # ----------------------------
+            # ----------------------------------------------
+            # Training progress
+            # ----------------------------------------------
 
-            progress = epoch / max(1, epochs - 1)
+            if transition_epochs > 1:
+                progress = min(epoch / (transition_epochs - 1), 1.0)
+            else:
+                progress = 1.0
 
-            alpha, beta = self._get_scheduled_alpha_beta(progress, schedule_type=schedule_type)
-            self.alpha_history.append(alpha)
-            self.beta_history.append(beta)
+            # ----------------------------------------------
+            # Get alpha and beta
+            # ----------------------------------------------
 
-            # ----------------------------
-            # 2. Forward QAT
-            # ----------------------------
-
-            y_hat = self.forward_qat_non_linear(
-                X,
-                alpha=alpha,
-                beta=beta,
-                total_bits=total_bits,
-                frac_bits=frac_bits
+            alpha, beta = self._get_scheduled_alpha_beta(
+                progress=progress,
+                schedule_type=schedule_type,
+                alpha_start=alpha_start,
+                alpha_end=alpha_end
             )
 
-            # ----------------------------
-            # 3. Calculate loss
-            # ----------------------------
-
-            loss = self.compute_loss(y_hat, y)
-            self.loss_history.append(loss)
-
-            # ----------------------------
-            # 4. Backward QAT
-            # ----------------------------
-
-            self.backward_qat_non_linear(
-                X,
-                y,
-                y_hat
-            )
-
-            # ----------------------------
-            # 5. Update continuous weights
-            # ----------------------------
-
-            current_lr = (
-                lr
-                * 0.5
-                * (
-                    1.0
-                    + np.cos(np.pi * epoch / epochs)
-                )
-            )
-
-            for i in range(self.n_layers):
-
-                if not self.freeze[i]:
-
-                    self.weights[i] -= (
-                        current_lr * self.grad_weights[i]
-                    )
-
-                    self.biases[i] -= (
-                        current_lr * self.grad_biases[i]
-                    )
-
-            if verbose and epoch % 100 == 0:
-                print(
-                    f"Epoch {epoch}, "
-                    f"Loss: {loss:.6f}, "
-                    f"Alpha: {alpha:.4f}, "
-                    f"Beta: {beta:.4f}"
-                )
-
-        return  self.loss_history, self.alpha_history, self.beta_history
-        
-
-        def predict_qat_non_linear(
-            self,
-            X,
-            total_bits=8,
-            frac_bits=4,
-            alpha=1.0,
-            beta=1.0
-        ):
-            """
-            Generate predictions using non-linear QAT.
-            """
+            # ----------------------------------------------
+            # Forward pass
+            # ----------------------------------------------
 
             y_hat = self.forward_qat_non_linear(
                 X,
@@ -545,8 +619,148 @@ class MLP:
                 beta=beta
             )
 
-            return y_hat.squeeze()
+            # ----------------------------------------------
+            # Backward pass
+            # ----------------------------------------------
 
+            self.backward_qat_non_linear(
+                X,
+                y,
+                y_hat
+            )
+
+            # ----------------------------------------------
+            # Collect all weight and bias gradients
+            # ----------------------------------------------
+
+            all_gradients = np.concatenate([
+                g.flatten()
+                for g in self.grad_weights
+                if g is not None
+            ] + [
+                g.flatten()
+                for g in self.grad_biases
+                if g is not None
+            ])
+
+            # Absolute gradient values
+            abs_gradients = np.abs(all_gradients)
+
+            # ----------------------------------------------
+            # Gradient statistics
+            # ----------------------------------------------
+
+            mean_abs_gradient = np.mean(abs_gradients)
+            median_abs_gradient = np.median(abs_gradients)
+            max_abs_gradient = np.max(abs_gradients)
+            min_abs_gradient = np.min(abs_gradients)
+
+            gradient_history.append({
+                "epoch": epoch,
+                "alpha": alpha,
+                "mean_abs_gradient": mean_abs_gradient,
+                "median_abs_gradient": median_abs_gradient,
+                "max_abs_gradient": max_abs_gradient,
+                "min_abs_gradient": min_abs_gradient
+            })
+
+            # ----------------------------------------------
+            # Save gradient distribution when alpha reaches
+            # one of the requested snapshot values
+            # ----------------------------------------------
+
+            for target_alpha in snapshot_alphas:
+
+                if target_alpha in captured_snapshots:
+                    continue
+
+                if alpha >= target_alpha:
+
+                    gradient_snapshots[target_alpha] = {
+                        "epoch": epoch,
+                        "alpha": alpha,
+                        "gradients": abs_gradients.copy()
+                    }
+
+                    captured_snapshots.add(target_alpha)
+
+            # ----------------------------------------------
+            # Fixed learning rate
+            # ----------------------------------------------
+
+            current_lr = self._get_learning_rate(
+                epoch=epoch,
+                total_epochs=epochs,
+                schedule=learning_rate_schedule,
+                initial_lr=lr,
+                alpha=alpha,
+                beta=beta
+            )
+
+            # ----------------------------------------------
+            # Update master floating-point parameters
+            # ----------------------------------------------
+
+            for i in range(self.n_layers):
+
+                if not self.freeze[i]:
+
+                    self.weights[i] -= (
+                        current_lr
+                        * self.grad_weights[i]
+                    )
+
+                    self.biases[i] -= (
+                        current_lr
+                        * self.grad_biases[i]
+                    )
+
+            # ----------------------------------------------
+            # Calculate training loss
+            # ----------------------------------------------
+
+            y_reshaped = y.reshape(-1, 1)
+
+            loss = np.mean(
+                (y_hat - y_reshaped) ** 2
+            )
+
+            loss_history.append(loss)
+            alpha_history.append(alpha)
+            beta_history.append(beta)
+
+            # ----------------------------------------------
+            # Verbose output
+            # ----------------------------------------------
+
+            if verbose and (
+                epoch == 0
+                or (epoch + 1) % 100 == 0
+                or epoch == epochs - 1
+            ):
+
+                print(
+                    f"Epoch {epoch + 1}/{epochs} "
+                    f"Loss: {loss:.6f} "
+                    f"Alpha: {alpha:.4f} "
+                    f"Beta: {beta:.4f} "
+                    f"Mean |Grad|: "
+                    f"{mean_abs_gradient:.6e} "
+                    f"Learning Rate: {current_lr:.6e}"
+                )
+
+        # --------------------------------------------------
+        # Return everything
+        # --------------------------------------------------
+
+        return (
+            loss_history,
+            alpha_history,
+            beta_history,
+            gradient_history,
+            gradient_snapshots
+        )
+        
 
         
     def save(self, path):
@@ -572,3 +786,165 @@ class MLP:
         model.biases = [data[f"b{i}"] for i in range(model.n_layers)]
 
         return model
+    
+
+    def fit_qat_stepwise(
+        self,
+        X,
+        y,
+        alpha_steps,
+        lr=0.01,
+        total_bits=8,
+        frac_bits=4,
+        beta=1.0,
+        tolerance=1e-7,
+        patience=100,
+        max_epochs_per_alpha=10000,
+        verbose=True
+    ):
+
+        loss_history = []
+        alpha_history = []
+        beta_history = []
+        gradient_history = []
+
+        convergence_info = []
+
+        total_epoch = 0
+
+        for alpha in alpha_steps:
+
+            stable_epochs = 0
+            previous_loss = None
+            stage_start_epoch = total_epoch
+
+            if verbose:
+                print(f"\nStarting alpha = {alpha}")
+
+            for stage_epoch in range(max_epochs_per_alpha):
+
+                # -----------------------------------------
+                # Forward pass
+                # -----------------------------------------
+
+                y_hat = self.forward_qat_non_linear(
+                    X,
+                    total_bits=total_bits,
+                    frac_bits=frac_bits,
+                    alpha=alpha,
+                    beta=beta
+                )
+
+                # -----------------------------------------
+                # Backward pass
+                # -----------------------------------------
+
+                self.backward_qat_non_linear(
+                    X,
+                    y,
+                    y_hat
+                )
+
+                # -----------------------------------------
+                # Gradient statistics
+                # -----------------------------------------
+
+                all_gradients = np.concatenate([
+                    g.flatten()
+                    for g in self.grad_weights
+                    if g is not None
+                ] + [
+                    g.flatten()
+                    for g in self.grad_biases
+                    if g is not None
+                ])
+
+                abs_gradients = np.abs(all_gradients)
+
+                gradient_history.append({
+                    "epoch": total_epoch,
+                    "alpha": alpha,
+                    "mean_abs_gradient": np.mean(abs_gradients),
+                    "median_abs_gradient": np.median(abs_gradients),
+                    "max_abs_gradient": np.max(abs_gradients),
+                    "min_abs_gradient": np.min(abs_gradients)
+                })
+
+                # -----------------------------------------
+                # Update weights
+                # -----------------------------------------
+
+                for i in range(self.n_layers):
+
+                    if not self.freeze[i]:
+
+                        self.weights[i] -= (
+                            lr * self.grad_weights[i]
+                        )
+
+                        self.biases[i] -= (
+                            lr * self.grad_biases[i]
+                        )
+
+                # -----------------------------------------
+                # Loss
+                # -----------------------------------------
+
+                y_reshaped = y.reshape(-1, 1)
+
+                loss = np.mean(
+                    (y_hat - y_reshaped) ** 2
+                )
+
+                loss_history.append(loss)
+                alpha_history.append(alpha)
+                beta_history.append(beta)
+
+                # -----------------------------------------
+                # Convergence check
+                # -----------------------------------------
+
+                if previous_loss is not None:
+
+                    loss_change = abs(
+                        previous_loss - loss
+                    )
+
+                    if loss_change < tolerance:
+                        stable_epochs += 1
+                    else:
+                        stable_epochs = 0
+
+                    if stable_epochs >= patience:
+
+                        if verbose:
+                            print(
+                                f"Converged at alpha={alpha} "
+                                f"after {stage_epoch + 1} epochs "
+                                f"(loss={loss:.8f})"
+                            )
+
+                        break
+
+                previous_loss = loss
+                total_epoch += 1
+
+            # ---------------------------------------------
+            # Save information about this alpha stage
+            # ---------------------------------------------
+
+            stage_epochs = total_epoch - stage_start_epoch
+
+            convergence_info.append({
+                "alpha": alpha,
+                "epochs": stage_epochs,
+                "final_loss": loss
+            })
+
+        return (
+            loss_history,
+            alpha_history,
+            beta_history, 
+            gradient_history,
+            convergence_info
+        )
