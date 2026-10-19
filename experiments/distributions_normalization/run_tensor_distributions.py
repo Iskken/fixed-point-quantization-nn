@@ -21,8 +21,12 @@ activations it produces -- for the three float models used so far, with
 the fixed-point format each tensor actually got drawn on top.
 
   MLP (complex regression model)  one global 8/4 format, as in every MLP PTQ run
-  MNIST / SVHN CNNs               per-layer minimum-error formats at 4 bits,
-                                  as in the layer-wise experiments (5-6)
+  MNIST / SVHN CNNs, twice:
+    per-layer   minimum-error formats at 4 bits, as in the layer-wise
+                experiments (5-6)
+    global      the single 4-bit format chosen on validation in the one-shot
+                sweep (run_cnn_one_shot_ptq.py), for hardware that cannot
+                give each tensor its own format
 
 Questions it answers: how wide is each tensor compared with its format's
 range (clipping) and step (rounding to zero)? Are the distributions
@@ -47,6 +51,7 @@ MLP_FORMAT = (8, 4)
 CNN_TOTAL_BITS = 4
 N_CALIBRATION = 2000
 DISPLAY = {"mlp": "MLP (complex regression)", "mnist": "MNIST CNN", "svhn": "SVHN CNN"}
+ONE_SHOT_RESULTS = "results/cnn_image_classification/one_shot_ptq_results.json"
 
 
 # ----------------------------------------------------------------------
@@ -77,11 +82,20 @@ def mlp_tensors():
         "weights": weights, "activations": activations,
         "weight_formats": [(tb, fb)] * n, "activation_formats": [(tb, fb)] * n,
         "relu": [False] * n,
-        "format_label": f"global {tb}/{fb}",
+        "format_label": f"one global {tb}/{fb} format",
+        "display": DISPLAY["mlp"],
     }
 
 
-def cnn_tensors(name):
+def best_global_fractional_bits(name, total_bits):
+    """The one-shot sweep's validation-selected global format for this dataset."""
+    with open(ONE_SHOT_RESULTS) as f:
+        results = json.load(f)
+    entry = next(r for r in results if r["dataset"] == name)
+    return next(b["fractional_bits"] for b in entry["best_global"] if b["total_bits"] == total_bits)
+
+
+def cnn_tensors(name, mode):
     with open(f"results/cnn_image_classification/{name}_cnn_config.json") as f:
         config = json.load(f)
     data = load_image_dataset(name, seed=config["split_seed"], val_fraction=config["val_fraction"], device=DEVICE)
@@ -89,16 +103,26 @@ def cnn_tensors(name):
     x = to_float(data["Xtr"][:N_CALIBRATION])
 
     tensors = model.calibration_tensors(x)
-    formats = model.allocate_bits(x, CNN_TOTAL_BITS, method="mse")
     n = model.n_layers
+    if mode == "per_layer":
+        formats = model.allocate_bits(x, CNN_TOTAL_BITS, method="mse")
+        weight_bits, activation_bits = formats.weights, formats.activations
+        label = f"per-layer minimum-error {CNN_TOTAL_BITS}-bit formats"
+    elif mode == "global":
+        f = best_global_fractional_bits(name, CNN_TOTAL_BITS)
+        weight_bits, activation_bits = [f] * n, [f] * n
+        label = f"one global {CNN_TOTAL_BITS}-bit format (f={f}, best on validation)"
+    else:
+        raise ValueError(mode)
     return {
         "names": model.stage_names(),
         "weights": [w.cpu().numpy().ravel() for w in tensors["weights"]],
         "activations": [a.cpu().numpy().ravel() for a in tensors["activations"]],
-        "weight_formats": [(CNN_TOTAL_BITS, f) for f in formats.weights],
-        "activation_formats": [(CNN_TOTAL_BITS, f) for f in formats.activations],
+        "weight_formats": [(CNN_TOTAL_BITS, f) for f in weight_bits],
+        "activation_formats": [(CNN_TOTAL_BITS, f) for f in activation_bits],
         "relu": [i < n - 1 for i in range(n)],   # every stage but the logits
-        "format_label": f"per-layer minimum-error, {CNN_TOTAL_BITS}-bit",
+        "format_label": label,
+        "display": DISPLAY[name],
     }
 
 
@@ -191,7 +215,7 @@ def plot_model(model_key, t, rows):
                 ax.set_ylabel(f"{role}\ncount (log)")
             ax.tick_params(labelsize=8)
 
-    fig.suptitle(f"{DISPLAY[model_key]}: tensor distributions vs. {t['format_label']} formats",
+    fig.suptitle(f"{t['display']}: tensor distributions vs. {t['format_label']}",
                  x=0.01, ha="left", fontsize=12, fontweight="semibold", color=INK)
     fig.tight_layout(rect=(0, 0.04, 1, 0.97))
     fig.text(0.5, 0.01, "grey vertical lines: format range (larger values are clipped to the max)   "
@@ -204,12 +228,15 @@ def plot_model(model_key, t, rows):
 
 
 def main():
-    collected = {"mlp": mlp_tensors(), "mnist": cnn_tensors("mnist"), "svhn": cnn_tensors("svhn")}
+    collected = {"mlp": mlp_tensors()}
+    for name in ("mnist", "svhn"):
+        for mode in ("per_layer", "global"):
+            collected[f"{name}_{mode}"] = cnn_tensors(name, mode)
     all_rows = []
     for key, t in collected.items():
         rows = summarise(key, t)
         all_rows += rows
-        print(f"\n===== {DISPLAY[key]} ({t['format_label']}) =====")
+        print(f"\n===== {t['display']} ({t['format_label']}) =====")
         print(f"{'layer':>8} {'role':>11} {'max|x|':>8} {'std':>8} {'kurt':>6} {'max/p99.9':>9} "
               f"{'f':>3} {'range':>6} {'clip%':>6} {'->0%':>6} {'zero%':>6}")
         for r in rows:
