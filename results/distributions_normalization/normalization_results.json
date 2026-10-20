@@ -1,0 +1,1154 @@
+[
+  {
+    "dataset": "mnist",
+    "norm": "none",
+    "float_test_acc": 0.9901,
+    "deployed_float_test_acc": 0.9901,
+    "best_epoch": null,
+    "activation_scale": [
+      {
+        "layer": "conv1",
+        "weight_max_abs": 0.7220897674560547,
+        "activation_max_abs": 2.434248685836792,
+        "activation_p99_9_abs": 1.9290356636047363,
+        "activation_std": 0.36944764852523804
+      },
+      {
+        "layer": "conv2",
+        "weight_max_abs": 0.4882427752017975,
+        "activation_max_abs": 12.143872261047363,
+        "activation_p99_9_abs": 8.22192096710205,
+        "activation_std": 1.472562313079834
+      },
+      {
+        "layer": "fc1",
+        "weight_max_abs": 0.566565990447998,
+        "activation_max_abs": 26.901329040527344,
+        "activation_p99_9_abs": 20.81524085998535,
+        "activation_std": 3.952138662338257
+      },
+      {
+        "layer": "fc2",
+        "weight_max_abs": 0.40510115027427673,
+        "activation_max_abs": 34.81037521362305,
+        "activation_p99_9_abs": 30.09452247619629,
+        "activation_std": 9.19630241394043
+      }
+    ],
+    "one_shot": [
+      {
+        "total_bits": 3,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.8827,
+        "per_layer_formats": {
+          "input": 2,
+          "weights": [
+            3,
+            4,
+            5,
+            4
+          ],
+          "activations": [
+            1,
+            -1,
+            -2,
+            -3
+          ]
+        },
+        "per_layer_test_acc": 0.9353
+      },
+      {
+        "total_bits": 4,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.8853,
+        "per_layer_formats": {
+          "input": 3,
+          "weights": [
+            4,
+            5,
+            5,
+            5
+          ],
+          "activations": [
+            2,
+            0,
+            -1,
+            -2
+          ]
+        },
+        "per_layer_test_acc": 0.9803
+      },
+      {
+        "total_bits": 5,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.9025,
+        "per_layer_formats": {
+          "input": 4,
+          "weights": [
+            5,
+            5,
+            6,
+            6
+          ],
+          "activations": [
+            3,
+            1,
+            0,
+            -1
+          ]
+        },
+        "per_layer_test_acc": 0.9876
+      },
+      {
+        "total_bits": 6,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.9342,
+        "per_layer_formats": {
+          "input": 5,
+          "weights": [
+            5,
+            6,
+            7,
+            6
+          ],
+          "activations": [
+            4,
+            2,
+            0,
+            0
+          ]
+        },
+        "per_layer_test_acc": 0.9895
+      },
+      {
+        "total_bits": 8,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.9858,
+        "per_layer_formats": {
+          "input": 7,
+          "weights": [
+            7,
+            8,
+            8,
+            8
+          ],
+          "activations": [
+            6,
+            3,
+            2,
+            2
+          ]
+        },
+        "per_layer_test_acc": 0.99
+      }
+    ]
+  },
+  {
+    "dataset": "mnist",
+    "norm": "batch",
+    "float_test_acc": 0.9915,
+    "deployed_float_test_acc": 0.9915,
+    "best_epoch": 11,
+    "activation_scale": [
+      {
+        "layer": "conv1",
+        "weight_max_abs": 2.233274221420288,
+        "activation_max_abs": 6.886172294616699,
+        "activation_p99_9_abs": 3.82981014251709,
+        "activation_std": 0.570564329624176
+      },
+      {
+        "layer": "conv2",
+        "weight_max_abs": 1.6752285957336426,
+        "activation_max_abs": 5.7985639572143555,
+        "activation_p99_9_abs": 3.2409305572509766,
+        "activation_std": 0.5524770021438599
+      },
+      {
+        "layer": "fc1",
+        "weight_max_abs": 3.8324685096740723,
+        "activation_max_abs": 6.413688659667969,
+        "activation_p99_9_abs": 4.747875690460205,
+        "activation_std": 0.9918699264526367
+      },
+      {
+        "layer": "fc2",
+        "weight_max_abs": 0.480979859828949,
+        "activation_max_abs": 21.857229232788086,
+        "activation_p99_9_abs": 19.560745239257812,
+        "activation_std": 6.680462837219238
+      }
+    ],
+    "one_shot": [
+      {
+        "total_bits": 3,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.1439,
+        "per_layer_formats": {
+          "input": 2,
+          "weights": [
+            1,
+            4,
+            0,
+            3
+          ],
+          "activations": [
+            1,
+            1,
+            0,
+            -2
+          ]
+        },
+        "per_layer_test_acc": 0.1135
+      },
+      {
+        "total_bits": 4,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.3654,
+        "per_layer_formats": {
+          "input": 3,
+          "weights": [
+            2,
+            4,
+            3,
+            4
+          ],
+          "activations": [
+            1,
+            1,
+            1,
+            -1
+          ]
+        },
+        "per_layer_test_acc": 0.8599
+      },
+      {
+        "total_bits": 5,
+        "global_fractional_bits": 4,
+        "global_test_acc": 0.6569,
+        "per_layer_formats": {
+          "input": 4,
+          "weights": [
+            3,
+            4,
+            3,
+            5
+          ],
+          "activations": [
+            2,
+            2,
+            2,
+            0
+          ]
+        },
+        "per_layer_test_acc": 0.9833
+      },
+      {
+        "total_bits": 6,
+        "global_fractional_bits": 4,
+        "global_test_acc": 0.9652,
+        "per_layer_formats": {
+          "input": 5,
+          "weights": [
+            4,
+            5,
+            4,
+            6
+          ],
+          "activations": [
+            3,
+            3,
+            3,
+            0
+          ]
+        },
+        "per_layer_test_acc": 0.9883
+      },
+      {
+        "total_bits": 8,
+        "global_fractional_bits": 4,
+        "global_test_acc": 0.9867,
+        "per_layer_formats": {
+          "input": 7,
+          "weights": [
+            5,
+            6,
+            5,
+            8
+          ],
+          "activations": [
+            5,
+            5,
+            4,
+            2
+          ]
+        },
+        "per_layer_test_acc": 0.9914
+      }
+    ]
+  },
+  {
+    "dataset": "mnist",
+    "norm": "layer",
+    "float_test_acc": 0.9908,
+    "deployed_float_test_acc": 0.9908,
+    "best_epoch": 11,
+    "activation_scale": [
+      {
+        "layer": "conv1",
+        "weight_max_abs": 0.4781308174133301,
+        "activation_max_abs": 6.371635913848877,
+        "activation_p99_9_abs": 3.3548707962036133,
+        "activation_std": 0.5026930570602417
+      },
+      {
+        "layer": "conv2",
+        "weight_max_abs": 0.34069833159446716,
+        "activation_max_abs": 4.795304775238037,
+        "activation_p99_9_abs": 3.3881304264068604,
+        "activation_std": 0.5515766143798828
+      },
+      {
+        "layer": "fc1",
+        "weight_max_abs": 0.41672706604003906,
+        "activation_max_abs": 6.186840534210205,
+        "activation_p99_9_abs": 4.823934078216553,
+        "activation_std": 1.0254713296890259
+      },
+      {
+        "layer": "fc2",
+        "weight_max_abs": 0.46306341886520386,
+        "activation_max_abs": 14.978864669799805,
+        "activation_p99_9_abs": 14.401031494140625,
+        "activation_std": 5.824007987976074
+      }
+    ],
+    "one_shot": [
+      {
+        "total_bits": 3,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.5635,
+        "per_layer_formats": {
+          "input": 2,
+          "weights": [
+            4,
+            5,
+            5,
+            3
+          ],
+          "activations": [
+            1,
+            1,
+            0,
+            -2
+          ]
+        },
+        "per_layer_test_acc": 0.9471
+      },
+      {
+        "total_bits": 4,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.8332,
+        "per_layer_formats": {
+          "input": 3,
+          "weights": [
+            4,
+            5,
+            5,
+            4
+          ],
+          "activations": [
+            1,
+            1,
+            1,
+            -1
+          ]
+        },
+        "per_layer_test_acc": 0.9874
+      },
+      {
+        "total_bits": 5,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.9527,
+        "per_layer_formats": {
+          "input": 4,
+          "weights": [
+            5,
+            6,
+            6,
+            5
+          ],
+          "activations": [
+            2,
+            2,
+            2,
+            0
+          ]
+        },
+        "per_layer_test_acc": 0.9891
+      },
+      {
+        "total_bits": 6,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.9778,
+        "per_layer_formats": {
+          "input": 5,
+          "weights": [
+            6,
+            7,
+            7,
+            6
+          ],
+          "activations": [
+            3,
+            3,
+            3,
+            1
+          ]
+        },
+        "per_layer_test_acc": 0.9903
+      },
+      {
+        "total_bits": 8,
+        "global_fractional_bits": 4,
+        "global_test_acc": 0.9889,
+        "per_layer_formats": {
+          "input": 7,
+          "weights": [
+            8,
+            8,
+            9,
+            8
+          ],
+          "activations": [
+            5,
+            5,
+            4,
+            3
+          ]
+        },
+        "per_layer_test_acc": 0.9908
+      }
+    ]
+  },
+  {
+    "dataset": "mnist",
+    "norm": "instance",
+    "float_test_acc": 0.9915,
+    "deployed_float_test_acc": 0.9915,
+    "best_epoch": 10,
+    "activation_scale": [
+      {
+        "layer": "conv1",
+        "weight_max_abs": 0.3227456510066986,
+        "activation_max_abs": 7.7026286125183105,
+        "activation_p99_9_abs": 3.6848554611206055,
+        "activation_std": 0.527319073677063
+      },
+      {
+        "layer": "conv2",
+        "weight_max_abs": 0.30356621742248535,
+        "activation_max_abs": 5.291818618774414,
+        "activation_p99_9_abs": 3.148397922515869,
+        "activation_std": 0.5540812015533447
+      },
+      {
+        "layer": "fc1",
+        "weight_max_abs": 0.27610692381858826,
+        "activation_max_abs": 5.9360246658325195,
+        "activation_p99_9_abs": 5.157244682312012,
+        "activation_std": 1.0497175455093384
+      },
+      {
+        "layer": "fc2",
+        "weight_max_abs": 0.47975537180900574,
+        "activation_max_abs": 15.344143867492676,
+        "activation_p99_9_abs": 14.479842185974121,
+        "activation_std": 5.713637351989746
+      }
+    ],
+    "one_shot": [
+      {
+        "total_bits": 3,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.5554,
+        "per_layer_formats": {
+          "input": 2,
+          "weights": [
+            4,
+            5,
+            5,
+            4
+          ],
+          "activations": [
+            1,
+            1,
+            0,
+            -2
+          ]
+        },
+        "per_layer_test_acc": 0.9494
+      },
+      {
+        "total_bits": 4,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.8044,
+        "per_layer_formats": {
+          "input": 3,
+          "weights": [
+            5,
+            5,
+            6,
+            4
+          ],
+          "activations": [
+            1,
+            2,
+            1,
+            -1
+          ]
+        },
+        "per_layer_test_acc": 0.9858
+      },
+      {
+        "total_bits": 5,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.943,
+        "per_layer_formats": {
+          "input": 4,
+          "weights": [
+            6,
+            6,
+            6,
+            5
+          ],
+          "activations": [
+            2,
+            2,
+            2,
+            0
+          ]
+        },
+        "per_layer_test_acc": 0.9899
+      },
+      {
+        "total_bits": 6,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.9724,
+        "per_layer_formats": {
+          "input": 5,
+          "weights": [
+            6,
+            7,
+            7,
+            6
+          ],
+          "activations": [
+            3,
+            3,
+            2,
+            1
+          ]
+        },
+        "per_layer_test_acc": 0.9907
+      },
+      {
+        "total_bits": 8,
+        "global_fractional_bits": 4,
+        "global_test_acc": 0.9899,
+        "per_layer_formats": {
+          "input": 7,
+          "weights": [
+            8,
+            9,
+            9,
+            8
+          ],
+          "activations": [
+            4,
+            5,
+            4,
+            3
+          ]
+        },
+        "per_layer_test_acc": 0.9916
+      }
+    ]
+  },
+  {
+    "dataset": "svhn",
+    "norm": "none",
+    "float_test_acc": 0.8917486170866625,
+    "deployed_float_test_acc": 0.8917486170866625,
+    "best_epoch": null,
+    "activation_scale": [
+      {
+        "layer": "conv1",
+        "weight_max_abs": 0.31066134572029114,
+        "activation_max_abs": 3.068582534790039,
+        "activation_p99_9_abs": 1.5627089738845825,
+        "activation_std": 0.2201022505760193
+      },
+      {
+        "layer": "conv2",
+        "weight_max_abs": 0.8177770972251892,
+        "activation_max_abs": 16.59444236755371,
+        "activation_p99_9_abs": 6.432511806488037,
+        "activation_std": 0.8598252534866333
+      },
+      {
+        "layer": "fc1",
+        "weight_max_abs": 0.5595192313194275,
+        "activation_max_abs": 41.72575759887695,
+        "activation_p99_9_abs": 26.041826248168945,
+        "activation_std": 4.063567638397217
+      },
+      {
+        "layer": "fc2",
+        "weight_max_abs": 0.5479580760002136,
+        "activation_max_abs": 40.456565856933594,
+        "activation_p99_9_abs": 28.441219329833984,
+        "activation_std": 6.501880168914795
+      }
+    ],
+    "one_shot": [
+      {
+        "total_bits": 3,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.4081899200983405,
+        "per_layer_formats": {
+          "input": 2,
+          "weights": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "activations": [
+            2,
+            0,
+            -2,
+            -2
+          ]
+        },
+        "per_layer_test_acc": 0.6393285187461586
+      },
+      {
+        "total_bits": 4,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.7004840196681008,
+        "per_layer_formats": {
+          "input": 3,
+          "weights": [
+            5,
+            4,
+            5,
+            4
+          ],
+          "activations": [
+            3,
+            1,
+            -1,
+            -2
+          ]
+        },
+        "per_layer_test_acc": 0.8238322065150584
+      },
+      {
+        "total_bits": 5,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.7377458512599877,
+        "per_layer_formats": {
+          "input": 4,
+          "weights": [
+            6,
+            5,
+            6,
+            5
+          ],
+          "activations": [
+            3,
+            1,
+            -1,
+            -1
+          ]
+        },
+        "per_layer_test_acc": 0.8710049170251998
+      },
+      {
+        "total_bits": 6,
+        "global_fractional_bits": 4,
+        "global_test_acc": 0.7846880762138906,
+        "per_layer_formats": {
+          "input": 5,
+          "weights": [
+            6,
+            6,
+            6,
+            6
+          ],
+          "activations": [
+            4,
+            2,
+            0,
+            0
+          ]
+        },
+        "per_layer_test_acc": 0.8882913337430854
+      },
+      {
+        "total_bits": 8,
+        "global_fractional_bits": 4,
+        "global_test_acc": 0.8667409342347879,
+        "per_layer_formats": {
+          "input": 7,
+          "weights": [
+            8,
+            7,
+            8,
+            8
+          ],
+          "activations": [
+            6,
+            4,
+            2,
+            2
+          ]
+        },
+        "per_layer_test_acc": 0.8922480024585125
+      }
+    ]
+  },
+  {
+    "dataset": "svhn",
+    "norm": "batch",
+    "float_test_acc": 0.9063076213890596,
+    "deployed_float_test_acc": 0.9063076213890596,
+    "best_epoch": 8,
+    "activation_scale": [
+      {
+        "layer": "conv1",
+        "weight_max_abs": 2.138524293899536,
+        "activation_max_abs": 11.962719917297363,
+        "activation_p99_9_abs": 4.591715335845947,
+        "activation_std": 0.7001333236694336
+      },
+      {
+        "layer": "conv2",
+        "weight_max_abs": 0.9686402082443237,
+        "activation_max_abs": 7.316819190979004,
+        "activation_p99_9_abs": 2.432363510131836,
+        "activation_std": 0.30647847056388855
+      },
+      {
+        "layer": "fc1",
+        "weight_max_abs": 2.1510863304138184,
+        "activation_max_abs": 9.76843547821045,
+        "activation_p99_9_abs": 6.06272029876709,
+        "activation_std": 0.9947824478149414
+      },
+      {
+        "layer": "fc2",
+        "weight_max_abs": 0.5741541981697083,
+        "activation_max_abs": 21.49258041381836,
+        "activation_p99_9_abs": 17.658611297607422,
+        "activation_std": 4.8564324378967285
+      }
+    ],
+    "one_shot": [
+      {
+        "total_bits": 3,
+        "global_fractional_bits": 2,
+        "global_test_acc": 0.1958743085433313,
+        "per_layer_formats": {
+          "input": 2,
+          "weights": [
+            1,
+            2,
+            3,
+            3
+          ],
+          "activations": [
+            0,
+            1,
+            0,
+            -2
+          ]
+        },
+        "per_layer_test_acc": 0.06699446834665028
+      },
+      {
+        "total_bits": 4,
+        "global_fractional_bits": 4,
+        "global_test_acc": 0.2616779348494161,
+        "per_layer_formats": {
+          "input": 3,
+          "weights": [
+            2,
+            5,
+            5,
+            4
+          ],
+          "activations": [
+            1,
+            2,
+            1,
+            -1
+          ]
+        },
+        "per_layer_test_acc": 0.6615319606637984
+      },
+      {
+        "total_bits": 5,
+        "global_fractional_bits": 5,
+        "global_test_acc": 0.45636140135218195,
+        "per_layer_formats": {
+          "input": 4,
+          "weights": [
+            3,
+            5,
+            5,
+            5
+          ],
+          "activations": [
+            2,
+            3,
+            1,
+            0
+          ]
+        },
+        "per_layer_test_acc": 0.8291717885679164
+      },
+      {
+        "total_bits": 6,
+        "global_fractional_bits": 5,
+        "global_test_acc": 0.7460049170251998,
+        "per_layer_formats": {
+          "input": 5,
+          "weights": [
+            4,
+            6,
+            5,
+            6
+          ],
+          "activations": [
+            2,
+            3,
+            2,
+            1
+          ]
+        },
+        "per_layer_test_acc": 0.8855255070682237
+      },
+      {
+        "total_bits": 8,
+        "global_fractional_bits": 5,
+        "global_test_acc": 0.871619545175169,
+        "per_layer_formats": {
+          "input": 7,
+          "weights": [
+            6,
+            7,
+            6,
+            7
+          ],
+          "activations": [
+            4,
+            5,
+            4,
+            2
+          ]
+        },
+        "per_layer_test_acc": 0.904540565457898
+      }
+    ]
+  },
+  {
+    "dataset": "svhn",
+    "norm": "layer",
+    "float_test_acc": 0.9128380454824832,
+    "deployed_float_test_acc": 0.9128380454824832,
+    "best_epoch": 9,
+    "activation_scale": [
+      {
+        "layer": "conv1",
+        "weight_max_abs": 0.21642373502254486,
+        "activation_max_abs": 9.23609447479248,
+        "activation_p99_9_abs": 3.8557140827178955,
+        "activation_std": 0.6156874895095825
+      },
+      {
+        "layer": "conv2",
+        "weight_max_abs": 0.3688930869102478,
+        "activation_max_abs": 3.6500606536865234,
+        "activation_p99_9_abs": 1.9653265476226807,
+        "activation_std": 0.29840224981307983
+      },
+      {
+        "layer": "fc1",
+        "weight_max_abs": 0.40352514386177063,
+        "activation_max_abs": 6.84127950668335,
+        "activation_p99_9_abs": 5.072443008422852,
+        "activation_std": 0.9337734580039978
+      },
+      {
+        "layer": "fc2",
+        "weight_max_abs": 0.5757173895835876,
+        "activation_max_abs": 12.394999504089355,
+        "activation_p99_9_abs": 11.293288230895996,
+        "activation_std": 3.8180599212646484
+      }
+    ],
+    "one_shot": [
+      {
+        "total_bits": 3,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.351259987707437,
+        "per_layer_formats": {
+          "input": 2,
+          "weights": [
+            4,
+            5,
+            5,
+            3
+          ],
+          "activations": [
+            0,
+            2,
+            0,
+            -1
+          ]
+        },
+        "per_layer_test_acc": 0.7365550092194223
+      },
+      {
+        "total_bits": 4,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.7012138905961893,
+        "per_layer_formats": {
+          "input": 3,
+          "weights": [
+            5,
+            5,
+            5,
+            4
+          ],
+          "activations": [
+            1,
+            2,
+            1,
+            0
+          ]
+        },
+        "per_layer_test_acc": 0.8902504609711125
+      },
+      {
+        "total_bits": 5,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.7833819913952059,
+        "per_layer_formats": {
+          "input": 4,
+          "weights": [
+            6,
+            6,
+            6,
+            5
+          ],
+          "activations": [
+            2,
+            3,
+            2,
+            0
+          ]
+        },
+        "per_layer_test_acc": 0.902120467117394
+      },
+      {
+        "total_bits": 6,
+        "global_fractional_bits": 4,
+        "global_test_acc": 0.8487246465888137,
+        "per_layer_formats": {
+          "input": 5,
+          "weights": [
+            7,
+            7,
+            7,
+            6
+          ],
+          "activations": [
+            3,
+            4,
+            2,
+            1
+          ]
+        },
+        "per_layer_test_acc": 0.910840503995083
+      },
+      {
+        "total_bits": 8,
+        "global_fractional_bits": 5,
+        "global_test_acc": 0.9064612784265519,
+        "per_layer_formats": {
+          "input": 7,
+          "weights": [
+            9,
+            8,
+            9,
+            7
+          ],
+          "activations": [
+            4,
+            5,
+            4,
+            3
+          ]
+        },
+        "per_layer_test_acc": 0.9122618315918869
+      }
+    ]
+  },
+  {
+    "dataset": "svhn",
+    "norm": "instance",
+    "float_test_acc": 0.9132606023355869,
+    "deployed_float_test_acc": 0.9132606023355869,
+    "best_epoch": 11,
+    "activation_scale": [
+      {
+        "layer": "conv1",
+        "weight_max_abs": 0.2940405309200287,
+        "activation_max_abs": 9.075389862060547,
+        "activation_p99_9_abs": 3.5234756469726562,
+        "activation_std": 0.5768548846244812
+      },
+      {
+        "layer": "conv2",
+        "weight_max_abs": 0.39107295870780945,
+        "activation_max_abs": 4.612876892089844,
+        "activation_p99_9_abs": 2.4604101181030273,
+        "activation_std": 0.41427019238471985
+      },
+      {
+        "layer": "fc1",
+        "weight_max_abs": 0.4153839945793152,
+        "activation_max_abs": 7.320260047912598,
+        "activation_p99_9_abs": 5.638334274291992,
+        "activation_std": 1.0228753089904785
+      },
+      {
+        "layer": "fc2",
+        "weight_max_abs": 0.5866567492485046,
+        "activation_max_abs": 16.009775161743164,
+        "activation_p99_9_abs": 13.894062995910645,
+        "activation_std": 4.67453145980835
+      }
+    ],
+    "one_shot": [
+      {
+        "total_bits": 3,
+        "global_fractional_bits": 2,
+        "global_test_acc": 0.27788875230485555,
+        "per_layer_formats": {
+          "input": 2,
+          "weights": [
+            4,
+            4,
+            5,
+            3
+          ],
+          "activations": [
+            1,
+            1,
+            0,
+            -2
+          ]
+        },
+        "per_layer_test_acc": 0.6820067609096496
+      },
+      {
+        "total_bits": 4,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.6147049784880148,
+        "per_layer_formats": {
+          "input": 3,
+          "weights": [
+            5,
+            5,
+            5,
+            4
+          ],
+          "activations": [
+            1,
+            2,
+            1,
+            -1
+          ]
+        },
+        "per_layer_test_acc": 0.8800322679778734
+      },
+      {
+        "total_bits": 5,
+        "global_fractional_bits": 3,
+        "global_test_acc": 0.7899892440073756,
+        "per_layer_formats": {
+          "input": 4,
+          "weights": [
+            6,
+            6,
+            6,
+            5
+          ],
+          "activations": [
+            2,
+            3,
+            1,
+            0
+          ]
+        },
+        "per_layer_test_acc": 0.9068838352796558
+      },
+      {
+        "total_bits": 6,
+        "global_fractional_bits": 4,
+        "global_test_acc": 0.8666641057160418,
+        "per_layer_formats": {
+          "input": 5,
+          "weights": [
+            7,
+            7,
+            7,
+            6
+          ],
+          "activations": [
+            3,
+            4,
+            2,
+            1
+          ]
+        },
+        "per_layer_test_acc": 0.9119161032575291
+      },
+      {
+        "total_bits": 8,
+        "global_fractional_bits": 5,
+        "global_test_acc": 0.9056545789797172,
+        "per_layer_formats": {
+          "input": 7,
+          "weights": [
+            9,
+            8,
+            9,
+            7
+          ],
+          "activations": [
+            5,
+            5,
+            4,
+            3
+          ]
+        },
+        "per_layer_test_acc": 0.9132221880762139
+      }
+    ]
+  }
+]
