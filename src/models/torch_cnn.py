@@ -32,6 +32,18 @@ one definition.
 Unlike the tanh MLP, ReLU activations are unbounded and their ranges differ
 widely from stage to stage, so fractional_bits may be a LayerwiseBits
 giving each stage its own formats instead of one global int.
+
+Optionally every hidden stage normalizes its pre-activation before ReLU
+(norm="batch" | "layer" | "instance"). For quantized inference:
+  batch     fold_batchnorm() first: at inference BatchNorm is a fixed
+            per-channel scale and shift, so it folds into the weights and
+            bias before them and the folded model is quantized as usual
+  layer /   the per-sample statistics and the normalization's own scale
+  instance  and shift are computed in float (on hardware this needs a
+            square root and a division per input); its output is the
+            stage's activation and is quantized like any activation.
+The quantization boundaries are the same with or without normalization:
+the wide accumulator output is not rounded, the (normalized) activation is.
 """
 
 
@@ -57,6 +69,21 @@ class LayerwiseBits:
         return f"LayerwiseBits(input={self.input}, weights={self.weights}, activations={self.activations})"
 
 
+NORMS = (None, "batch", "layer", "instance")
+
+
+def _make_norm(kind, channels, is_conv):
+    if kind is None:
+        return nn.Identity()
+    if kind == "batch":
+        return nn.BatchNorm2d(channels) if is_conv else nn.BatchNorm1d(channels)
+    if kind == "layer":    # conv: all channels and positions of a sample together
+        return nn.GroupNorm(1, channels) if is_conv else nn.LayerNorm(channels)
+    if kind == "instance":  # conv: each channel of each sample on its own
+        return nn.GroupNorm(channels, channels) if is_conv else nn.LayerNorm(channels)
+    raise ValueError(f"Unknown norm: {kind}")
+
+
 def frac_bits(fractional_bits, role, i=None):
     if isinstance(fractional_bits, LayerwiseBits):
         return fractional_bits.input if role == "input" else getattr(fractional_bits, role)[i]
@@ -76,11 +103,11 @@ def bits_to_cover(max_abs, total_bits):
 
 class TorchCNN(nn.Module):
     def __init__(self, in_channels=1, image_size=28, conv_channels=(16, 32), hidden=128,
-                 n_classes=10, kernel_size=5):
+                 n_classes=10, kernel_size=5, norm=None):
         super().__init__()
         self.config = dict(in_channels=in_channels, image_size=image_size,
                            conv_channels=list(conv_channels), hidden=hidden,
-                           n_classes=n_classes, kernel_size=kernel_size)
+                           n_classes=n_classes, kernel_size=kernel_size, norm=norm)
 
         layers, channels, size = [], in_channels, image_size
         for out_channels in conv_channels:
@@ -92,6 +119,9 @@ class TorchCNN(nn.Module):
         self.layers = nn.ModuleList(layers)
         self.n_layers = len(layers)
         self.n_conv = len(conv_channels)
+        # one per hidden stage, applied to its pre-activation (Identity: no norm)
+        self.norms = nn.ModuleList([_make_norm(norm, c, i < self.n_conv)
+                                    for i, c in enumerate(list(conv_channels) + [hidden])])
 
     def stage_names(self):
         return [f"conv{i + 1}" for i in range(self.n_conv)] + \
@@ -104,6 +134,9 @@ class TorchCNN(nn.Module):
     def _enter(self, i, a):
         """The first fully connected stage flattens the last pooled feature map."""
         return a.flatten(1) if i == self.n_conv else a
+
+    def _normalize(self, i, z):
+        return z if i == self.n_layers - 1 else self.norms[i](z)
 
     def _activate(self, i, z):
         a = F.relu(z)
@@ -125,7 +158,7 @@ class TorchCNN(nn.Module):
         """Run stages start..n-1 in float; x is what stage `start` receives."""
         a = x
         for i in range(start, self.n_layers):
-            z = self.layers[i](self._enter(i, a))
+            z = self._normalize(i, self.layers[i](self._enter(i, a)))
             a = z if i == self.n_layers - 1 else self._activate(i, z)
         return a
 
@@ -141,7 +174,8 @@ class TorchCNN(nn.Module):
         fa = frac_bits(fractional_bits, "activations", i)
 
         layer = self.layers[i]
-        z = q(self._stage_op(i, self._enter(i, a), q(layer.weight, fw), q(layer.bias, fw)), fa)
+        z = self._stage_op(i, self._enter(i, a), q(layer.weight, fw), q(layer.bias, fw))
+        z = q(self._normalize(i, z), fa)
         if i == self.n_layers - 1:
             return z
         return q(self._activate(i, z), fa)
@@ -195,7 +229,7 @@ class TorchCNN(nn.Module):
             for i in range(self.n_layers):
                 layer = self.layers[i]
                 tensors["weights"].append(torch.cat([layer.weight.flatten(), layer.bias.flatten()]))
-                z = layer(self._enter(i, a))
+                z = self._normalize(i, layer(self._enter(i, a)))
                 is_output = i == self.n_layers - 1
                 tensors["activations"].append(z if is_output else F.relu(z))
                 a = z if is_output else self._activate(i, z)
@@ -239,7 +273,8 @@ class TorchCNN(nn.Module):
 
     def layer_parameters(self, start):
         """Parameters of stages start..n-1 -- what the optimizer should touch."""
-        return [p for i in range(start, self.n_layers) for p in self.layers[i].parameters()]
+        params = [p for i in range(start, self.n_layers) for p in self.layers[i].parameters()]
+        return params + [p for i in range(start, self.n_layers - 1) for p in self.norms[i].parameters()]
 
     def quantize_layer_(self, i, total_bits=8, fractional_bits=4):
         """Round stage i's weights and bias onto the fixed-point grid, in place."""
@@ -249,8 +284,38 @@ class TorchCNN(nn.Module):
                 p.copy_(fixed_point_quantize(p, total_bits=total_bits, fractional_bits=fw))
 
     def freeze_layer_(self, i, frozen=True):
-        for p in self.layers[i].parameters():
+        norm_params = list(self.norms[i].parameters()) if i < self.n_layers - 1 else []
+        for p in list(self.layers[i].parameters()) + norm_params:
             p.requires_grad_(not frozen)
+
+    # ------------------------------------------------------------------
+    # Deployment
+    # ------------------------------------------------------------------
+
+    def fold_batchnorm(self):
+        """
+        Inference copy without BatchNorm: each BatchNorm, a fixed per-channel
+        y = (z - mean) / sqrt(var + eps) * gamma + beta once training is over,
+        is folded into the weights and bias of the layer before it.
+        """
+        if self.config.get("norm") != "batch":
+            raise ValueError("fold_batchnorm needs a norm='batch' model")
+        folded = TorchCNN(**{**self.config, "norm": None}).to(self.layers[0].weight.device)
+        with torch.no_grad():
+            for i in range(self.n_layers):
+                W, b = self.layers[i].weight, self.layers[i].bias
+                if i < self.n_layers - 1:
+                    bn = self.norms[i]
+                    scale = bn.weight / torch.sqrt(bn.running_var + bn.eps)
+                    W = W * scale.view(-1, *([1] * (W.dim() - 1)))
+                    b = (b - bn.running_mean) * scale + bn.bias
+                folded.layers[i].weight.copy_(W)
+                folded.layers[i].bias.copy_(b)
+        return folded.eval()
+
+    def deployable(self):
+        """The model as it would be quantized and run on hardware."""
+        return self.fold_batchnorm() if self.config.get("norm") == "batch" else self.eval()
 
     # ------------------------------------------------------------------
     # Checkpoints
@@ -344,6 +409,7 @@ def train_classifier(
 
     for epoch in range(epochs):
         loss_sum, n_seen = 0.0, 0
+        model.train()   # BatchNorm: batch statistics while training (no effect without it)
         for xb, yb in iterate_batches(data["Xtr"], data["ytr"], batch_size, shuffle=True, generator=generator):
             loss = F.cross_entropy(forward(xb), yb)
             optimizer.zero_grad()
@@ -352,6 +418,7 @@ def train_classifier(
             loss_sum += loss.item() * len(yb)
             n_seen += len(yb)
 
+        model.eval()    # BatchNorm: running statistics, as at inference
         val_acc, val_loss = evaluate(forward, data["Xva"], data["yva"])
         history["train_loss"].append(loss_sum / n_seen)
         history["val_acc"].append(val_acc)
@@ -361,6 +428,7 @@ def train_classifier(
         if best_key is None or key > best_key:
             best_key = key
             best_state = [p.detach().clone() for p in params]
+            best_buffers = {k: v.detach().clone() for k, v in model.named_buffers()}
             history.update(best_epoch=epoch, best_val_acc=val_acc, best_val_loss=val_loss)
 
         if verbose:
@@ -370,4 +438,6 @@ def train_classifier(
     with torch.no_grad():
         for p, best in zip(params, best_state):
             p.copy_(best)
+        for k, v in model.named_buffers():   # BatchNorm running mean / var of the kept epoch
+            v.copy_(best_buffers[k])
     return history
