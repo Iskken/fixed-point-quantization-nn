@@ -147,6 +147,44 @@ for name, channels, size, conv in [("MNIST-shaped", 1, 28, (16, 32)), ("SVHN-sha
         loaded = TorchCNN.load(path)
         check("save/load round trip reproduces outputs exactly", torch.equal(loaded(x), logits))
 
+print("\n=== normalization ===")
+for norm in ("batch", "layer", "instance"):
+    torch.manual_seed(1)
+    model = TorchCNN(in_channels=1, image_size=28, conv_channels=(16, 32), norm=norm)
+    x = torch.rand(64, 1, 28, 28)
+    # a few training steps so BatchNorm has non-trivial running statistics
+    opt = torch.optim.Adam(model.parameters(), lr=1e-2)
+    model.train()
+    for _ in range(5):
+        loss = F.cross_entropy(model(torch.rand(64, 1, 28, 28)), torch.randint(0, 10, (64,)))
+        opt.zero_grad(); loss.backward(); opt.step()
+    model.eval()
+    n = model.n_layers
+    has_norm = all(not isinstance(m, torch.nn.Identity) for m in model.norms)
+    check(f"[{norm}] a norm module on every hidden stage", has_norm and len(model.norms) == n - 1)
+    check(f"[{norm}] prefix through last stage == forward_quantized",
+          torch.equal(model.forward_quantized_prefix(x, n - 1, TOTAL_BITS, FRAC_BITS),
+                      model.forward_quantized(x, TOTAL_BITS, FRAC_BITS)))
+    check(f"[{norm}] layer_parameters(0) includes the norm parameters",
+          len(model.layer_parameters(0)) == len(list(model.parameters())))
+    if norm == "batch":
+        folded = model.fold_batchnorm()
+        diff = (folded(x) - model(x)).abs().max().item()
+        check("[batch] folded model == BatchNorm model in eval mode", diff < 1e-4, f"max|diff|={diff:.1e}")
+        check("[batch] folded model has no norm layers", all(isinstance(m, torch.nn.Identity) for m in folded.norms))
+        check("[batch] deployable() is the folded model", torch.equal(model.deployable()(x), folded(x)))
+    else:
+        check(f"[{norm}] deployable() is the model itself", model.deployable() is model)
+
+torch.manual_seed(0)
+plain = TorchCNN()
+legacy = {"config": {k: v for k, v in plain.config.items() if k != "norm"}, "state_dict": plain.state_dict()}
+with tempfile.TemporaryDirectory() as d:
+    path = os.path.join(d, "legacy.pt")
+    torch.save(legacy, path)
+    x = torch.rand(8, 1, 28, 28)
+    check("checkpoints saved before norm= existed still load and match", torch.equal(TorchCNN.load(path)(x), plain(x)))
+
 print("\n=== quantizer and format helpers ===")
 # f = total_bits: range +-2^(8-1-8) = +-0.5 with a 2^-8 step
 v = torch.tensor([0.3, -0.49, 0.1234])
