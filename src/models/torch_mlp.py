@@ -16,16 +16,25 @@ checks that parity numerically.
 """
 
 
+ACTIVATIONS = {"tanh": torch.tanh, "relu": torch.relu}
+
+
 class TorchMLP(nn.Module):
-    def __init__(self, layer_sizes, dtype=torch.float64):
+    def __init__(self, layer_sizes, dtype=torch.float64, activation="tanh"):
         """
         layer_sizes : list of int
             [input_dim, hidden1, hidden2, ..., output_dim]
+        activation : "tanh" | "relu"
+            Hidden-layer activation (the output layer is always linear).
         """
         super().__init__()
+        if activation not in ACTIVATIONS:
+            raise ValueError(f"Unknown activation {activation!r}; expected one of {tuple(ACTIVATIONS)}")
         self.layer_sizes = list(layer_sizes)
         self.n_layers = len(layer_sizes) - 1
         self.dtype = dtype
+        self.activation = activation
+        self.act = ACTIVATIONS[activation]
 
         self.layers = nn.ModuleList([
             nn.Linear(layer_sizes[i], layer_sizes[i + 1], dtype=dtype)
@@ -48,7 +57,7 @@ class TorchMLP(nn.Module):
         for i in range(start, self.n_layers):
             x = self.layers[i](x)
             if i < self.n_layers - 1:
-                x = torch.tanh(x)
+                x = self.act(x)
         return x
 
     def predict(self, x):
@@ -92,7 +101,7 @@ class TorchMLP(nn.Module):
             if is_output_layer:
                 a = q(z) if quantize_output else z
             else:
-                a = torch.tanh(z)
+                a = self.act(z)
                 if quantize_activations:
                     a = q(a)
 
@@ -124,7 +133,7 @@ class TorchMLP(nn.Module):
             if i == self.n_layers - 1:
                 a = q(z)
             else:
-                a = q(torch.tanh(q(z)))
+                a = q(self.act(q(z)))
 
         return a
 
@@ -164,7 +173,7 @@ class TorchMLP(nn.Module):
     # ------------------------------------------------------------------
 
     @classmethod
-    def from_numpy_checkpoint(cls, path, dtype=torch.float64):
+    def from_numpy_checkpoint(cls, path, dtype=torch.float64, activation="tanh"):
         """
         Build a TorchMLP from an MLP.save() .npz file, so the PyTorch
         experiments start from the exact same trained float baseline as the
@@ -175,7 +184,7 @@ class TorchMLP(nn.Module):
         data = np.load(path)
         layer_sizes = data["layer_sizes"].tolist()
 
-        model = cls(layer_sizes, dtype=dtype)
+        model = cls(layer_sizes, dtype=dtype, activation=activation)
         with torch.no_grad():
             for i in range(model.n_layers):
                 model.layers[i].weight.copy_(torch.as_tensor(data[f"W{i}"].T, dtype=dtype))

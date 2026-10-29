@@ -208,3 +208,23 @@ __marimo__/
 
 # Downloaded datasets (MNIST, SVHN)
 /data/
+
+# Large raw data from the torch QAT experiments (curves, checkpoints, weights).
+# Regenerate with experiments/torch_qat/run_e2_warmstart.py; figures and summary tables stay tracked.
+results/torch_qat/e2/raw/
+results/torch_qat/e2/checkpoints/
+results/torch_qat/e3/raw/
+results/torch_qat/e3b/raw/
+results/torch_qat/e3c/raw/
+
+results/torch_qat/relu/raw/
+results/torch_qat/relu/checkpoints/
+results/torch_qat/relu_lr0.003/raw/
+results/torch_qat/relu_lr0.003/checkpoints/
+results/torch_qat/relu_lr0.01_100k/raw/
+results/torch_qat/relu_lr0.01_100k/checkpoints/
+results/torch_qat/relu_2x2/raw/
+results/torch_qat/relu_grid/raw/
+results/torch_qat/relu_optuna/raw/
+results/torch_qat/relu_optuna/study.db
+results/torch_qat/relu_adam/raw/

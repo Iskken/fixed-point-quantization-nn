@@ -1,0 +1,50 @@
+{
+  "seed": 2,
+  "fp": {
+    "best_epoch": 49999,
+    "val_float": 0.15054138667715564,
+    "test_float": 0.15878241559537293,
+    "train_float": 0.11414883884172222
+  },
+  "ptq": {
+    "train_exact": 0.21454295291299946,
+    "val_exact": 0.27790340791819595,
+    "test_exact": 0.27601746990409115
+  },
+  "qat_legacy": {
+    "converged": true,
+    "stopped_epoch": 21469,
+    "best_epoch": 16469,
+    "train_exact": 0.5334861075398954,
+    "val_exact": 0.5433736127367813,
+    "test_exact": 0.5563110144665664,
+    "test_float": 0.55103951273653
+  },
+  "qat_clamped": {
+    "converged": true,
+    "stopped_epoch": 14999,
+    "best_epoch": 9999,
+    "train_exact": 0.5493650776961688,
+    "val_exact": 0.5419407119614275,
+    "test_exact": 0.5552252338985441,
+    "test_float": 0.5811535399733893
+  },
+  "qat_exact": {
+    "converged": true,
+    "stopped_epoch": 20846,
+    "best_epoch": 15846,
+    "train_exact": 0.5401881228066991,
+    "val_exact": 0.5449380056185774,
+    "test_exact": 0.5659743142980201,
+    "test_float": 0.5705685537317651
+  },
+  "qat_ste": {
+    "converged": true,
+    "stopped_epoch": 17126,
+    "best_epoch": 12126,
+    "train_exact": 0.5277161217995509,
+    "val_exact": 0.5533586719313156,
+    "test_exact": 0.6067686492559158,
+    "test_float": 0.5678434863487553
+  }
+}
