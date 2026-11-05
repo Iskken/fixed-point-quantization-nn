@@ -1,0 +1,3890 @@
+[
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 10,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   8,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.006,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.006,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.006,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.01,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.006,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.006,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.006,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 10,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   6,
+   4
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.018,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 100,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 30,
+  "bits": [
+   6,
+   3
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.012,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.012,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.012,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.012,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.012,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.012,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 5000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 20000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "transition": 40000
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 1.0
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "bits": [
+   4,
+   2
+  ],
+  "schedule": "inverse",
+  "power": 0.5
+ }
+]

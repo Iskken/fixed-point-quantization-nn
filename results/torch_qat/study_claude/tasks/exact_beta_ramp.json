@@ -1,0 +1,1406 @@
+[
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 3,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 2,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 3,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.001,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.003,
+  "alpha_end": 5,
+  "beta": 10,
+  "beta_ramp": true,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ }
+]

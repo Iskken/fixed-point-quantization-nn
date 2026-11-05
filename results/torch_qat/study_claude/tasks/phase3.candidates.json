@@ -1,0 +1,154 @@
+{
+ "kind": "phase3",
+ "candidates": [
+  {
+   "method": "soft_ste",
+   "lr": 0.05,
+   "alpha_end": 30,
+   "bits": [
+    8,
+    4
+   ]
+  },
+  {
+   "method": "soft_ste",
+   "lr": 0.05,
+   "alpha_end": 10,
+   "bits": [
+    8,
+    4
+   ]
+  },
+  {
+   "method": "exact",
+   "lr": 3e-05,
+   "alpha_end": 30,
+   "bits": [
+    8,
+    4
+   ]
+  },
+  {
+   "method": "exact",
+   "lr": 0.0001,
+   "alpha_end": 5,
+   "bits": [
+    8,
+    4
+   ]
+  },
+  {
+   "method": "soft_ste",
+   "lr": 0.01,
+   "alpha_end": 30,
+   "bits": [
+    6,
+    4
+   ]
+  },
+  {
+   "method": "soft_ste",
+   "lr": 0.05,
+   "alpha_end": 30,
+   "bits": [
+    6,
+    4
+   ]
+  },
+  {
+   "method": "exact",
+   "lr": 0.0001,
+   "alpha_end": 10,
+   "bits": [
+    6,
+    4
+   ]
+  },
+  {
+   "method": "exact",
+   "lr": 0.0001,
+   "alpha_end": 5,
+   "bits": [
+    6,
+    4
+   ]
+  },
+  {
+   "method": "soft_ste",
+   "lr": 0.03,
+   "alpha_end": 100,
+   "bits": [
+    6,
+    3
+   ]
+  },
+  {
+   "method": "soft_ste",
+   "lr": 0.03,
+   "alpha_end": 30,
+   "bits": [
+    6,
+    3
+   ]
+  },
+  {
+   "method": "exact",
+   "lr": 3e-05,
+   "alpha_end": 100,
+   "bits": [
+    6,
+    3
+   ]
+  },
+  {
+   "method": "exact",
+   "lr": 0.0001,
+   "alpha_end": 30,
+   "bits": [
+    6,
+    3
+   ]
+  },
+  {
+   "method": "soft_ste",
+   "lr": 0.02,
+   "alpha_end": 100,
+   "bits": [
+    4,
+    2
+   ]
+  },
+  {
+   "method": "soft_ste",
+   "lr": 0.05,
+   "alpha_end": 100,
+   "bits": [
+    4,
+    2
+   ]
+  },
+  {
+   "method": "exact",
+   "lr": 0.01,
+   "alpha_end": 3,
+   "bits": [
+    4,
+    2
+   ]
+  },
+  {
+   "method": "exact",
+   "lr": 0.003,
+   "alpha_end": 5,
+   "bits": [
+    4,
+    2
+   ]
+  }
+ ],
+ "seeds": [
+  0,
+  1,
+  2
+ ]
+}

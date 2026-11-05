@@ -388,7 +388,7 @@ class MLP:
         beta_end = beta_end
 
         if schedule_type == "linear":
-            alpha = 0.1 + 99.9 * progress
+            alpha = alpha_start + (alpha_end - alpha_start) * progress
             beta_straight = 1.0 / (alpha ** 2)
             beta_cliff = 10.0
             beta = beta_straight + progress * (beta_cliff - beta_straight)
@@ -900,6 +900,10 @@ class MLP:
                 alpha_history.append(alpha)
                 beta_history.append(beta)
 
+                # count this epoch before the convergence check can break,
+                # otherwise the last epoch of every stage is never counted
+                total_epoch += 1
+
                 # -----------------------------------------
                 # Convergence check
                 # -----------------------------------------
@@ -927,7 +931,6 @@ class MLP:
                         break
 
                 previous_loss = loss
-                total_epoch += 1
 
             # ---------------------------------------------
             # Save information about this alpha stage

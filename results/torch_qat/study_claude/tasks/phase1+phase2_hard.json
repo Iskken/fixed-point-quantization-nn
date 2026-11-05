@@ -1,0 +1,752 @@
+[
+ {
+  "seed": 0,
+  "method": "float",
+  "lr": 0.003
+ },
+ {
+  "seed": 1,
+  "method": "float",
+  "lr": 0.003
+ },
+ {
+  "seed": 2,
+  "method": "float",
+  "lr": 0.003
+ },
+ {
+  "seed": 3,
+  "method": "float",
+  "lr": 0.003
+ },
+ {
+  "seed": 4,
+  "method": "float",
+  "lr": 0.003
+ },
+ {
+  "seed": 0,
+  "method": "float",
+  "lr": 0.03
+ },
+ {
+  "seed": 1,
+  "method": "float",
+  "lr": 0.03
+ },
+ {
+  "seed": 2,
+  "method": "float",
+  "lr": 0.03
+ },
+ {
+  "seed": 3,
+  "method": "float",
+  "lr": 0.03
+ },
+ {
+  "seed": 4,
+  "method": "float",
+  "lr": 0.03
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.003
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.003
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.003
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.01
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.01
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.01
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.02
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.02
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.02
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.03
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.03
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.03
+ },
+ {
+  "seed": 3,
+  "method": "hard_ste",
+  "lr": 0.03
+ },
+ {
+  "seed": 4,
+  "method": "hard_ste",
+  "lr": 0.03
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.05
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.05
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.05
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "diagnostics": true
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "diagnostics": true
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "diagnostics": true
+ },
+ {
+  "seed": 0,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "mask_saturation": false
+ },
+ {
+  "seed": 1,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "mask_saturation": false
+ },
+ {
+  "seed": 2,
+  "method": "soft_ste",
+  "lr": 0.05,
+  "alpha_end": 30,
+  "mask_saturation": false
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "mask_saturation": false
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "mask_saturation": false
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 30,
+  "mask_saturation": false
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 1e-05,
+  "alpha_end": 3
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 1e-05,
+  "alpha_end": 3
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 1e-05,
+  "alpha_end": 3
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 3
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 3
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 3
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 3
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 3
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 3
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 1e-05,
+  "alpha_end": 5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 1e-05,
+  "alpha_end": 5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 1e-05,
+  "alpha_end": 5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 3e-05,
+  "alpha_end": 5
+ },
+ {
+  "seed": 0,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5
+ },
+ {
+  "seed": 1,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5
+ },
+ {
+  "seed": 2,
+  "method": "exact",
+  "lr": 0.0001,
+  "alpha_end": 5
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.05,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.05,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.05,
+  "bits": [
+   6,
+   4
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.05,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.05,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.05,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.03,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.05,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.05,
+  "bits": [
+   4,
+   2
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.05,
+  "bits": [
+   4,
+   2
+  ]
+ }
+]
