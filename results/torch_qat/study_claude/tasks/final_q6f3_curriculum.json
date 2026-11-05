@@ -1,0 +1,526 @@
+[
+ {
+  "seed": 3,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "schedule": "inverse",
+  "power": 1.0,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 4,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "schedule": "inverse",
+  "power": 1.0,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 3,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "transition": 5000,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 4,
+  "method": "soft_ste",
+  "lr": 0.03,
+  "alpha_end": 100,
+  "transition": 5000,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 3,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 4,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "schedule": "inverse",
+  "power": 1.0,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "schedule": "inverse",
+  "power": 1.0,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "schedule": "inverse",
+  "power": 1.0,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 3,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "schedule": "inverse",
+  "power": 1.0,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 4,
+  "method": "hard_ste",
+  "lr": 0.02,
+  "alpha_end": 100,
+  "schedule": "inverse",
+  "power": 1.0,
+  "bits": [
+   6,
+   3
+  ]
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed00_soft_ste_lr0.05_a30"
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed00_soft_ste_lr0.05_a30"
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed01_soft_ste_lr0.05_a30"
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed01_soft_ste_lr0.05_a30"
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed02_soft_ste_lr0.05_a30"
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed02_soft_ste_lr0.05_a30"
+ },
+ {
+  "seed": 3,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed03_soft_ste_lr0.05_a30"
+ },
+ {
+  "seed": 3,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed03_soft_ste_lr0.05_a30"
+ },
+ {
+  "seed": 4,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed04_soft_ste_lr0.05_a30"
+ },
+ {
+  "seed": 4,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed04_soft_ste_lr0.05_a30"
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed00_hard_ste_lr0.03"
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed00_hard_ste_lr0.03"
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed01_hard_ste_lr0.03"
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed01_hard_ste_lr0.03"
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed02_hard_ste_lr0.03"
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed02_hard_ste_lr0.03"
+ },
+ {
+  "seed": 3,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed03_hard_ste_lr0.03"
+ },
+ {
+  "seed": 3,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed03_hard_ste_lr0.03"
+ },
+ {
+  "seed": 4,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed04_hard_ste_lr0.03"
+ },
+ {
+  "seed": 4,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   8,
+   4
+  ],
+  "start": "seed04_hard_ste_lr0.03"
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed00_soft_ste_lr0.03_a100_inv1_q6f3"
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed00_soft_ste_lr0.03_a100_inv1_q6f3"
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed01_soft_ste_lr0.03_a100_inv1_q6f3"
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed01_soft_ste_lr0.03_a100_inv1_q6f3"
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed02_soft_ste_lr0.03_a100_inv1_q6f3"
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed02_soft_ste_lr0.03_a100_inv1_q6f3"
+ },
+ {
+  "seed": 3,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed03_soft_ste_lr0.03_a100_inv1_q6f3"
+ },
+ {
+  "seed": 3,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed03_soft_ste_lr0.03_a100_inv1_q6f3"
+ },
+ {
+  "seed": 4,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed04_soft_ste_lr0.03_a100_inv1_q6f3"
+ },
+ {
+  "seed": 4,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed04_soft_ste_lr0.03_a100_inv1_q6f3"
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed00_hard_ste_lr0.02_q6f3"
+ },
+ {
+  "seed": 0,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed00_hard_ste_lr0.02_q6f3"
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed01_hard_ste_lr0.02_q6f3"
+ },
+ {
+  "seed": 1,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed01_hard_ste_lr0.02_q6f3"
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed02_hard_ste_lr0.02_q6f3"
+ },
+ {
+  "seed": 2,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed02_hard_ste_lr0.02_q6f3"
+ },
+ {
+  "seed": 3,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed03_hard_ste_lr0.02_q6f3"
+ },
+ {
+  "seed": 3,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed03_hard_ste_lr0.02_q6f3"
+ },
+ {
+  "seed": 4,
+  "method": "hard_ste",
+  "lr": 0.003,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed04_hard_ste_lr0.02_q6f3"
+ },
+ {
+  "seed": 4,
+  "method": "hard_ste",
+  "lr": 0.01,
+  "bits": [
+   6,
+   3
+  ],
+  "start": "seed04_hard_ste_lr0.02_q6f3"
+ }
+]

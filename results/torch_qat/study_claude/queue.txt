@@ -1,0 +1,17 @@
+ext_q4f2_exact
+warmup
+phase3
+lead_q8f4
+final_q6f3_curriculum
+final_q6f3_curriculum_rerun
+extra_diag_beta
+exact_beta_fixed
+exact_beta_ramp
+exact_beta_ext
+hybrid_b1
+exact_lead
+fresh_exact_lead
+fresh_exact_lead2
+hybrid_beta
+fresh2_q8f4
+robust_q6f4

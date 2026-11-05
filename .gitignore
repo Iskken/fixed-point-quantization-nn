@@ -228,3 +228,7 @@ results/torch_qat/relu_grid/raw/
 results/torch_qat/relu_optuna/raw/
 results/torch_qat/relu_optuna/study.db
 results/torch_qat/relu_adam/raw/
+results/torch_qat/relu_gpu/raw/
+results/torch_qat/study_claude/raw/
+results/torch_qat/REPORT_RELU_FP.md
+SESSION_CONTEXT.md

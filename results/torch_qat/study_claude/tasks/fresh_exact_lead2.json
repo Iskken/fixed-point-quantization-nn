@@ -1,0 +1,362 @@
+[
+ {
+  "seed": 5,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 6,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 7,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 8,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 9,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 10,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 11,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 12,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 13,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 14,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 5,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 6,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 7,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 8,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 9,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 10,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 11,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 12,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 13,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 14,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 2,
+  "beta": 2,
+  "bits": [
+   6,
+   3
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 5,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 1.5,
+  "beta": 3,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 6,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 1.5,
+  "beta": 3,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 7,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 1.5,
+  "beta": 3,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 8,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 1.5,
+  "beta": 3,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 9,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 1.5,
+  "beta": 3,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 10,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 1.5,
+  "beta": 3,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 11,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 1.5,
+  "beta": 3,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 12,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 1.5,
+  "beta": 3,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 13,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 1.5,
+  "beta": 3,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ },
+ {
+  "seed": 14,
+  "method": "exact",
+  "lr": 0.01,
+  "alpha_end": 1.5,
+  "beta": 3,
+  "bits": [
+   8,
+   4
+  ],
+  "diagnostics": true
+ }
+]
