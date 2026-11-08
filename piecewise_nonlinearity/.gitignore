@@ -1,0 +1,4 @@
+# downloaded datasets and large training outputs stay local
+data/
+checkpoints/
+results/raw/
