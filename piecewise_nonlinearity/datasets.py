@@ -18,8 +18,9 @@ from torchvision import datasets, transforms
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 DATASETS = {
+    # CIFAR-10 values copied from the official EWGS code (CIFAR10/train_fp.py), for a faithful reproduction
     "cifar10": dict(cls=datasets.CIFAR10, n_classes=10,
-                    mean=(0.4914, 0.4822, 0.4465), std=(0.2470, 0.2435, 0.2616)),
+                    mean=(0.4914, 0.4822, 0.4465), std=(0.2023, 0.1994, 0.2010)),
     "cifar100": dict(cls=datasets.CIFAR100, n_classes=100,
                      mean=(0.5071, 0.4865, 0.4409), std=(0.2673, 0.2564, 0.2762)),
 }
