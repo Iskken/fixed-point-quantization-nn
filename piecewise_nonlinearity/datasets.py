@@ -9,6 +9,7 @@ seed (validation is used for every choice; the official test set only for the fi
 uses the standard CIFAR augmentation for training: random crop with padding 4 and horizontal flip.
 """
 
+import hashlib
 import os
 
 import torch
@@ -32,6 +33,18 @@ def download(name):
     return cls(DATA_DIR, train=True, download=True), cls(DATA_DIR, train=False, download=True)
 
 
+def split_indices(n_total, val_fraction=0.1, seed=0):
+    """The fixed train/validation split of the official training set, as (train, validation) indices."""
+    order = torch.randperm(n_total, generator=torch.Generator().manual_seed(seed)).tolist()
+    n_val = int(round(val_fraction * n_total))
+    return order[n_val:], order[:n_val]
+
+
+def split_fingerprint(val_idx):
+    """Short hash of the validation indices: equal on two machines means the same validation images."""
+    return hashlib.sha256(",".join(map(str, val_idx)).encode()).hexdigest()[:16]
+
+
 def get_loaders(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4):
     """Training, validation and test loaders; the train/validation split is fixed by `seed`."""
     spec = DATASETS[name]
@@ -45,9 +58,8 @@ def get_loaders(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4):
     eval_full = spec["cls"](DATA_DIR, train=True, transform=eval_tf)
     test = spec["cls"](DATA_DIR, train=False, transform=eval_tf)
 
-    order = torch.randperm(len(train_full), generator=torch.Generator().manual_seed(seed)).tolist()
-    n_val = int(round(val_fraction * len(order)))
-    train, val = Subset(train_full, order[n_val:]), Subset(eval_full, order[:n_val])
+    train_idx, val_idx = split_indices(len(train_full), val_fraction, seed)
+    train, val = Subset(train_full, train_idx), Subset(eval_full, val_idx)
 
     def loader(ds, shuffle):
         return DataLoader(ds, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,

@@ -1,0 +1,12 @@
+# Exact versions for every run in piecewise_nonlinearity/, the same on both laptops.
+# Python 3.11, CUDA 12.8 (bundled with the torch wheels; needs an NVIDIA driver that supports CUDA 12.8).
+# Install into a fresh virtual environment, from the repository root:
+#   python3.11 -m venv .venv
+#   .venv/bin/pip install -r piecewise_nonlinearity/requirements-lock.txt
+# Then check the machine:  .venv/bin/python -m piecewise_nonlinearity.check_env
+--extra-index-url https://download.pytorch.org/whl/cu128
+torch==2.10.0
+torchvision==0.25.0
+numpy==2.4.2
+pillow==12.1.1
+pytest==9.2.0

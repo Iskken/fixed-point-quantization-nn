@@ -8,12 +8,12 @@
 
 The core plan holds. ResNet-20 on CIFAR-10 is the anchor; we compare our pure staircase with the STE, EWGS and DSQ under one protocol, and reproduce published EWGS and DSQ numbers to show our implementations are right.
 
-Measured timings show that the plan as written needs about 117 GPU hours, against about 110 available before Nov 20. The changes below bring it to about 63 hours. They also fix three methodological gaps:
+Measured timings show that the plan as written needs about 117 GPU hours, against about 110 available before Nov 20. The changes below bring it to about 66 hours, including a 2.6-hour pilot that fixes the training length. They also fix three methodological gaps:
 - the same seeds are used for tuning and for results;
 - EWGS and DSQ get no hyperparameter search;
 - the win criterion is not fixed in advance.
 
-Because the abstract cannot be edited after Nov 16, about 38 of those 63 hours are scheduled before it. The rest goes into the paper only.
+Because the abstract cannot be edited after Nov 16, about 41 of those 66 hours are scheduled before it. The rest goes into the paper only.
 
 ## Where we are
 
@@ -41,13 +41,29 @@ Two training jobs on the GPU at the same time run at 308 ms per batch each, agai
 
 ## Necessary changes
 
-### 1. Fix the QAT length now, and tune at that same length
+### 1. Fix the QAT length with a pilot, and tune at that same length
 
-**Problem.** If we tune on short runs and run step 10 at a different length, the tuned settings may not carry over: the α ramp and the learning-rate decay both stretch with the run length.
+**Problem.** If we tune on short runs and run step 10 at a different length, the tuned settings may not carry over: the α ramp and the learning-rate decay both stretch with the run length. A budget that is too short would also measure how fast each method converges rather than how good it gets. That would penalize the staircase in particular, because it spends the first half of training ramping α.
 
-**Change.** All runs in steps 7 and 10 use **60 epochs** (cosine decay to 0, α ramped linearly over the first half). Only the step 9 reproductions use the papers' 400 epochs.
+**Change.** All runs in steps 7 and 10 use one fixed budget of N epochs, with cosine decay to 0 and α ramped linearly over the first half of training. Only the step 9 reproductions use the papers' 400 epochs. N is chosen by a pilot, with a rule fixed before the pilot runs:
 
-**Cost.** About 19 min per STE run and 26 min per staircase run.
+- **Pilot.** STE and the staircase (α_end = 2, β = 2, learning rate 1e-3) at 2/2, the hardest setting, on the development seed (seed 0). Each is trained for 30, 60 and 120 epochs, each run with its own cosine schedule.
+- **Rule.** N is the shortest budget in {30, 60, 120} such that going from N to 2N changes
+  - (a) each method's validation accuracy by less than 0.3 points, and
+  - (b) the gap between the methods (staircase − STE) by less than 0.3 points.
+
+  Condition (b) is the important one: our conclusion must not depend on the budget. Condition (a) makes sure the absolute numbers are close to convergence, so that they are meaningful next to the papers'. A change in which method is ahead counts only through (b): a flip from +0.1 to −0.1 is noise, not a change of ranking.
+- **Why 0.3 points.** The threshold must not be smaller than run-to-run noise, or the rule could not be tested with one run per budget. It must also be clearly smaller than the effects we want to measure, or the budget could matter as much as the method. 0.3 satisfies both:
+  - **Noise:** our three float models differ on the validation set with a standard deviation of 0.12 points (91.66, 91.64, 91.86), so 0.3 is about 2.5 standard deviations.
+  - **Effect size:** 0.3 is below half of the method improvements reported on this benchmark: +0.9 for EWGS over STE at 1/1 (EWGS Table 5) and +0.62 for DSQ's α mechanism at 2 bits (DSQ Table 4).
+- **Fallback, fixed now.** If even 60 → 120 fails the rule, N = 120. Tuning then takes two nights, and for the abstract EWGS and DSQ move from "should have" to "if time allows". If 30 → 60 passes, N = 30 and every later step costs half as much.
+- **Limitation.** There is one run per budget, so the pilot detects large budget effects, not small ones. The paper says so.
+
+**Cost.** The pilot takes about 2.6 GPU hours: 210 epochs per method, at about 19 s (STE) and 26 s (staircase) per epoch. At N = 60, a run takes about 19 min (STE) or 26 min (staircase).
+
+**In the paper** (N and the largest observed change are filled in from the pilot):
+
+> We fixed the fine-tuning budget in advance with a rule applied on the development seed: the shortest budget in {30, 60, 120} epochs for which doubling it changed each method's validation accuracy, and the accuracy gap between methods, by less than 0.3 points. This threshold is about 2.5 standard deviations of the seed-to-seed variation of our full-precision models on the validation set (0.12 points), and below half of the method improvements reported on this benchmark (+0.9 for EWGS over STE at 1/1 [EWGS, Table 5]; +0.62 for DSQ's α mechanism at 2 bits [DSQ, Table 4]). To validate our EWGS and DSQ implementations, we additionally reproduce published results under the papers' original 400-epoch protocol.
 
 ### 2. Tune one thing at a time, so tuning fits one night
 
@@ -68,7 +84,7 @@ The 4/4 rule is fixed now, before any results.
 - the share of weights that change level per epoch;
 - the run time.
 
-**Cost.** About 8 hours: 5.7 h at 2/2 and 2.3 h at 4/4.
+**Cost.** About 8 hours at 60 epochs: 5.7 h at 2/2 and 2.3 h at 4/4. If the pilot picks a different budget, this scales in proportion.
 
 ### 3. Use separate seeds for tuning and for results
 
@@ -137,6 +153,7 @@ Totals are in GPU hours, for one job at a time. "Measured" uses the per-epoch ti
 
 | Item | As written | Revised | Basis |
 |---|---|---|---|
+| Budget pilot (30, 60, 120 epochs) | — | 2.6 h | measured |
 | Step 7 tuning | 25 h (full grid, 60 epochs) | 8.0 h | measured |
 | EWGS / DSQ learning-rate tuning | — | 5.2 h | estimated |
 | Step 9 reproductions (400 epochs) | 10 h | 10.0 h | partly estimated |
@@ -145,7 +162,7 @@ Totals are in GPU hours, for one job at a time. "Measured" uses the per-epoch ti
 | Step 10 ablations | 11 h | 7.6 h | measured |
 | MobileNetV2 (float + QAT) | 33 h (4 methods) | 17.4 h (STE vs staircase) | estimated |
 | CIFAR-100 | 12 h | optional | estimated |
-| **Total** | **~117 h** | **~63 h** | |
+| **Total** | **~117 h** | **~66 h** | |
 
 **Available:** about 110 hours. That assumes the laptop trains about 10 hours on each of the 11 nights from Nov 9 to Nov 19. The revised plan leaves room for reruns.
 
@@ -155,14 +172,14 @@ The abstract cannot be changed after submission. It may therefore only claim res
 
 | Tier | Results | GPU time | Ready | What the abstract can then say |
 |---|---|---|---|---|
-| Must have | Float seeds 3–4; step 7 tuning; STE vs staircase on fresh seeds 1–4 at 2/2 and 4/4 | ~16 h | Nov 11 morning | How the staircase compares with the STE on ResNet-20 / CIFAR-10 |
+| Must have | Float seeds 3–4; budget pilot; step 7 tuning; STE vs staircase on fresh seeds 1–4 at 2/2 and 4/4 | ~18 h | Nov 11 morning | How the staircase compares with the STE on ResNet-20 / CIFAR-10 |
 | Should have | EWGS and DSQ: learning-rate tuning, step 9 reproductions, fresh seeds 1–4 at 2/2 and 4/4 | ~22 h | Nov 13 | How the staircase compares with EWGS and DSQ, with our implementations checked against the papers |
 | If time allows | Ablations | ~8 h | Nov 14 morning | Why it works: forward curve vs slopes, weights vs activations |
 | After the abstract | MobileNetV2, CIFAR-100 | ~17 h + optional | Nov 20 | Nothing; these go into the paper only |
 
-The first two tiers take about 38 GPU hours: today plus four nights. The nights of Nov 13 and 14 stay free as buffer for reruns.
+The first two tiers take about 41 GPU hours: today plus four nights. The nights of Nov 13 and 14 stay free as buffer for reruns.
 
-**Risk.** The tuning can only start once `train_qat.py` exists and has passed short test runs. If the tuning slips by a night, the must-have results move to Nov 12 and only one buffer night remains.
+**Risk.** The tuning can only start once `train_qat.py` exists and has passed short test runs, and the budget pilot has fixed the number of epochs. If the tuning slips by a night, the must-have results move to Nov 12 and only one buffer night remains.
 
 ### Rules for writing the abstract
 
@@ -176,7 +193,7 @@ The first two tiers take about 38 GPU hours: today plus four nights. The nights 
 
 | Date | Day | Night (GPU) |
 |---|---|---|
-| Nov 9 | Float seeds 3–4 (~2 h on the GPU); write and test `train_qat.py` | Step 7 tuning (~8 h) |
+| Nov 9 | Float seeds 3–4 (~2 h on the GPU); write and test `train_qat.py`; budget pilot in the afternoon (~2.6 h) | Step 7 tuning (~8 h at 60 epochs) |
 | Nov 10 | Step 8: EWGS and DSQ with CPU tests, split between the two of us | STE vs staircase on fresh seeds (~6 h): **must-have results final** |
 | Nov 11 | Short GPU check of EWGS and DSQ | EWGS/DSQ learning-rate tuning (~5 h) + EWGS 1/1 reproduction (~5 h) |
 | Nov 12 | Draft the abstract from the must-have results | EWGS/DSQ on fresh seeds (~7 h) + DSQ 2-bit reproduction (~5 h): **should-have results final** (may run into the morning) |
@@ -186,13 +203,13 @@ The first two tiers take about 38 GPU hours: today plus four nights. The nights 
 
 ## Decisions to confirm
 
-1. QAT length of 60 epochs for steps 7 and 10; 400 epochs for step 9 only.
+1. **Agreed (2026-11-09):** the QAT length is chosen by the budget pilot and its rule (change 1); 400 epochs for step 9 only.
 2. One-at-a-time tuning, with 2/2's α and β reused at 4/4.
 3. Seed 0 for tuning; seeds 1–4 for results.
 4. The same learning-rate search for EWGS and DSQ.
 5. The primary metric (with BatchNorm re-estimation) and the win rule.
 6. The step 9 targets: EWGS 1/1 and DSQ Table 4; DSQ 1/1 optional.
-7. 3/3 dropped, and the priority order of step 10.
+7. **Agreed (2026-11-09):** 3/3 dropped. Still to confirm: the priority order of step 10.
 8. The abstract's scope: ResNet-20 on CIFAR-10 only, with numbers from fresh seeds 1–4.
 9. The order of the work by abstract tier: must have, should have, if time allows, after the abstract.
 
