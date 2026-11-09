@@ -90,7 +90,7 @@ Run everything from the repository root as a module, for example:
 ```
 python -m piecewise_nonlinearity.datasets
 python -m piecewise_nonlinearity.train_float --seed 0
-python -m piecewise_nonlinearity.train_qat --method piecewise --bits 4/4 --seed 0
+python -m piecewise_nonlinearity.train_qat --group tune --method piecewise --bits 2/2 --seed 0 --alpha-end 2 --beta 2
 python -m pytest piecewise_nonlinearity/tests
 ```
 
@@ -170,7 +170,8 @@ git -C reference/DSQ_unofficial checkout f06df7f
 - [x] Float ResNet-20, seeds 0-2: test 91.17 / 91.16 / 91.23 (`pretrained/`)
 - [x] Shared quantizer + STE
 - [x] Pure staircase
-- [x] Sanity tests (23 passing)
+- [x] Sanity tests (39 passing, including CPU smoke tests of `train_qat.py`)
+- [x] QAT training script `train_qat.py`: STE and staircase; EWGS and DSQ plug in at step 8
 - [ ] Decisive experiment
 - [ ] EWGS
 - [ ] DSQ
