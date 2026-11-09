@@ -145,14 +145,21 @@ We also report the accuracy without re-estimation, which is what the papers repo
 
 **Why re-estimation.** The staircase trains with the soft curve S, so its BatchNorm statistics do not match exact rounding. The MLP study had no BatchNorm, so this problem is new on ResNet-20.
 
-**Why with augmentation.** The float model scores 100% on unaugmented training images. It has memorized them, so their statistics do not match unseen images. Measured on seed 0 (validation accuracy, 2026-11-09):
+**Why with augmentation.** During training, BatchNorm always normalized *augmented* batches: random crops add black padding borders, and flips change the statistics too. Every later layer adapted to that normalization. Statistics of clean images normalize differently, even for images the network has never seen. Re-estimation must therefore use the input distribution BatchNorm saw during training.
 
-| Model | Original statistics | Re-estimated without augmentation | Re-estimated with seeded augmentation |
-|---|---|---|---|
-| Float | 91.66 | 87.74 | 91.68 |
-| STE 4/4, before any training | 86.96 | 85.18 | 89.36 |
+A control experiment shows this is not memorization. Float models, seeds 0–2, accuracy on one half of the validation set, 2026-11-09:
 
-With augmentation, re-estimation leaves the float model unchanged and helps the quantized one, as it should. `check_env.py` checks that it keeps doing so.
+| BatchNorm statistics | Seed 0 / 1 / 2 | Mean |
+|---|---|---|
+| Original (from training) | 91.60 / 91.28 / 92.00 | 91.63 |
+| Re-estimated on training images, no augmentation | 87.80 / 87.00 / 86.72 | 87.17 |
+| Re-estimated on training images, augmented (our method) | 91.64 / 91.44 / 92.04 | 91.71 |
+| Re-estimated on the other validation half, never seen, no augmentation | 87.80 / 86.88 / 86.72 | 87.13 |
+| Re-estimated on the other validation half, never seen, augmented | 91.36 / 91.44 / 92.28 | 91.69 |
+
+Clean images fail whether or not the model has seen them; augmented images work whether or not it has. Using validation images for re-estimation was only for this diagnostic: reported numbers always re-estimate on the training split.
+
+With augmentation, re-estimation also helps a quantized model: on seed 0, an STE 4/4 model before any training goes from 86.96 to 89.36, against 85.18 without augmentation. `check_env.py` checks that re-estimation keeps the float model's accuracy unchanged.
 
 **Proposed win rule,** per bit width, over the 4 fresh seeds. The staircase beats a method if:
 1. its mean test accuracy is higher;

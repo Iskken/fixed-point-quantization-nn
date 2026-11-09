@@ -117,9 +117,13 @@ def get_bn_loader(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4,
     same fixed split, in a fixed order, with the training augmentation seeded per image (SeededAugmentation).
     Validation and test images are never in it.
 
-    The augmentation matters. The float model scores 100% on unaugmented training images: it has memorized
-    them, so their statistics do not match unseen images. Re-estimating on them lowered the seed-0 float
-    model's validation accuracy from 91.66 to 87.74; with this loader it stays at 91.68 (measured 2026-11-09).
+    The augmentation matters. During training, BatchNorm always normalized augmented batches (random crops
+    with black padding, flips), and every later layer adapted to that normalization. Statistics of clean
+    images normalize differently, even for images the network has never seen: re-estimating on clean images
+    lowered the float models' accuracy by about 4.5 points (91.63 -> 87.17, seeds 0-2, on half of the
+    validation set), the same for clean training images and for unseen clean images. With the training
+    augmentation it stays unchanged (91.71). Measured 2026-11-09. So re-estimation uses the input
+    distribution BatchNorm saw during training.
     """
     spec = DATASETS[name]
     base = spec["cls"](DATA_DIR, train=True, transform=transforms.ToTensor())
