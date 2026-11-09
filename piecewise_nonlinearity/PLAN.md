@@ -114,7 +114,7 @@ Extensions count as tuned runs.
 
 **Problem.** Our rule is "tune on development seeds, claim on fresh seeds", but float models exist only for seeds 0–2. Tuning on seed 0 and reporting on seeds 0–2 breaks the rule. Selection on the tuning seed also flatters the chosen settings: with up to 13 settings tried per bit width, the best one wins partly by noise. Fresh seeds remove that bias.
 
-**Change.** Train float models for **seeds 3 and 4**. Tune on seed 0 and report all step 10 results on **seeds 1–4**. Each run uses the float model and QAT seed with the same number, so all methods for a seed start from the same float model and are compared seed by seed.
+**Change.** Train float models for **seeds 3 and 4**. Tune on seed 0 and report all step 10 results on **seeds 1–4**. Each run uses the float model and QAT seed with the same number, so all methods for a seed start from the same float model and are compared seed by seed. Runs on seed 0 never evaluate the test set, and `train_qat.py` enforces this. Every reported number, including the step 9 reproductions, therefore comes from seeds 1–4.
 
 **Cost.** About 1 hour per float model.
 
@@ -207,7 +207,7 @@ A control experiment shows this is not memorization. Float models, seeds 0–2, 
 
 Clean images fail whether or not the model has seen them; augmented images work whether or not it has. Using validation images for re-estimation was only for this diagnostic: reported numbers always re-estimate on the training split.
 
-On the seed-0 float model, the augmented re-estimate also reproduces the original statistics layer by layer: running means within 0.005 standard deviations and variances within 0.3% in all 19 BatchNorm layers. The clean re-estimate is off by up to 0.1 standard deviations and 24%.
+On the seed-0 float model, the augmented re-estimate also reproduces the original statistics layer by layer: running means within 0.005 standard deviations and variances within 0.5% in all 19 BatchNorm2d layers, averaged over each layer's channels. The clean re-estimate is off by up to 0.10 standard deviations and 26% (measured 2026-11-09).
 
 With augmentation, re-estimation also helps a quantized model: on seed 0, an STE 4/4 model before any training goes from 86.96 to 89.36, against 85.18 without augmentation. `check_env.py` checks that re-estimation keeps the float model's accuracy unchanged.
 

@@ -6,6 +6,7 @@ data or the seed-0 float model is missing):
   - the STE and the staircase with the same seed start from the same quantized network;
   - alpha rises linearly and reaches alpha_end at half of the steps;
   - an interrupted run resumes from its checkpoint and ends like an uninterrupted one;
+  - the development seed 0 never evaluates the test set, a fresh seed does;
   - run names contain every setting, and invalid settings are rejected.
 """
 
@@ -50,8 +51,10 @@ def test_run_writes_everything_and_is_skipped_when_done(runs):
     assert len(steps["loss"]) == len(steps["correct"]) == len(steps["alpha"]) == 4
     assert all(len(v) == 3 for v in r["history"].values())  # the start and 2 epochs
     assert r["history"]["val_acc_reest"][1] is not None  # --reestimate-every 1
-    for k in ("val_acc_reest", "test_acc_reest", "val_acc", "test_acc", "val_acc_soft", "test_acc_soft"):
+    for k in ("val_acc_reest", "val_acc", "val_acc_soft"):
         assert r["final"][k] is not None
+    # seed 0 is the development seed: it never evaluates the test set (PLAN.md, change 3)
+    assert all(v is None for k, v in r["final"].items() if k.startswith("test_"))
     assert not r["failed"] or r["failure"].startswith("ended below its start")  # 4 steps may not beat the start
     mtime = json_path.stat().st_mtime
     assert smoke_run(out, "--method", "piecewise")["final"] == r["final"]
@@ -84,7 +87,21 @@ def test_interrupted_run_resumes_and_ends_like_an_uninterrupted_one(runs, tmp_pa
     full = results["piecewise"]
     assert np.allclose(resumed["history"]["train_loss"][1:], full["history"]["train_loss"][1:], rtol=1e-5)
     assert resumed["history"]["val_acc"] == full["history"]["val_acc"]
-    assert resumed["final"] == pytest.approx(full["final"], rel=1e-5)
+    # numbers within 1e-5; the test entries are None on both (seed 0 never evaluates the test set)
+    numbers = lambda final: {k: v for k, v in final.items() if v is not None}
+    assert numbers(resumed["final"]) == pytest.approx(numbers(full["final"]), rel=1e-5)
+    assert resumed["final"].keys() == full["final"].keys()
+    assert [k for k, v in resumed["final"].items() if v is None] == [k for k, v in full["final"].items() if v is None]
+
+
+@needs_data
+@pytest.mark.skipif(not os.path.exists(os.path.join(train_qat.HERE, "pretrained", "resnet20_cifar10_seed1.pt")),
+                    reason="the seed-1 float model is missing")
+def test_a_fresh_seed_evaluates_the_test_set(tmp_path):
+    r = smoke_run(tmp_path, "--method", "piecewise", "--seed", "1")  # the later --seed overrides smoke_run's 0
+    assert r["config"]["seed"] == 1
+    for k in ("test_acc_reest", "test_acc", "test_acc_soft", "test_loss_reest"):
+        assert r["final"][k] is not None
 
 
 def test_run_names_contain_every_setting():
