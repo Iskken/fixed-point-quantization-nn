@@ -56,13 +56,18 @@ def _transforms(name):
     return train_tf, eval_tf
 
 
-def _loader(ds, batch_size, shuffle, num_workers):
+def _loader(ds, batch_size, shuffle, num_workers, generator=None):
     return DataLoader(ds, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
-                      pin_memory=torch.cuda.is_available(), persistent_workers=num_workers > 0)
+                      pin_memory=torch.cuda.is_available(), persistent_workers=num_workers > 0,
+                      generator=generator)
 
 
-def get_loaders(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4):
-    """Training, validation and test loaders; the train/validation split is fixed by `seed`."""
+def get_loaders(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4, generator=None):
+    """
+    Training, validation and test loaders; the train/validation split is fixed by `seed`.
+    `generator` (optional) drives the training loader's shuffling and its workers' random seeds, so the
+    order and the augmentation of the training images depend on it alone (with num_workers > 0).
+    """
     spec = DATASETS[name]
     train_tf, eval_tf = _transforms(name)
 
@@ -74,7 +79,7 @@ def get_loaders(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4):
     train_idx, val_idx = split_indices(len(train_full), val_fraction, seed)
     train, val = Subset(train_full, train_idx), Subset(eval_full, val_idx)
 
-    return (_loader(train, batch_size, True, num_workers), _loader(val, batch_size, False, num_workers),
+    return (_loader(train, batch_size, True, num_workers, generator), _loader(val, batch_size, False, num_workers),
             _loader(test, batch_size, False, num_workers))
 
 
