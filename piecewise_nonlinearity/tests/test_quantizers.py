@@ -7,16 +7,21 @@ Sanity checks for the quantizers (CPU only):  python -m pytest piecewise_nonline
   - the staircase is continuous at the bin edges, and its "exact" backward matches finite differences
   - gradients are zero outside the clipping range
   - a quantized ResNet-20 loads float weights and is initialized like EWGS
+  - BatchNorm re-estimation records the statistics of the rounded network, averages all batches equally,
+    and changes nothing but the running statistics
 EWGS with delta = 0 == STE is added with ewgs.py (step 8).
 """
 
+import copy
 import math
 
 import pytest
 import torch
+import torch.nn as nn
 
 from piecewise_nonlinearity.models.quant_layers import (QConv2d, init_quantizers, load_float_weights,
-                                                         qconv_factory, split_parameters)
+                                                         qconv_factory, quantizers, reestimate_bn,
+                                                         set_force_hard, split_parameters)
 from piecewise_nonlinearity.models.resnet20 import ResNet20
 from piecewise_nonlinearity.quantizers.base import Quantizer
 from piecewise_nonlinearity.quantizers.piecewise import Staircase, alpha_at, stair_geometry
@@ -159,6 +164,75 @@ def test_quantized_resnet20_loads_float_weights_and_initializes(method, kw):
     assert len(net) + len(quant) == len(list(qmodel.parameters()))
     out = qmodel.eval()(images)
     assert out.shape == (32, 10) and torch.isfinite(out).all()
+
+
+def staircase_resnet(bits=2):
+    """A quantized ResNet-20 where the staircase forward differs clearly from exact rounding."""
+    torch.manual_seed(0)
+    model = ResNet20(conv_layer=qconv_factory("piecewise", w_bits=bits, a_bits=bits, alpha=2.0, beta=2.0))
+    init_quantizers(model, torch.randn(32, 3, 32, 32))
+    return model
+
+
+def bn_input_stats(model, images, hard):
+    """Per-BatchNorm (mean, unbiased variance) of its input in a train-mode forward pass, on a copy."""
+    model = copy.deepcopy(model)
+    set_force_hard(model, hard)
+    model.train()
+    stats = []
+    hooks = [m.register_forward_hook(lambda m, inp, out: stats.append(
+        (inp[0].mean(dim=(0, 2, 3)), inp[0].var(dim=(0, 2, 3), unbiased=True))))
+        for m in model.modules() if isinstance(m, nn.BatchNorm2d)]
+    with torch.no_grad():
+        model(images)
+    for h in hooks:
+        h.remove()
+    return stats
+
+
+def test_reestimate_bn_records_the_statistics_of_the_rounded_network():
+    model = staircase_resnet()
+    images = torch.randn(64, 3, 32, 32)
+    hard, soft = bn_input_stats(model, images, True), bn_input_stats(model, images, False)
+    reestimate_bn(model, [(images, torch.zeros(64))])
+    bns = [m for m in model.modules() if isinstance(m, nn.BatchNorm2d)]
+    assert len(bns) == len(hard)
+    for m, (mean, var) in zip(bns, hard):
+        assert torch.allclose(m.running_mean, mean, atol=1e-5)
+        assert torch.allclose(m.running_var, var, rtol=1e-4, atol=1e-5)
+    # the staircase forward would have given different statistics: this is the mismatch being removed
+    assert any(not torch.allclose(h[0], s[0], atol=1e-3) for h, s in zip(hard, soft))
+
+
+def test_reestimate_bn_is_a_plain_average_over_all_batches():
+    model = staircase_resnet()
+    a, b = torch.randn(32, 3, 32, 32), torch.randn(32, 3, 32, 32) + 0.5
+    y = torch.zeros(32)
+
+    def running_means(batches):
+        m = copy.deepcopy(model)
+        reestimate_bn(m, batches)
+        return [bn.running_mean.clone() for bn in m.modules() if isinstance(bn, nn.BatchNorm2d)]
+
+    ab, ba, only_b = running_means([(a, y), (b, y)]), running_means([(b, y), (a, y)]), running_means([(b, y)])
+    assert all(torch.allclose(x, z, atol=1e-6) for x, z in zip(ab, ba))  # order does not matter (no momentum)
+    assert any(not torch.allclose(x, z, atol=1e-3) for x, z in zip(ab, only_b))  # every batch counts
+
+
+def test_reestimate_bn_changes_only_the_running_statistics():
+    model = staircase_resnet()
+    for q in quantizers(model)[:3]:
+        q.force_hard = True  # a flag set by the caller must survive
+    model.eval()
+    params = {k: v.clone() for k, v in model.named_parameters()}
+    momenta = [m.momentum for m in model.modules() if isinstance(m, nn.BatchNorm2d)]
+    flags = [q.force_hard for q in quantizers(model)]
+    reestimate_bn(model, [(torch.randn(16, 3, 32, 32), torch.zeros(16))])
+    assert all(torch.equal(v, params[k]) for k, v in model.named_parameters())
+    assert [m.momentum for m in model.modules() if isinstance(m, nn.BatchNorm2d)] == momenta
+    assert [q.force_hard for q in quantizers(model)] == flags
+    assert not model.training
+    assert all(p.grad is None for p in model.parameters())
 
 
 def test_unquantized_qconv_equals_float_model():

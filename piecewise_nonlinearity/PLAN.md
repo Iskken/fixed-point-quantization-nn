@@ -106,7 +106,7 @@ The 4/4 rule is fixed now, before any results.
 
 ### 5. Fix the metric and the win rule before step 10
 
-**Primary metric.** Test accuracy after the last epoch, with exact rounding, after BatchNorm re-estimation. Re-estimation recomputes the BatchNorm statistics with exact rounding on 50 training batches, done the same way for every method. We also report the accuracy without re-estimation, which is what the papers report.
+**Primary metric.** Test accuracy after the last epoch, with exact rounding, after BatchNorm re-estimation. Re-estimation recomputes the BatchNorm running mean and variance with exact rounding over the full training split (45k images, no augmentation, one forward pass, a plain average over batches), done the same way for every method before every evaluation (`models/quant_layers.reestimate_bn` with `datasets.get_bn_loader`). We also report the accuracy without re-estimation, which is what the papers report.
 
 **Why re-estimation.** The staircase trains with the soft curve S, so its BatchNorm statistics do not match exact rounding. The MLP study had no BatchNorm, so this problem is new on ResNet-20.
 
