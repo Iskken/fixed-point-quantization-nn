@@ -43,7 +43,7 @@ Every line must say **OK** or **INFO**, and the last line must say "all checks p
 - the dataset checksums;
 - the validation split fingerprint;
 - the three float models;
-- that the seed-0 float model reaches its recorded validation accuracy of 91.66.
+- that the seed-0 float model reaches its recorded validation accuracy of 91.66, and that BatchNorm re-estimation leaves it unchanged (91.68).
 
 The `--bench` lines give this GPU's speed; send them to the team, so we can split the runs between the laptops.
 

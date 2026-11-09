@@ -37,6 +37,8 @@ EXPECTED = {
     "pretrained": {0: "0a01b980fce6dcdc", 1: "8c87e9ca4587165a", 2: "ad84bf48bdb59200"},
     # validation accuracy of the seed-0 float model (results/float/resnet20_cifar10_seed0.json)
     "float_seed0_val_acc": 91.66,
+    # the same after BatchNorm re-estimation (models/quant_layers.reestimate_bn + datasets.get_bn_loader)
+    "float_seed0_val_acc_reestimated": 91.68,
 }
 
 failures = []
@@ -107,15 +109,35 @@ def check_float_models():
     model.load_state_dict(ckpt["model"])
     model = model.to(device).eval()
     _, val_loader, _ = get_loaders("cifar10", num_workers=2)
-    correct = total = 0
-    with torch.no_grad():
-        for x, y in val_loader:
-            correct += (model(x.to(device)).argmax(1).cpu() == y).sum().item()
-            total += y.numel()
-    acc = 100.0 * correct / total
+
+    def val_acc(m):
+        m.eval()
+        correct = total = 0
+        with torch.no_grad():
+            for x, y in val_loader:
+                correct += (m(x.to(device)).argmax(1).cpu() == y).sum().item()
+                total += y.numel()
+        return 100.0 * correct / total, total
+
+    acc, total = val_acc(model)
     diff_images = round(abs(acc - EXPECTED["float_seed0_val_acc"]) * total / 100)
     report("float seed 0 val acc", diff_images <= 2,
            f"{acc:.2f} (expected {EXPECTED['float_seed0_val_acc']:.2f}; {diff_images} images differ)")
+
+    # BatchNorm re-estimation: on the float model it must leave the accuracy (almost) unchanged. A large drop
+    # means the re-estimation data is wrong (unaugmented training images gave 87.74).
+    import copy
+
+    from piecewise_nonlinearity.datasets import get_bn_loader
+    from piecewise_nonlinearity.models.quant_layers import reestimate_bn
+    reestimated = copy.deepcopy(model)
+    reestimate_bn(reestimated, get_bn_loader("cifar10", num_workers=2), device=device)
+    acc_re, _ = val_acc(reestimated)
+    expected_re = EXPECTED["float_seed0_val_acc_reestimated"]
+    diff_re = round(abs(acc_re - expected_re) * total / 100)
+    report("BN re-estimation", abs(acc_re - acc) <= 0.3 and diff_re <= 2,
+           f"float seed 0 val acc {acc_re:.2f} after re-estimation (expected {expected_re:.2f}, "
+           f"and within 0.3 of {acc:.2f})")
 
 
 def bench():

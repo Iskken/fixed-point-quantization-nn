@@ -81,8 +81,12 @@ def reestimate_bn(model, loader, device=None):
     """
     Recompute every BatchNorm's running mean and variance with exact rounding in every quantizer, over all
     batches of `loader` (one forward pass, no gradients, no optimizer step), so that inference uses statistics
-    of the network that is actually evaluated. Call it before every evaluation, the same way for every method,
-    with datasets.get_bn_loader (the full training split, no augmentation).
+    of the network that is actually evaluated. Call it for every evaluation that counts, the same way for every
+    method, with datasets.get_bn_loader (the full training split, with the training augmentation seeded per
+    image: unaugmented training images give wrong statistics, see get_bn_loader).
+
+    It changes `model` in place. Evaluate on a copy (copy.deepcopy) when the trained statistics are still
+    needed, for example for the accuracy without re-estimation.
 
     Why: the staircase trains with the soft curve S, so the statistics BatchNorm collects during training
     belong to the S network, not to the rounded one. STE, EWGS and DSQ round in the forward pass already.

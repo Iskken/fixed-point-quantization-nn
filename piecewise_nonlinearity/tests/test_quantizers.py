@@ -9,15 +9,23 @@ Sanity checks for the quantizers (CPU only):  python -m pytest piecewise_nonline
   - a quantized ResNet-20 loads float weights and is initialized like EWGS
   - BatchNorm re-estimation records the statistics of the rounded network, averages all batches equally,
     and changes nothing but the running statistics
+  - its data uses the training augmentation, seeded per image: identical to torchvision's pipeline for the
+    same draws, the same on every pass, and only training-split images
 EWGS with delta = 0 == STE is added with ewgs.py (step 8).
 """
 
 import copy
 import math
+import os
 
+import numpy as np
 import pytest
 import torch
 import torch.nn as nn
+import torchvision.transforms.functional as TF
+from PIL import Image
+
+from piecewise_nonlinearity.datasets import DATA_DIR, DATASETS, SeededAugmentation, split_indices
 
 from piecewise_nonlinearity.models.quant_layers import (QConv2d, init_quantizers, load_float_weights,
                                                          qconv_factory, quantizers, reestimate_bn,
@@ -242,3 +250,58 @@ def test_unquantized_qconv_equals_float_model():
     load_float_weights(qmodel, float_model.state_dict())
     x = torch.randn(8, 3, 32, 32)
     assert torch.equal(qmodel(x), float_model(x))
+
+
+class FakeImages:
+    """A few random 32x32 RGB images, returned like torchvision's CIFAR with transform=ToTensor()."""
+
+    def __init__(self, n=40):
+        rng = np.random.default_rng(0)
+        self.images = [Image.fromarray(rng.integers(0, 256, (32, 32, 3), dtype=np.uint8)) for _ in range(n)]
+
+    def __getitem__(self, i):
+        return TF.to_tensor(self.images[i]), i % 10
+
+    def __len__(self):
+        return len(self.images)
+
+
+MEAN, STD = DATASETS["cifar10"]["mean"], DATASETS["cifar10"]["std"]
+
+
+def test_seeded_augmentation_equals_torchvision_pipeline_for_the_same_draws():
+    base = FakeImages()
+    aug = SeededAugmentation(base, range(len(base)), MEAN, STD, seed=0)
+    flips = set()
+    for i in range(len(aug)):
+        top, left, flip = aug.draws(i)
+        assert 0 <= top <= 8 and 0 <= left <= 8
+        flips.add(flip)
+        # what transforms.RandomCrop(32, padding=4) + RandomHorizontalFlip + ToTensor + Normalize produce
+        img = TF.crop(TF.pad(base.images[i], 4), top, left, 32, 32)
+        if flip:
+            img = TF.hflip(img)
+        expected = TF.normalize(TF.to_tensor(img), MEAN, STD)
+        assert torch.allclose(aug[i][0], expected, atol=1e-6)
+    assert flips == {True, False}
+
+
+def test_seeded_augmentation_is_the_same_on_every_pass_and_depends_on_the_seed():
+    base = FakeImages()
+    a = SeededAugmentation(base, range(len(base)), MEAN, STD, seed=0)
+    b = SeededAugmentation(base, range(len(base)), MEAN, STD, seed=0)
+    c = SeededAugmentation(base, range(len(base)), MEAN, STD, seed=1)
+    assert all(torch.equal(a[i][0], a[i][0]) and torch.equal(a[i][0], b[i][0]) for i in range(len(a)))
+    assert any(not torch.equal(a[i][0], c[i][0]) for i in range(len(a)))
+    # the draws belong to the image, not to its position: reordering the indices keeps each image's crop
+    rev = SeededAugmentation(base, list(range(len(base)))[::-1], MEAN, STD, seed=0)
+    assert torch.equal(rev[0][0], a[len(a) - 1][0])
+
+
+@pytest.mark.skipif(not os.path.isdir(os.path.join(DATA_DIR, "cifar-10-batches-py")), reason="CIFAR-10 not downloaded")
+def test_bn_loader_uses_only_the_training_split():
+    from piecewise_nonlinearity.datasets import get_bn_loader
+    loader = get_bn_loader("cifar10", num_workers=0)
+    train_idx, val_idx = split_indices(50000)
+    assert loader.dataset.indices == train_idx
+    assert not set(loader.dataset.indices) & set(val_idx)

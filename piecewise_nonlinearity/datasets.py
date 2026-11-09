@@ -13,7 +13,8 @@ import hashlib
 import os
 
 import torch
-from torch.utils.data import DataLoader, Subset
+import torch.nn.functional as F
+from torch.utils.data import DataLoader, Dataset, Subset
 from torchvision import datasets, transforms
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
@@ -77,16 +78,54 @@ def get_loaders(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4):
             _loader(test, batch_size, False, num_workers))
 
 
-def get_bn_loader(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4):
+class SeededAugmentation(Dataset):
     """
-    The training images of the same fixed split, without augmentation and in a fixed order: the data for
-    BatchNorm re-estimation (models/quant_layers.reestimate_bn). Validation and test images are never in it.
+    The training augmentation (random crop with 4 pixels of zero padding, random horizontal flip, then
+    normalization), with each image's random draws fixed by `seed` and the image's index. Every pass gives
+    the same images, on any machine and with any number of workers. The distribution is the same as
+    transforms.RandomCrop(32, padding=4) + RandomHorizontalFlip(): crop offsets uniform in 0..8, flip with
+    probability 0.5, padding with black pixels before normalization.
+    `base` must return (ToTensor image, label).
+    """
+
+    def __init__(self, base, indices, mean, std, seed=0):
+        self.base, self.indices, self.seed = base, list(indices), seed
+        self.mean = torch.tensor(mean).view(3, 1, 1)
+        self.std = torch.tensor(std).view(3, 1, 1)
+
+    def __len__(self):
+        return len(self.indices)
+
+    def draws(self, i):
+        """(top, left, flip) for item i."""
+        g = torch.Generator().manual_seed(self.seed * 1_000_003 + self.indices[i])
+        top, left = torch.randint(0, 9, (2,), generator=g).tolist()
+        return top, left, bool(torch.rand((), generator=g) < 0.5)
+
+    def __getitem__(self, i):
+        x, y = self.base[self.indices[i]]
+        top, left, flip = self.draws(i)
+        x = F.pad(x, (4, 4, 4, 4))[:, top:top + 32, left:left + 32]
+        if flip:
+            x = x.flip(-1)
+        return (x - self.mean) / self.std, y
+
+
+def get_bn_loader(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4, aug_seed=0):
+    """
+    The data for BatchNorm re-estimation (models/quant_layers.reestimate_bn): the training images of the
+    same fixed split, in a fixed order, with the training augmentation seeded per image (SeededAugmentation).
+    Validation and test images are never in it.
+
+    The augmentation matters. The float model scores 100% on unaugmented training images: it has memorized
+    them, so their statistics do not match unseen images. Re-estimating on them lowered the seed-0 float
+    model's validation accuracy from 91.66 to 87.74; with this loader it stays at 91.68 (measured 2026-11-09).
     """
     spec = DATASETS[name]
-    _, eval_tf = _transforms(name)
-    eval_full = spec["cls"](DATA_DIR, train=True, transform=eval_tf)
-    train_idx, _ = split_indices(len(eval_full), val_fraction, seed)
-    return _loader(Subset(eval_full, train_idx), batch_size, False, num_workers)
+    base = spec["cls"](DATA_DIR, train=True, transform=transforms.ToTensor())
+    train_idx, _ = split_indices(len(base), val_fraction, seed)
+    return _loader(SeededAugmentation(base, train_idx, spec["mean"], spec["std"], seed=aug_seed),
+                   batch_size, False, num_workers)
 
 
 if __name__ == "__main__":
