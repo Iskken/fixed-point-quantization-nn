@@ -2,6 +2,8 @@
 
 **Status: proposed.** The [README](README.md) plan will be updated once we agree on the changes below. None of them affect the code of steps 4–6 (shared quantizer, STE, staircase, tests).
 
+**Deadline constraint.** The abstract is due on **Nov 16** and **cannot be edited** after submission, so the work is ordered by what the abstract needs (see [Abstract deadline](#abstract-deadline-nov-16-not-editable)).
+
 ## Summary
 
 The core plan holds. ResNet-20 on CIFAR-10 is the anchor; we compare our pure staircase with the STE, EWGS and DSQ under one protocol, and reproduce published EWGS and DSQ numbers to show our implementations are right.
@@ -10,6 +12,8 @@ Measured timings show that the plan as written needs about 117 GPU hours, agains
 - the same seeds are used for tuning and for results;
 - EWGS and DSQ get no hyperparameter search;
 - the win criterion is not fixed in advance.
+
+Because the abstract cannot be edited after Nov 16, about 38 of those 63 hours are scheduled before it. The rest goes into the paper only.
 
 ## Where we are
 
@@ -118,13 +122,14 @@ Otherwise we report a tie or a loss as such. With 4 seeds a Wilcoxon test cannot
 
 ### 7. Set priorities and drop 3/3
 
-**Problem.** Everything does not fit (see the budget below).
+**Problem.** Everything does not fit (see the budget below), and the abstract can only use results that are finished before Nov 16.
 
-**Change.** Drop 3/3; neither paper reports it on CIFAR-10. Run step 10 in this order:
-1. ResNet-20 at 2/2 and 4/4: STE, staircase, EWGS and DSQ, each on 4 fresh seeds.
-2. Ablations at 2/2, on 4 fresh seeds: staircase with slope-1 backward; weights only and activations only for both the STE and the staircase.
-3. MobileNetV2 at 4/4: STE vs staircase, 3 seeds, using ResNet-20's tuned settings.
-4. CIFAR-100, only if time is left.
+**Change.** Drop 3/3; neither paper reports it on CIFAR-10. Run step 10 in this order, so that the results the abstract needs come first:
+1. ResNet-20 at 2/2 and 4/4: STE vs staircase on the 4 fresh seeds. This comes before steps 8–9, because it is the abstract's main result.
+2. ResNet-20 at 2/2 and 4/4: EWGS and DSQ on the same 4 fresh seeds, once steps 8–9 are done.
+3. Ablations at 2/2, on the 4 fresh seeds: staircase with slope-1 backward; weights only and activations only for both the STE and the staircase.
+4. MobileNetV2 at 4/4: STE vs staircase, 3 seeds, using ResNet-20's tuned settings. After the abstract.
+5. CIFAR-100, only if time is left. After the abstract.
 
 ## Compute budget
 
@@ -144,16 +149,40 @@ Totals are in GPU hours, for one job at a time. "Measured" uses the per-epoch ti
 
 **Available:** about 110 hours. That assumes the laptop trains about 10 hours on each of the 11 nights from Nov 9 to Nov 19. The revised plan leaves room for reruns.
 
+## Abstract deadline (Nov 16, not editable)
+
+The abstract cannot be changed after submission. It may therefore only claim results that are finished by about Nov 14, and those claims must stay true in the final paper. The paper may contain more than the abstract, but must not contradict it.
+
+| Tier | Results | GPU time | Ready | What the abstract can then say |
+|---|---|---|---|---|
+| Must have | Float seeds 3–4; step 7 tuning; STE vs staircase on fresh seeds 1–4 at 2/2 and 4/4 | ~16 h | Nov 11 morning | How the staircase compares with the STE on ResNet-20 / CIFAR-10 |
+| Should have | EWGS and DSQ: learning-rate tuning, step 9 reproductions, fresh seeds 1–4 at 2/2 and 4/4 | ~22 h | Nov 13 | How the staircase compares with EWGS and DSQ, with our implementations checked against the papers |
+| If time allows | Ablations | ~8 h | Nov 14 morning | Why it works: forward curve vs slopes, weights vs activations |
+| After the abstract | MobileNetV2, CIFAR-100 | ~17 h + optional | Nov 20 | Nothing; these go into the paper only |
+
+The first two tiers take about 38 GPU hours: today plus four nights. The nights of Nov 13 and 14 stay free as buffer for reruns.
+
+**Risk.** The tuning can only start once `train_qat.py` exists and has passed short test runs. If the tuning slips by a night, the must-have results move to Nov 12 and only one buffer night remains.
+
+### Rules for writing the abstract
+
+1. Numbers come only from fresh seeds 1–4, given as mean ± std, never from the tuning seed (seed 0).
+2. Claims are scoped to ResNet-20 on CIFAR-10, so later MobileNetV2 or CIFAR-100 results cannot contradict them.
+3. If EWGS and DSQ are not finished by Nov 14, the abstract states no outcome against them. The paper can still include the comparison.
+4. Claims about the mechanism (forward curve vs slopes, weights vs activations) appear only if the ablations finish in time.
+5. Every number in the abstract comes from a saved JSON file in `results/`.
+
 ## Revised schedule
 
-| Date | Day (coding, CPU) | Night (GPU) |
+| Date | Day | Night (GPU) |
 |---|---|---|
-| Nov 9 | Float seeds 3–4 on the GPU; write `train_qat.py` | Step 7 tuning (~8 h) |
-| Nov 10 | Step 8: EWGS and DSQ, with CPU tests; the two can be split between the two of us | EWGS/DSQ learning-rate tuning (~5 h) |
-| Nov 11 | Read the tuning results, decide the paper's framing | Step 9 reproductions (~10 h) |
-| Nov 12–13 | — | Step 10 main comparison (~13 h) |
-| Nov 14–16 | Write the abstract (due Nov 16) | Step 10 ablations (~8 h) |
-| Nov 16–20 | — | MobileNetV2, then CIFAR-100 if time is left |
+| Nov 9 | Float seeds 3–4 (~2 h on the GPU); write and test `train_qat.py` | Step 7 tuning (~8 h) |
+| Nov 10 | Step 8: EWGS and DSQ with CPU tests, split between the two of us | STE vs staircase on fresh seeds (~6 h): **must-have results final** |
+| Nov 11 | Short GPU check of EWGS and DSQ | EWGS/DSQ learning-rate tuning (~5 h) + EWGS 1/1 reproduction (~5 h) |
+| Nov 12 | Draft the abstract from the must-have results | EWGS/DSQ on fresh seeds (~7 h) + DSQ 2-bit reproduction (~5 h): **should-have results final** (may run into the morning) |
+| Nov 13–14 | Abstract draft with all numbers | Buffer for reruns, then ablations (~8 h) |
+| Nov 15–16 | Finalize and submit the abstract | MobileNetV2 float training and QAT start |
+| Nov 16–20 | Paper writing | MobileNetV2, then CIFAR-100 if time is left |
 
 ## Decisions to confirm
 
@@ -164,6 +193,8 @@ Totals are in GPU hours, for one job at a time. "Measured" uses the per-epoch ti
 5. The primary metric (with BatchNorm re-estimation) and the win rule.
 6. The step 9 targets: EWGS 1/1 and DSQ Table 4; DSQ 1/1 optional.
 7. 3/3 dropped, and the priority order of step 10.
+8. The abstract's scope: ResNet-20 on CIFAR-10 only, with numbers from fresh seeds 1–4.
+9. The order of the work by abstract tier: must have, should have, if time allows, after the abstract.
 
 Once these are agreed, the README is updated in its plan table, rules, numbers to reproduce, compute budget and status.
 
