@@ -83,6 +83,8 @@ piecewise_nonlinearity/
 └── checkpoints/          resume checkpoints with optimizer state (git-ignored)
 ```
 
+To set up a machine (exact versions, data, and a check that it matches the other laptop), follow [SETUP.md](SETUP.md).
+
 Run everything from the repository root as a module, for example:
 
 ```
