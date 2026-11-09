@@ -148,7 +148,7 @@ def main():
 
     test_acc, test_loss = evaluate(model, test_loader, device)
     meta = {"name": name, "config": run_args, "final_val_acc": history["val_acc"][-1], "test_acc": test_acc,
-            "test_loss": test_loss, "git_commit": git_commit(), "torch": torch.__version__,
+            "test_loss": test_loss, "git_commit": git_commit(), "torch": str(torch.__version__),  # plain str: loads with weights_only=True
             "device": torch.cuda.get_device_name(0) if device == "cuda" else "cpu",
             "train_minutes": sum(history["seconds"]) / 60}
     torch.save({"model": model.state_dict(), "meta": meta},

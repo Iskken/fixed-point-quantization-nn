@@ -151,10 +151,10 @@ The data loader needs about 4 s per epoch, so it is not the bottleneck.
 
 - [x] Folder structure and README
 - [x] CIFAR-10 and CIFAR-100 download
-- [ ] Float ResNet-20
-- [ ] Shared quantizer + STE
-- [ ] Pure staircase
-- [ ] Sanity tests
+- [x] Float ResNet-20, seeds 0-2: test 91.17 / 91.16 / 91.23 (`pretrained/`)
+- [x] Shared quantizer + STE
+- [x] Pure staircase
+- [x] Sanity tests (23 passing)
 - [ ] Decisive experiment
 - [ ] EWGS
 - [ ] DSQ
