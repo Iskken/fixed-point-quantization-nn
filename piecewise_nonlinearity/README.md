@@ -141,6 +141,20 @@ Measured with synthetic data, fp32 and a simple 4-bit STE quantizer. The real qu
 
 The data loader needs about 4 s per epoch, so it is not the bottleneck.
 
+## Reference code (not committed)
+
+We read the authors' code as a reference and write our own implementations; we never import or copy it. The repositories are cloned into `reference/`, which is git-ignored. They are kept out of our repo because the EWGS code is GPL-3.0, the unofficial DSQ code has no license, and both are separate git repositories. To get the same versions we used, run from `piecewise_nonlinearity/`:
+
+```
+git clone https://github.com/cvlab-yonsei/EWGS.git reference/EWGS
+git -C reference/EWGS checkout 56c654c
+git clone https://github.com/ricky40403/DSQ.git reference/DSQ_unofficial
+git -C reference/DSQ_unofficial checkout f06df7f
+```
+
+- **EWGS** (official): the CIFAR-10 quantizer is in `CIFAR10/custom_modules.py`, and the training scripts are `CIFAR10/train_fp.py` and `train_quant.py`.
+- **DSQ** (unofficial, ImageNet only; the authors released no training code): a secondary reference. The paper's equations and Algorithm 1 are the primary source.
+
 ## Conventions
 
 - Every number we report comes from a saved JSON file in `results/`, written by the script that produced it.
