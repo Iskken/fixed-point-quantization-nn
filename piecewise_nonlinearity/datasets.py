@@ -45,13 +45,25 @@ def split_fingerprint(val_idx):
     return hashlib.sha256(",".join(map(str, val_idx)).encode()).hexdigest()[:16]
 
 
-def get_loaders(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4):
-    """Training, validation and test loaders; the train/validation split is fixed by `seed`."""
+def _transforms(name):
+    """(training transform with augmentation, evaluation transform without)."""
     spec = DATASETS[name]
     normalize = transforms.Normalize(spec["mean"], spec["std"])
     train_tf = transforms.Compose([transforms.RandomCrop(32, padding=4), transforms.RandomHorizontalFlip(),
                                    transforms.ToTensor(), normalize])
     eval_tf = transforms.Compose([transforms.ToTensor(), normalize])
+    return train_tf, eval_tf
+
+
+def _loader(ds, batch_size, shuffle, num_workers):
+    return DataLoader(ds, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
+                      pin_memory=torch.cuda.is_available(), persistent_workers=num_workers > 0)
+
+
+def get_loaders(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4):
+    """Training, validation and test loaders; the train/validation split is fixed by `seed`."""
+    spec = DATASETS[name]
+    train_tf, eval_tf = _transforms(name)
 
     # two views of the same training images: augmented for training, plain for validation
     train_full = spec["cls"](DATA_DIR, train=True, transform=train_tf)
@@ -61,11 +73,20 @@ def get_loaders(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4):
     train_idx, val_idx = split_indices(len(train_full), val_fraction, seed)
     train, val = Subset(train_full, train_idx), Subset(eval_full, val_idx)
 
-    def loader(ds, shuffle):
-        return DataLoader(ds, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
-                          pin_memory=torch.cuda.is_available(), persistent_workers=num_workers > 0)
+    return (_loader(train, batch_size, True, num_workers), _loader(val, batch_size, False, num_workers),
+            _loader(test, batch_size, False, num_workers))
 
-    return loader(train, True), loader(val, False), loader(test, False)
+
+def get_bn_loader(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4):
+    """
+    The training images of the same fixed split, without augmentation and in a fixed order: the data for
+    BatchNorm re-estimation (models/quant_layers.reestimate_bn). Validation and test images are never in it.
+    """
+    spec = DATASETS[name]
+    _, eval_tf = _transforms(name)
+    eval_full = spec["cls"](DATA_DIR, train=True, transform=eval_tf)
+    train_idx, _ = split_indices(len(eval_full), val_fraction, seed)
+    return _loader(Subset(eval_full, train_idx), batch_size, False, num_workers)
 
 
 if __name__ == "__main__":

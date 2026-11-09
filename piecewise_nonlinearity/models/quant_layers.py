@@ -77,6 +77,45 @@ def set_force_hard(model, flag):
 
 
 @torch.no_grad()
+def reestimate_bn(model, loader, device=None):
+    """
+    Recompute every BatchNorm's running mean and variance with exact rounding in every quantizer, over all
+    batches of `loader` (one forward pass, no gradients, no optimizer step), so that inference uses statistics
+    of the network that is actually evaluated. Call it before every evaluation, the same way for every method,
+    with datasets.get_bn_loader (the full training split, no augmentation).
+
+    Why: the staircase trains with the soft curve S, so the statistics BatchNorm collects during training
+    belong to the S network, not to the rounded one. STE, EWGS and DSQ round in the forward pass already.
+
+    Only the running statistics change: weights, BatchNorm gamma/beta, l, u and output scales stay as trained.
+    The running statistics are a plain average over the batches (momentum None), so every batch counts
+    equally and the order of the batches does not matter. The training mode, the momentum and the
+    force_hard flags are restored afterwards.
+    """
+    bns = [m for m in model.modules() if isinstance(m, nn.modules.batchnorm._BatchNorm)]
+    if not bns:
+        return model
+    was_training = model.training
+    momenta = [m.momentum for m in bns]
+    hard_flags = [q.force_hard for q in quantizers(model)]
+    try:
+        for m in bns:
+            m.reset_running_stats()
+            m.momentum = None
+        set_force_hard(model, True)
+        model.train()  # BatchNorm only records statistics in train mode
+        for x, *_ in loader:
+            model(x.to(device) if device is not None else x)
+    finally:
+        for m, mom in zip(bns, momenta):
+            m.momentum = mom
+        for q, flag in zip(quantizers(model), hard_flags):
+            q.force_hard = flag
+        model.train(was_training)
+    return model
+
+
+@torch.no_grad()
 def init_quantizers(model, images):
     """One forward pass that initializes every quantized conv in order (as EWGS: train mode, first batch)."""
     convs = [m for m in model.modules() if isinstance(m, QConv2d) and (m.wq is not None or m.aq is not None)]
