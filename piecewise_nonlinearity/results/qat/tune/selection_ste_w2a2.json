@@ -1,0 +1,208 @@
+{
+ "method": "ste",
+ "bits": "2/2",
+ "epochs": 120,
+ "seed": 0,
+ "chosen": {
+  "lr": 0.003,
+  "lr_q": 1e-05,
+  "weight_decay": 0.0001
+ },
+ "chosen_run": "ste_w2a2_lr3e-3_lrq1e-5_wd1e-4_e120_s0",
+ "chosen_val_acc_reest": 90.88,
+ "n_runs": 12,
+ "runs": [
+  {
+   "name": "ste_w2a2_lr3e-4_lrq1e-5_wd1e-4_e120_s0",
+   "lr": 0.0003,
+   "settings": {
+    "lr_q": 1e-05,
+    "weight_decay": 0.0001
+   },
+   "step": "step 1: learning rate",
+   "score": 89.3,
+   "val_acc_reest": 89.3,
+   "val_acc": 89.52,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.33
+  },
+  {
+   "name": "ste_w2a2_lr1e-3_lrq1e-5_wd1e-4_e120_s0",
+   "lr": 0.001,
+   "settings": {
+    "lr_q": 1e-05,
+    "weight_decay": 0.0001
+   },
+   "step": "step 1: learning rate",
+   "score": 90.36,
+   "val_acc_reest": 90.36,
+   "val_acc": 90.3,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.34
+  },
+  {
+   "name": "ste_w2a2_lr3e-3_lrq1e-5_wd1e-4_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "lr_q": 1e-05,
+    "weight_decay": 0.0001
+   },
+   "step": "step 1: learning rate",
+   "score": 90.88,
+   "val_acc_reest": 90.88,
+   "val_acc": 91.4,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.32
+  },
+  {
+   "name": "ste_w2a2_lr1e-2_lrq1e-5_wd1e-4_e120_s0",
+   "lr": 0.01,
+   "settings": {
+    "lr_q": 1e-05,
+    "weight_decay": 0.0001
+   },
+   "step": "edge: learning rate",
+   "score": 90.74,
+   "val_acc_reest": 90.74,
+   "val_acc": 90.42,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.34
+  },
+  {
+   "name": "ste_w2a2_lr3e-3_lrq1e-6_wd0_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "lr_q": 1e-06,
+    "weight_decay": 0.0
+   },
+   "step": "step 2: own settings",
+   "score": 90.04,
+   "val_acc_reest": 90.04,
+   "val_acc": 90.44,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.34
+  },
+  {
+   "name": "ste_w2a2_lr3e-3_lrq1e-6_wd1e-4_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "lr_q": 1e-06,
+    "weight_decay": 0.0001
+   },
+   "step": "step 2: own settings",
+   "score": 90.04,
+   "val_acc_reest": 90.04,
+   "val_acc": 90.48,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.32
+  },
+  {
+   "name": "ste_w2a2_lr3e-3_lrq1e-6_wd5e-4_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "lr_q": 1e-06,
+    "weight_decay": 0.0005
+   },
+   "step": "step 2: own settings",
+   "score": 89.4,
+   "val_acc_reest": 89.4,
+   "val_acc": 89.6,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.32
+  },
+  {
+   "name": "ste_w2a2_lr3e-3_lrq1e-5_wd0_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "lr_q": 1e-05,
+    "weight_decay": 0.0
+   },
+   "step": "step 2: own settings",
+   "score": 90.66,
+   "val_acc_reest": 90.66,
+   "val_acc": 90.5,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.37
+  },
+  {
+   "name": "ste_w2a2_lr3e-3_lrq1e-5_wd5e-4_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "lr_q": 1e-05,
+    "weight_decay": 0.0005
+   },
+   "step": "step 2: own settings",
+   "score": 90.08,
+   "val_acc_reest": 90.08,
+   "val_acc": 89.42,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.59
+  },
+  {
+   "name": "ste_w2a2_lr3e-3_lrq1e-4_wd0_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "lr_q": 0.0001,
+    "weight_decay": 0.0
+   },
+   "step": "step 2: own settings",
+   "score": 90.46,
+   "val_acc_reest": 90.46,
+   "val_acc": 90.32,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.41
+  },
+  {
+   "name": "ste_w2a2_lr3e-3_lrq1e-4_wd1e-4_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "lr_q": 0.0001,
+    "weight_decay": 0.0001
+   },
+   "step": "step 2: own settings",
+   "score": 90.62,
+   "val_acc_reest": 90.62,
+   "val_acc": 91.04,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.44
+  },
+  {
+   "name": "ste_w2a2_lr3e-3_lrq1e-4_wd5e-4_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "lr_q": 0.0001,
+    "weight_decay": 0.0005
+   },
+   "step": "step 2: own settings",
+   "score": 90.28,
+   "val_acc_reest": 90.28,
+   "val_acc": 90.12,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.51
+  }
+ ]
+}

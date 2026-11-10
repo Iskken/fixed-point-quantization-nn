@@ -1,0 +1,127 @@
+{
+ "N": 120,
+ "fallback": true,
+ "threshold": 0.3,
+ "checks": [
+  {
+   "budget": 30,
+   "doubled": 60,
+   "change_ste": 0.22,
+   "change_staircase": 1.92,
+   "change_gap": 1.7,
+   "passed": false
+  },
+  {
+   "budget": 60,
+   "doubled": 120,
+   "change_ste": 1.08,
+   "change_staircase": -0.58,
+   "change_gap": -1.66,
+   "passed": false
+  }
+ ],
+ "runs": [
+  {
+   "name": "ste_w2a2_lr1e-3_lrq1e-5_wd1e-4_e30_s0",
+   "lr": 0.001,
+   "settings": {},
+   "step": "pilot, 30 epochs",
+   "score": 89.26,
+   "val_acc_reest": 89.26,
+   "val_acc": 88.84,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 8.39
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-3_lrq1e-5_wd1e-4_a2b2-exact-r0.5_e30_s0",
+   "lr": 0.001,
+   "settings": {
+    "alpha_end": 2.0,
+    "beta": 2.0
+   },
+   "step": "pilot, 30 epochs",
+   "score": 80.88,
+   "val_acc_reest": 80.88,
+   "val_acc": 67.46,
+   "val_acc_soft": 89.12,
+   "failed": false,
+   "failure": null,
+   "minutes": 12.34
+  },
+  {
+   "name": "ste_w2a2_lr1e-3_lrq1e-5_wd1e-4_e60_s0",
+   "lr": 0.001,
+   "settings": {},
+   "step": "pilot, 60 epochs",
+   "score": 89.48,
+   "val_acc_reest": 89.48,
+   "val_acc": 89.22,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 16.72
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-3_lrq1e-5_wd1e-4_a2b2-exact-r0.5_e60_s0",
+   "lr": 0.001,
+   "settings": {
+    "alpha_end": 2.0,
+    "beta": 2.0
+   },
+   "step": "pilot, 60 epochs",
+   "score": 82.8,
+   "val_acc_reest": 82.8,
+   "val_acc": 72.04,
+   "val_acc_soft": 89.9,
+   "failed": false,
+   "failure": null,
+   "minutes": 24.57
+  },
+  {
+   "name": "ste_w2a2_lr1e-3_lrq1e-5_wd1e-4_e120_s0",
+   "lr": 0.001,
+   "settings": {},
+   "step": "pilot, 120 epochs",
+   "score": 90.56,
+   "val_acc_reest": 90.56,
+   "val_acc": 89.94,
+   "val_acc_soft": null,
+   "failed": false,
+   "failure": null,
+   "minutes": 33.34
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-3_lrq1e-5_wd1e-4_a2b2-exact-r0.5_e120_s0",
+   "lr": 0.001,
+   "settings": {
+    "alpha_end": 2.0,
+    "beta": 2.0
+   },
+   "step": "pilot, 120 epochs",
+   "score": 82.22,
+   "val_acc_reest": 82.22,
+   "val_acc": 74.56,
+   "val_acc_soft": 90.36,
+   "failed": false,
+   "failure": null,
+   "minutes": 49.0
+  }
+ ],
+ "two_bit_gap_info": {
+  "30": {
+   "staircase_soft_minus_rounded": 8.24,
+   "staircase_minus_ste": -8.38
+  },
+  "60": {
+   "staircase_soft_minus_rounded": 7.1,
+   "staircase_minus_ste": -6.68
+  },
+  "120": {
+   "staircase_soft_minus_rounded": 8.14,
+   "staircase_minus_ste": -8.34
+  }
+ },
+ "rule": "PLAN.md, change 1: shortest N in {30, 60, 120} for which doubling changes each method's validation accuracy (after re-estimation) and the staircase - STE gap by < 0.3 points; else N = 120"
+}

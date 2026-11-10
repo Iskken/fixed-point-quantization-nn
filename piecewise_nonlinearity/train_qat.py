@@ -21,7 +21,8 @@ One run (PLAN.md, changes 1-5):
   4. After the last epoch, with no selection: validation and test accuracy with exact rounding, without and
      with BatchNorm re-estimation (models/quant_layers.reestimate_bn, on a copy). Validation after
      re-estimation is the tuning metric, test after re-estimation the primary metric. The test set is
-     used only here.
+     used only here, and only for fresh seeds (seed >= 1): runs on the development seed 0 choose settings,
+     so they never evaluate it (PLAN.md, change 3).
 A run that ends below its start (validation after re-estimation) or hits a non-finite loss is marked failed.
 
 Logged per epoch: training loss and accuracy (with the training forward), validation accuracy with exact
@@ -72,6 +73,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 METHODS = ("ste", "piecewise", "ewgs", "dsq")
 IMPLEMENTED = ("ste", "piecewise")  # EWGS and DSQ come with step 8
 GROUPS = ("pilot", "tune", "main", "ablation", "repro", "smoke")
+DEV_SEED = 0  # the development seed: its runs choose settings, so they never evaluate the test set
 # the staircase's settings and their defaults; other methods reject them, so no setting is silently ignored
 STAIRCASE = {"alpha_end": 2.0, "beta": 2.0, "backward": "exact", "alpha_start": 1.0, "ramp_fraction": 0.5}
 # arguments that do not change what is trained: paths, machine, checkpointing, tests
@@ -527,16 +529,19 @@ def run(args):
         if args.save_every > 0 and epoch % args.save_every == 0:
             save_resume(epoch)
 
-    # the final evaluation: the model after the last epoch, no selection; the test set is used only here
+    # the final evaluation: the model after the last epoch, no selection. The test set is used only here, and
+    # never for the development seed: its runs choose settings, so they must not see the test set (change 3).
     if reest is None:
         reest = reestimated(model, bn_loader, device, args.max_batches)
-    test = {}
-    test["test_acc"], test["test_loss"] = evaluate(model, test_loader, device, args.max_batches)
-    test["test_acc_reest"], test["test_loss_reest"] = evaluate(reest, test_loader, device, args.max_batches)
-    if soft:
-        test["test_acc_soft"], test["test_loss_soft"] = evaluate(model, test_loader, device, args.max_batches, soft=True)
-    last_val = {k: history[k][-1] for k in history if k.startswith("val_")}
     keys = ["acc_reest", "acc", "loss_reest", "loss"] + (["acc_soft", "loss_soft"] if soft else [])
+    test = {f"test_{k}": None for k in keys}
+    if args.seed != DEV_SEED:
+        test["test_acc"], test["test_loss"] = evaluate(model, test_loader, device, args.max_batches)
+        test["test_acc_reest"], test["test_loss_reest"] = evaluate(reest, test_loader, device, args.max_batches)
+        if soft:
+            test["test_acc_soft"], test["test_loss_soft"] = evaluate(model, test_loader, device, args.max_batches,
+                                                                     soft=True)
+    last_val = {k: history[k][-1] for k in history if k.startswith("val_")}
     final = {}
     for k in keys:  # validation after re-estimation: the tuning metric; test after re-estimation: the primary one
         final[f"val_{k}"], final[f"test_{k}"] = last_val[f"val_{k}"], test[f"test_{k}"]
@@ -572,9 +577,12 @@ def run(args):
     write_json(result, json_path)  # written last: its existence marks the run as done
     if os.path.exists(resume_path):
         os.remove(resume_path)
-    print(f"done: val {final['val_acc_reest']:.2f} and test {final['test_acc_reest']:.2f} after re-estimation "
-          f"(test without: {final['test_acc']:.2f})" + (f"; FAILED: {failure}" if failure else "")
-          + f"\n  {json_path}", flush=True)
+    if final["test_acc_reest"] is None:
+        summary = f"val {final['val_acc_reest']:.2f} after re-estimation (development seed: test set not evaluated)"
+    else:
+        summary = (f"val {final['val_acc_reest']:.2f} and test {final['test_acc_reest']:.2f} after re-estimation "
+                   f"(test without: {final['test_acc']:.2f})")
+    print("done: " + summary + (f"; FAILED: {failure}" if failure else "") + f"\n  {json_path}", flush=True)
     return result
 
 
