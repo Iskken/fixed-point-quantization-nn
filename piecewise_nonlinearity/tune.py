@@ -2,9 +2,12 @@
 Unattended runner for laptop A: the budget pilot (PLAN.md, change 1), then the tuning of the STE and the
 staircase (changes 2 and 4). Every training run is one call of train_qat.py in its own process.
 
-    python -m piecewise_nonlinearity.tune all       # pilot, then STE 2/2, STE 4/4, staircase 4/4, staircase 2/2
+    python -m piecewise_nonlinearity.tune all       # pilot, then STE 2/2, staircase 2/2, STE 4/4, staircase 4/4
+    python -m piecewise_nonlinearity.tune all --bits 2/2              # pilot, then only the 2/2 blocks
+    python -m piecewise_nonlinearity.tune all --method piecewise --bits 4/4   # pilot, then one block
     python -m piecewise_nonlinearity.tune pilot     # only the pilot and its decision
-    python -m piecewise_nonlinearity.tune status    # what is finished and what runs next (trains nothing)
+    python -m piecewise_nonlinearity.tune status    # what is finished and what runs next (trains nothing;
+                                                    # takes the same --bits / --method filters)
 
 Stop and resume at any time:
   stop now                    pkill -f "piecewise_nonlinearity\\.(tune|train_qat)"
@@ -33,6 +36,12 @@ How the plan's rules are applied; where the text leaves room, the choice made he
     wins step 2, because step 1 already covers it.
   - Pilot rule: N is the first of 30, 60 for which doubling changes each method's validation accuracy and
     the staircase - STE gap by less than 0.3 points; otherwise N = 120. A failed pilot run fails its checks.
+    The pilot's staircase setting (alpha_end 2, beta 2) is fixed by change 1 and does not follow the tuning
+    reference, so changing the tuning grid never reruns the pilot.
+  - Staircase grid, changed on 2026-11-10 after the pilot: alpha_end {3, 5, 10} (was {2, 3, 5}), reference
+    alpha_end 5, edges 2 / 20. On the development seed, at alpha_end = 2 the deployed (rounded) staircase was
+    7.1-8.2 points below its accuracy with S and 6.7-8.4 points below the STE at every budget, so the grid
+    moves towards exact rounding. Decided on seed 0 only; the test set was never used.
 """
 
 import argparse
@@ -56,17 +65,18 @@ SEED = 0  # the development seed: tuning only (PLAN.md, change 3)
 LR_GRID = (3e-4, 1e-3, 3e-3)
 LR_EDGES = (1e-4, 1e-2)  # one value below / above the grid (edge rule)
 METHODS = {  # reference setting, the 3 x 3 grid of the method's own settings, edge values (PLAN.md, change 4)
-    "piecewise": {"reference": {"alpha_end": 2.0, "beta": 2.0},
-                  "grid": {"alpha_end": (2.0, 3.0, 5.0), "beta": (1.0, 2.0, 3.0)},
-                  "edges": {"alpha_end": (1.5, 10.0), "beta": (0.5, 4.0)}},
+    "piecewise": {"reference": {"alpha_end": 5.0, "beta": 2.0},  # grid changed after the pilot, see the docstring
+                  "grid": {"alpha_end": (3.0, 5.0, 10.0), "beta": (1.0, 2.0, 3.0)},
+                  "edges": {"alpha_end": (2.0, 20.0), "beta": (0.5, 4.0)}},
     "ste": {"reference": {"lr_q": 1e-5, "weight_decay": 1e-4},
             "grid": {"lr_q": (1e-6, 1e-5, 1e-4), "weight_decay": (0.0, 1e-4, 5e-4)},
             "edges": {"lr_q": (1e-7, 1e-3), "weight_decay": (None, 1e-3)}},  # 0 is the lowest weight decay
 }
 PILOT_BUDGETS = (30, 60, 120)
 PILOT_LR = 1e-3
+PILOT_SETTINGS = {"alpha_end": 2.0, "beta": 2.0}  # the pilot's staircase (change 1), independent of the tuning grid
 PILOT_THRESHOLD = 0.3
-ORDER = (("ste", "2/2"), ("ste", "4/4"), ("piecewise", "4/4"), ("piecewise", "2/2"))  # staircase 2/2 last
+ORDER = (("ste", "2/2"), ("piecewise", "2/2"), ("ste", "4/4"), ("piecewise", "4/4"))  # 2/2 first: the open question
 
 
 class Stop(Exception):
@@ -187,7 +197,7 @@ def pilot(run, write=True):
     res = {}
     for n in PILOT_BUDGETS:
         for method in ("ste", "piecewise"):
-            settings = METHODS["piecewise"]["reference"] if method == "piecewise" else {}
+            settings = PILOT_SETTINGS if method == "piecewise" else {}
             res[(method, n)] = run(method, "2/2", "pilot", n, PILOT_LR, settings, f"pilot, {n} epochs")
     acc = {k: (v["val_acc_reest"] if v["score"] > -math.inf else None) for k, v in res.items()}
     checks, chosen = [], None
@@ -287,17 +297,36 @@ def tune_block(method, bits, epochs, run, write=True):
 
 # ---------------------------------------------------------------------------------------------------- main
 
-def status():
+def blocks(bits=None, method=None):
+    """The tuning blocks of ORDER, in order, optionally only one bit width and/or one method."""
+    selected = [(m, b) for m, b in ORDER if bits in (None, b) and method in (None, m)]
+    if not selected:
+        raise SystemExit(f"no tuning block for --bits {bits} --method {method}")
+    return selected
+
+
+def run_blocks(selected, run, write=True):
+    """The pilot, then the selected tuning blocks at its N. Returns {(method, bits): selection}."""
+    n = pilot(run, write=write)
+    out = {}
+    for method, bits in selected:
+        if write:
+            log(f"tuning {method} at {bits}, {n} epochs")
+        out[(method, bits)] = tune_block(method, bits, n, run, write=write)
+    return out
+
+
+def status(selected=ORDER):
     """Replay the procedure on the finished results only, and say what runs next."""
     run = Runner(dry=True)
     try:
         n = pilot(run, write=False)
         print(f"pilot: finished, N = {n}")
-        for method, bits in ORDER:
+        for method, bits in selected:
             sel = tune_block(method, bits, n, run, write=False)
             print(f"{method} {bits}: finished, chosen {sel['chosen']} "
                   f"(val after re-estimation {fmt(sel['chosen_val_acc_reest'])}, {sel['n_runs']} runs)")
-        print("everything finished")
+        print("everything finished" if list(selected) == list(ORDER) else "the selected blocks are finished")
     except NotDone as e:
         print(f"next run: {e}")
 
@@ -305,18 +334,21 @@ def status():
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("command", choices=("all", "pilot", "status"))
-    command = p.parse_args(argv).command
-    if command == "status":
-        return status()
+    p.add_argument("--bits", choices=sorted({b for _, b in ORDER}), help="only the tuning blocks at this bit width")
+    p.add_argument("--method", choices=sorted(METHODS), help="only this method's tuning blocks")
+    a = p.parse_args(argv)
+    selected = blocks(a.bits, a.method)
+    if a.command == "status":
+        return status(selected)
+    what = a.command + "".join(f" --{k} {v}" for k, v in (("bits", a.bits), ("method", a.method)) if v)
     run = Runner()
-    log(f"start: {command}")
+    log(f"start: {what}")
     try:
-        n = pilot(run)
-        if command == "all":
-            for method, bits in ORDER:
-                log(f"tuning {method} at {bits}, {n} epochs")
-                tune_block(method, bits, n, run)
-        log(f"finished: {command}")
+        if a.command == "all":
+            run_blocks(selected, run)
+        else:
+            pilot(run)
+        log(f"finished: {what}")
     except Stop:
         log("stopped; start the same command again to resume")
     except KeyboardInterrupt:

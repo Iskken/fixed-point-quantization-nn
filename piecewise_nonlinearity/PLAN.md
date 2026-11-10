@@ -73,25 +73,25 @@ Two training jobs on the GPU at the same time run at 308 ms per batch each, agai
 **Problem.** The full grid for the staircase (3 learning rates × 3 α_end × 3 β = 27 runs per bit width) takes about 23 hours at 2/2 and 4/4, for the staircase alone. Reusing the settings chosen at 2/2 at 4/4 would be cheaper, but in the MLP study the setting that won at 8/4 tied at 6/4 and lost at 6/3: settings that work at one bit width may not work at another.
 
 **Change.** α and β are tuned separately at 2/2 and at 4/4, and never reused from another bit width. Comparing the two also shows whether the best setting depends on the bit width. At each bit width, on the development seed (seed 0), one setting at a time:
-1. **Learning rate:** lr ∈ {3e-4, 1e-3, 3e-3} at the reference setting α_end = 2, β = 2, the MLP study's best setting and the centre of the grid. 3 runs.
-2. **α and β:** at the best learning rate from step 1, the 3 × 3 grid α_end ∈ {2, 3, 5} × β ∈ {1, 2, 3}. 8 new runs; the reference is reused from step 1.
+1. **Learning rate:** lr ∈ {3e-4, 1e-3, 3e-3} at the reference setting α_end = 5, β = 2, the centre of the grid. 3 runs.
+2. **α and β:** at the best learning rate from step 1, the 3 × 3 grid α_end ∈ {3, 5, 10} × β ∈ {1, 2, 3}. 8 new runs; the reference is reused from step 1.
 3. **Learning-rate re-check:** at the best α and β from step 2, the two learning rates not yet tried there. 2 runs, or none if the reference wins step 2, because step 1 already covers it. In the MLP study the best α and β changed with the learning rate, so the learning rate found at the reference may not suit the chosen setting.
 
 The search stops after step 3: if the re-check changes the learning rate, step 2 is not repeated. That is up to 13 runs per bit width, plus edge extensions. The other methods follow the same procedure with their own settings (change 4).
 
-**Why α_end ∈ {2, 3, 5} and β ∈ {1, 2, 3}.**
-- **Centred on the MLP optimum:** the best results there were at α ≈ 2 and β 2–3.
-- **Extended towards exact rounding:** 2/2 has only 4 levels, so a stair close to float costs more there. Averaged over a cell, the grid ranges from 0.167 to about 0.05 of a level away from rounding; float is 0.250.
-- **α_end = 1.5 dropped:** it mostly repeats α_end = 2 at a higher β, and with β = 1 it is nearly float.
+**Why α_end ∈ {3, 5, 10} and β ∈ {1, 2, 3}.**
+- **Changed on 2026-11-10, after the budget pilot.** The grid was first α_end ∈ {2, 3, 5}, centred on the MLP optimum (α ≈ 2, β 2–3), with reference α_end = 2. On the development seed, at α_end = 2, the deployed (exact-rounding) staircase was 7.1–8.2 points below its own accuracy with the stair S, and 6.7–8.4 points below the STE, at all three budgets (`results/qat/pilot/decision.json`). The grid is therefore moved towards exact rounding. This was decided on seed 0 only, before any tuning run of the staircase, and without the test set; the paper reports the change and its reason.
+- **Closer to exact rounding:** averaged over a cell, the grid ranges from 0.125 (α_end 3, β 1) to 0.031 (α_end 10, β 3) of a level away from rounding; the old grid ranged from 0.167 to 0.057, and float is 0.250.
+- **α_end = 2 dropped:** the pilot measured the gap above; it is still run once as the lower edge value if α_end = 3 wins.
 - **β = 1 kept as a control:** it gives the symmetric stair, which is the identity at α = 1.
-- **Roughly log-spaced:** about ×1.5 then ×1.7, which suits a parameter that changes the slopes by multiplication.
-- **Expected failures:** α_end = 5 with β = 3 has very flat zones (slope 0.075) and very steep ones (slope 5.6). That combination failed in the MLP study, so a failure there is recorded as a result and does not change the grid.
-- **In the paper:** the MLP study is why the grid was chosen, not evidence that these values work on ResNet-20.
+- **Roughly log-spaced:** about ×1.7 then ×2, which suits a parameter that changes the slopes by multiplication.
+- **Expected failures:** the larger α_end, the flatter the flat zones: α_end = 5 with β = 3 has slopes 0.075 and 5.6, α_end = 10 with β = 3 has 0.035 and 10.6. In the MLP study very flat zones with the exact backward froze the weights, so failures there are recorded as results and do not change the grid.
+- **In the paper:** the MLP study is why the first grid was chosen, and the seed-0 pilot is why it moved; neither is evidence that these values work on ResNet-20.
 
 **Ramp and β schedule, fixed in advance.**
 - **α:** linear from 1 to α_end over the first half of training (30 of 60 epochs), then constant. It is updated every step, not every epoch, so it rises smoothly.
 - **β:** fixed for the whole run, with no ramp.
-- **Why neither is tuned:** in the MLP study, other ramp lengths and ramping β gave no gain (at 8/4, fixed β scored 0.2075 and ramped β 0.2082). With a small α_end, the stair changes little during the ramp, so its length matters little. Every extra tuned setting adds compute and selection noise on seed 0.
+- **Why neither is tuned:** in the MLP study, other ramp lengths and ramping β gave no gain (at 8/4, fixed β scored 0.2075 and ramped β 0.2082). With a small α_end, the stair changes little during the ramp, so its length matters little (this argument is weaker for the new grid, with α_end up to 10; the optional ramp-fraction check below covers it). Every extra tuned setting adds compute and selection noise on seed 0.
 - **Optional, after the main results:** ramp fraction ∈ {0.25, 0.5, 1.0} at the chosen setting at 2/2, reported as a sensitivity check and not used for tuning.
 
 **Edge rule, fixed before tuning.** It applies to every ordered setting of every method (values in change 4). If the best value is at an edge of its grid, one value beyond that edge is run:
@@ -131,7 +131,7 @@ That is up to 13 runs per bit width and 26 per method, plus edge extensions. Wit
 
 | Method | Reference (run first) | Its 8 other settings | Source of the range |
 |---|---|---|---|
-| Staircase | α_end = 2, β = 2 | the other 8 of α_end ∈ {2, 3, 5} × β ∈ {1, 2, 3} | our MLP study (change 2) |
+| Staircase | α_end = 5, β = 2 | the other 8 of α_end ∈ {3, 5, 10} × β ∈ {1, 2, 3} | our MLP study, moved towards rounding after the seed-0 pilot (change 2) |
 | STE | quantizer learning rate 1e-5, weight decay 1e-4 | the other 8 of quantizer learning rate {1e-6, 1e-5, 1e-4} × weight decay {0, 1e-4, 5e-4} | the STE has no settings of its own, so it gets two that every method has |
 | EWGS | δ from the Hessian with G = 3σ, starting at δ = 0 and updated every 10 epochs | fixed δ ∈ {1e-5, 1e-4, 1e-3, 3e-3, 1e-2, 1e-1}; Hessian with G = max; one more setting, still open (decision 10) | reference: EWGS Section 4.1 and the official code (`--update_every 10`); G = max and fixed δ 1e-5, 1e-3, 1e-1: EWGS Table 4; fixed δ 1e-2: EWGS Table 5; fixed δ 1e-4, 3e-3: ours |
 | DSQ | α starts at 0.2 and is learned, with α learning rate 1e-5; l and u learned | α starts at 0.1, 0.3 or 0.4 and is learned; α fixed at 0.1, 0.2, 0.3 or 0.4; α learning rate 1e-4 at the reference | initial α 0.2: DSQ Section 4.1; α kept in (0, 0.5): DSQ Section 4.2.3; learned vs fixed α: DSQ Table 4; the other values: ours |
@@ -151,7 +151,7 @@ That is up to 13 runs per bit width and 26 per method, plus edge extensions. Wit
 | Setting | Below the grid | Above the grid |
 |---|---|---|
 | Learning rate | 1e-4 | 1e-2 |
-| α_end | 1.5 | 10 |
+| α_end | 2 | 20 |
 | β | 0.5 | 4 |
 | STE quantizer learning rate | 1e-7 | 1e-3 |
 | Weight decay | — (0 is the lowest) | 1e-3 |
@@ -310,7 +310,7 @@ Times assume laptop B is about as fast as laptop A and that both train almost co
 ## Decisions to confirm
 
 1. **Agreed (2026-11-09):** every method is fine-tuned for the same N epochs, fixed by the budget pilot's rule on seed 0 (change 1); only the step 9 reproductions use 400 epochs.
-2. **Agreed (2026-11-09):** tuning goes one setting at a time (learning rate, then α_end ∈ {2, 3, 5} × β ∈ {1, 2, 3}, then a learning-rate re-check), separately at 2/2 and 4/4, with a fixed α ramp, fixed β and the edge rule (change 2).
+2. **Agreed (2026-11-09), grid changed 2026-11-10:** tuning goes one setting at a time (learning rate, then α_end ∈ {3, 5, 10} × β ∈ {1, 2, 3}, then a learning-rate re-check), separately at 2/2 and 4/4, with a fixed α ramp, fixed β and the edge rule (change 2). The grid was α_end ∈ {2, 3, 5} with reference α_end = 2; after the pilot it moved towards exact rounding, with reference α_end = 5 and edge values 2 and 20. Both of us still need to confirm the change.
 3. **Agreed (2026-11-09):** seed 0 is used for tuning only, and all results come from fresh seeds 1–4, each with its own float model (change 3).
 4. **Agreed (2026-11-09):** every method gets the same tuning procedure and budget, up to 13 runs per bit width, split between the two laptops (change 4).
 5. **Agreed (2026-11-09):** the primary metric is test accuracy after the last epoch with exact rounding, after BatchNorm re-estimation on the seeded, augmented training split, and the one pre-registered win test is staircase vs STE (change 5).

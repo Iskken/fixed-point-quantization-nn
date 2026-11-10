@@ -36,10 +36,10 @@ def peak(lr0, a0, b0, a_key="alpha_end", b_key="beta"):
     return score
 
 
-def test_interior_optimum_takes_13_runs_and_is_found():
-    runs = FakeRuns(peak(1e-3, 3.0, 1.0))
+def test_interior_optimum_is_found():
+    runs = FakeRuns(peak(1e-3, 5.0, 1.0))
     sel = tune.tune_block("piecewise", "2/2", 60, runs, write=False)
-    assert sel["chosen"] == {"lr": 1e-3, "alpha_end": 3.0, "beta": 1.0}
+    assert sel["chosen"] == {"lr": 1e-3, "alpha_end": 5.0, "beta": 1.0}
     # 3 learning rates + 8 cells + 2 re-checks; beta = 1 is an edge, so beta = 0.5 is tried once (worse)
     steps = [c[2] for c in runs.calls]
     assert steps.count("step 1: learning rate") == 3 and steps.count("step 2: own settings") == 8
@@ -49,13 +49,13 @@ def test_interior_optimum_takes_13_runs_and_is_found():
 
 
 def test_reference_winning_step_2_skips_the_recheck():
-    runs = FakeRuns(peak(1e-3, 2.0, 2.0))
+    runs = FakeRuns(peak(1e-3, 5.0, 2.0))
     sel = tune.tune_block("piecewise", "2/2", 60, runs, write=False)
-    assert sel["chosen"] == {"lr": 1e-3, "alpha_end": 2.0, "beta": 2.0}
+    assert sel["chosen"] == {"lr": 1e-3, "alpha_end": 5.0, "beta": 2.0}
     assert not any("re-check" in c[2] for c in runs.calls)
-    # the reference alpha_end = 2 is the lower edge of {2, 3, 5}, so alpha_end = 1.5 is tried once (worse)
-    assert [c[1]["alpha_end"] for c in runs.calls if c[2] == "edge: alpha_end"] == [1.5]
-    assert sel["n_runs"] == 3 + 8 + 1
+    # the reference (alpha_end 5, beta 2) is inside the grid in both settings, so no edge is tried
+    assert not any(c[2].startswith("edge") for c in runs.calls)
+    assert sel["n_runs"] == 3 + 8
 
 
 def test_learning_rate_at_the_edge_is_extended_once():
@@ -69,10 +69,10 @@ def test_learning_rate_at_the_edge_is_extended_once():
 
 
 def test_setting_at_the_edge_is_extended_and_used_if_better():
-    runs = FakeRuns(peak(1e-3, 10.0, 2.0))
+    runs = FakeRuns(peak(1e-3, 20.0, 2.0))
     sel = tune.tune_block("piecewise", "2/2", 60, runs, write=False)
-    assert sel["chosen"]["alpha_end"] == 10.0
-    assert [c[1]["alpha_end"] for c in runs.calls if c[2] == "edge: alpha_end"] == [10.0]
+    assert sel["chosen"]["alpha_end"] == 20.0  # 10 wins the grid, then the edge value 20 is better
+    assert [c[1]["alpha_end"] for c in runs.calls if c[2] == "edge: alpha_end"] == [20.0]
 
 
 def test_failed_runs_are_never_chosen():
@@ -85,10 +85,10 @@ def test_failed_runs_are_never_chosen():
 def test_ties_keep_the_reference():
     runs = FakeRuns(lambda lr, s: 90.0)
     sel = tune.tune_block("piecewise", "2/2", 60, runs, write=False)
-    assert sel["chosen"] == {"lr": 3e-4, "alpha_end": 2.0, "beta": 2.0}  # first lr; then the reference cell
-    # 3e-4 is an edge of the learning-rate grid, so 1e-4 is tried once; alpha_end = 2 is an edge, so 1.5 is
-    # tried once; beta = 2 is not an edge; the reference wins, so there is no re-check
-    assert sel["n_runs"] == 3 + 1 + 8 + 1
+    assert sel["chosen"] == {"lr": 3e-4, "alpha_end": 5.0, "beta": 2.0}  # first lr; then the reference cell
+    # 3e-4 is an edge of the learning-rate grid, so 1e-4 is tried once; alpha_end = 5 and beta = 2 are not
+    # edges; the reference wins, so there is no re-check
+    assert sel["n_runs"] == 3 + 1 + 8
 
 
 def test_ste_tunes_quantizer_lr_and_weight_decay_and_has_no_lower_weight_decay_edge():
@@ -119,6 +119,33 @@ def test_pilot_rule():
     assert tune.pilot(pilot_runs(gap), write=False) == 60
     never = {**stable, ("ste", 30): 86.0, ("ste", 60): 87.0}
     assert tune.pilot(pilot_runs(never), write=False) == 120  # the fallback
+
+
+def test_pilot_keeps_its_own_staircase_setting():
+    """The tuning reference moved to alpha_end 5; the pilot must still use (and so find) its alpha_end 2 runs."""
+    calls = []
+    def run(method, bits, group, epochs, lr, settings, step):
+        calls.append((method, bits, group, lr, dict(settings)))
+        return pilot_runs({(m, n): 88.0 for m in ("ste", "piecewise") for n in (30, 60, 120)})(
+            method, bits, group, epochs, lr, settings, step)
+    tune.pilot(run, write=False)
+    assert {(c[1], c[2], c[3]) for c in calls} == {("2/2", "pilot", 1e-3)}
+    assert all(c[4] == {"alpha_end": 2.0, "beta": 2.0} for c in calls if c[0] == "piecewise")
+    assert all(c[4] == {} for c in calls if c[0] == "ste")
+
+
+def test_a_bit_width_filter_runs_only_its_blocks_in_order():
+    assert tune.blocks() == list(tune.ORDER)
+    assert tune.blocks(bits="2/2") == [("ste", "2/2"), ("piecewise", "2/2")]  # the staircase 2/2 second
+    assert tune.blocks(bits="4/4", method="piecewise") == [("piecewise", "4/4")]
+    blocks_seen = []
+    fake = FakeRuns(lambda lr, s: 90.0)
+    def run(method, bits, group, epochs, lr, settings, step):
+        if group == "tune" and (method, bits) not in blocks_seen:
+            blocks_seen.append((method, bits))
+        return fake(method, bits, group, epochs, lr, settings, step)
+    out = tune.run_blocks(tune.blocks(bits="2/2"), run, write=False)
+    assert blocks_seen == [("ste", "2/2"), ("piecewise", "2/2")] and set(out) == set(blocks_seen)
 
 
 FLOAT_MODEL = os.path.join(train_qat.HERE, "pretrained", "resnet20_cifar10_seed0.pt")
