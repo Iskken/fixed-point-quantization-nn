@@ -104,6 +104,7 @@ Extensions count as tuned runs.
 
 **Also logged per run:**
 - the gap between staircase-forward and exact-rounding accuracy;
+- the same accuracies on 5,000 fixed training images without augmentation, every epoch, to show the fit to the training data with S and with exact rounding (added 2026-11-12 at the supervisors' request; it does not change training);
 - the share of weights that change level per epoch;
 - the full per-epoch curves;
 - the run time.

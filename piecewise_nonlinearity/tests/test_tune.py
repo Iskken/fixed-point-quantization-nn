@@ -148,6 +148,23 @@ def test_a_bit_width_filter_runs_only_its_blocks_in_order():
     assert blocks_seen == [("ste", "2/2"), ("piecewise", "2/2")] and set(out) == set(blocks_seen)
 
 
+def test_the_schedule_study_runs_every_run_once_in_order_with_its_own_name():
+    from piecewise_nonlinearity import schedule_study
+    calls = []
+    def run(method, bits, group, epochs, lr, settings, step):
+        calls.append((method, bits, group, epochs, lr, dict(settings)))
+        return {}
+    schedule_study.study(run, 120)
+    assert [c[:4] for c in calls] == [("piecewise", "2/2", "schedule", 120)] * len(schedule_study.RUNS)
+    assert calls[0][4:] == (3e-3, {"alpha_end": 5.0, "beta": 2.0, "lr_alpha_power": 2.0})  # the coupling first
+    assert calls[1][4:] == (1e-4, {"alpha_end": 5.0, "beta": 2.0, "lr_schedule": "constant"})  # then the cosine
+    # the runner's arguments are valid for train_qat.py (words such as "constant" pass through), and every
+    # run gets its own name
+    names = [train_qat.run_name(train_qat.parse_args(tune.argv_for(*c))) for c in calls]
+    assert len(set(names)) == len(names)
+    assert names[1] == "piecewise_w2a2_lr1e-4-const_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0"
+
+
 FLOAT_MODEL = os.path.join(train_qat.HERE, "pretrained", "resnet20_cifar10_seed0.pt")
 
 

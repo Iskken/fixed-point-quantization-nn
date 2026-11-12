@@ -107,8 +107,8 @@ def bits_tag(bits):
 def argv_for(method, bits, group, epochs, lr, settings):
     argv = ["--group", group, "--method", method, "--bits", bits, "--seed", str(SEED),
             "--epochs", str(epochs), "--lr", repr(float(lr))]
-    for k, v in settings.items():
-        argv += ["--" + k.replace("_", "-"), repr(float(v))]
+    for k, v in settings.items():  # numbers as floats; a few settings are words (--lr-schedule constant)
+        argv += ["--" + k.replace("_", "-"), v if isinstance(v, str) else repr(float(v))]
     return argv
 
 
@@ -125,8 +125,8 @@ class Runner:
         args = train_qat.parse_args(argv)
         name = train_qat.run_name(args)
         path = os.path.join(args.results_dir, group, f"{name}.json")
-        summary = {"name": name, "lr": float(lr), "settings": {k: float(v) for k, v in settings.items()},
-                   "step": step}
+        summary = {"name": name, "lr": float(lr), "step": step,
+                   "settings": {k: v if isinstance(v, str) else float(v) for k, v in settings.items()}}
         if not os.path.exists(path):
             if self.dry:
                 raise NotDone(f"{name}  ({step})")

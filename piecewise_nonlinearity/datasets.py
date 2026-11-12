@@ -83,6 +83,22 @@ def get_loaders(name, batch_size=256, val_fraction=0.1, seed=0, num_workers=4, g
             _loader(test, batch_size, False, num_workers))
 
 
+def get_train_eval_loader(name, n, batch_size=256, val_fraction=0.1, seed=0, num_workers=4):
+    """
+    n training images of the same fixed split, without augmentation and in a fixed order: for measuring the
+    fit to the training data the way validation is measured (train_qat.py does it every epoch). They are the
+    first n training indices of split_indices, which come in random order, so they are a random sample of
+    the training images; validation and test images are never among them. The loader has its own generator,
+    so iterating it never draws from the global random state.
+    """
+    spec = DATASETS[name]
+    _, eval_tf = _transforms(name)
+    eval_full = spec["cls"](DATA_DIR, train=True, transform=eval_tf)
+    train_idx, _ = split_indices(len(eval_full), val_fraction, seed)
+    return _loader(Subset(eval_full, train_idx[:n]), batch_size, False, num_workers,
+                   generator=torch.Generator().manual_seed(0))
+
+
 class SeededAugmentation(Dataset):
     """
     The training augmentation (random crop with 4 pixels of zero padding, random horizontal flip, then
