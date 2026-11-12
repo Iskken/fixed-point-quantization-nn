@@ -1,0 +1,208 @@
+{
+ "method": "piecewise",
+ "bits": "2/2",
+ "epochs": 120,
+ "seed": 0,
+ "chosen": {
+  "lr": 0.0001,
+  "alpha_end": 5.0,
+  "beta": 2.0
+ },
+ "chosen_run": "piecewise_w2a2_lr1e-4_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0",
+ "chosen_val_acc_reest": 79.34,
+ "n_runs": 12,
+ "runs": [
+  {
+   "name": "piecewise_w2a2_lr3e-4_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0",
+   "lr": 0.0003,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0
+   },
+   "step": "step 1: learning rate",
+   "score": 78.08,
+   "val_acc_reest": 78.08,
+   "val_acc": 71.1,
+   "val_acc_soft": 83.6,
+   "failed": false,
+   "failure": null,
+   "minutes": 49.1
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-3_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0",
+   "lr": 0.001,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0
+   },
+   "step": "step 1: learning rate",
+   "score": 75.3,
+   "val_acc_reest": 75.3,
+   "val_acc": 72.88,
+   "val_acc_soft": 79.58,
+   "failed": false,
+   "failure": null,
+   "minutes": 49.14
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0
+   },
+   "step": "step 1: learning rate",
+   "score": null,
+   "val_acc_reest": 60.7,
+   "val_acc": 56.66,
+   "val_acc_soft": 62.24,
+   "failed": true,
+   "failure": "ended below its start: validation accuracy after re-estimation 60.70 < 62.78",
+   "minutes": 49.28
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-4_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0
+   },
+   "step": "edge: learning rate",
+   "score": 79.34,
+   "val_acc_reest": 79.34,
+   "val_acc": 67.92,
+   "val_acc_soft": 86.28,
+   "failed": false,
+   "failure": null,
+   "minutes": 49.22
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-4_lrq1e-5_wd1e-4_a3b1-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 1.0
+   },
+   "step": "step 2: own settings",
+   "score": 74.74,
+   "val_acc_reest": 74.74,
+   "val_acc": 53.92,
+   "val_acc_soft": 89.68,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.41
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-4_lrq1e-5_wd1e-4_a3b2-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 2.0
+   },
+   "step": "step 2: own settings",
+   "score": 77.9,
+   "val_acc_reest": 77.9,
+   "val_acc": 64.06,
+   "val_acc_soft": 88.9,
+   "failed": false,
+   "failure": null,
+   "minutes": 50.37
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-4_lrq1e-5_wd1e-4_a3b3-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 3.0
+   },
+   "step": "step 2: own settings",
+   "score": 77.08,
+   "val_acc_reest": 77.08,
+   "val_acc": 54.16,
+   "val_acc_soft": 88.94,
+   "failed": false,
+   "failure": null,
+   "minutes": 49.06
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-4_lrq1e-5_wd1e-4_a5b1-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 1.0
+   },
+   "step": "step 2: own settings",
+   "score": 77.76,
+   "val_acc_reest": 77.76,
+   "val_acc": 65.32,
+   "val_acc_soft": 87.06,
+   "failed": false,
+   "failure": null,
+   "minutes": 49.11
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-4_lrq1e-5_wd1e-4_a5b3-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 3.0
+   },
+   "step": "step 2: own settings",
+   "score": 77.12,
+   "val_acc_reest": 77.12,
+   "val_acc": 66.78,
+   "val_acc_soft": 85.66,
+   "failed": false,
+   "failure": null,
+   "minutes": 49.23
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-4_lrq1e-5_wd1e-4_a10b1-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 1.0
+   },
+   "step": "step 2: own settings",
+   "score": 77.72,
+   "val_acc_reest": 77.72,
+   "val_acc": 73.32,
+   "val_acc_soft": 82.98,
+   "failed": false,
+   "failure": null,
+   "minutes": 49.22
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-4_lrq1e-5_wd1e-4_a10b2-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 2.0
+   },
+   "step": "step 2: own settings",
+   "score": 78.2,
+   "val_acc_reest": 78.2,
+   "val_acc": 72.18,
+   "val_acc_soft": 81.8,
+   "failed": false,
+   "failure": null,
+   "minutes": 49.18
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-4_lrq1e-5_wd1e-4_a10b3-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 3.0
+   },
+   "step": "step 2: own settings",
+   "score": 74.72,
+   "val_acc_reest": 74.72,
+   "val_acc": 68.06,
+   "val_acc_soft": 78.84,
+   "failed": false,
+   "failure": null,
+   "minutes": 49.11
+  }
+ ]
+}
