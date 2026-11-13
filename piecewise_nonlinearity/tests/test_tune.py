@@ -148,6 +148,44 @@ def test_a_bit_width_filter_runs_only_its_blocks_in_order():
     assert blocks_seen == [("ste", "2/2"), ("piecewise", "2/2")] and set(out) == set(blocks_seen)
 
 
+def test_the_coupled_staircase_runs_the_same_procedure_with_the_coupling_in_every_run():
+    landscape = peak(1e-3, 5.0, 1.0)  # a beta edge and the re-check happen, so every part of the procedure runs
+    plain = FakeRuns(landscape)
+    sel_plain = tune.tune_block("piecewise", "2/2", 60, plain, write=False)
+    coupled, methods = FakeRuns(landscape), []
+
+    def run(method, bits, group, epochs, lr, settings, step):
+        methods.append(method)
+        return coupled(method, bits, group, epochs, lr, settings, step)
+    sel = tune.tune_block("piecewise-lrpow2", "2/2", 60, run, write=False)
+    assert set(methods) == {"piecewise"}  # train_qat.py trains the staircase
+    assert all(s["lr_alpha_power"] == 2.0 for _, s, _ in coupled.calls)
+    # the same runs, in the same order, at the same steps, once the coupling is taken out
+    assert [(lr, {k: v for k, v in s.items() if k != "lr_alpha_power"}, step)
+            for lr, s, step in coupled.calls] == plain.calls
+    assert sel["chosen"] == {**sel_plain["chosen"], "lr_alpha_power": 2.0}
+    assert sel["n_runs"] == sel_plain["n_runs"] == 14
+
+
+def test_the_coupled_staircase_has_its_own_run_names_and_selection_and_runs_only_when_named(tmp_path, monkeypatch):
+    monkeypatch.setattr(tune, "RESULTS", str(tmp_path / "results"))
+    monkeypatch.setattr(tune, "LOG", str(tmp_path / "tune.log"))
+    tune.tune_block("piecewise-lrpow2", "2/2", 60, FakeRuns(peak(1e-3, 5.0, 2.0)), write=True)
+    assert os.listdir(tmp_path / "results" / "tune") == ["selection_piecewise-lrpow2_w2a2.json"]
+    ref = {"alpha_end": 5.0, "beta": 2.0}
+
+    def name(settings):
+        return train_qat.run_name(train_qat.parse_args(tune.argv_for("piecewise", "2/2", "tune", 120, 3e-3, settings)))
+    assert name({**ref, **tune.METHODS["piecewise-lrpow2"]["fixed"]}) == \
+        "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a5b2-exact-r0.5-lrpow2_e120_s0"
+    assert name(ref) == "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0"  # the first tuning's run
+    # the plan's blocks and their filters are unchanged; the coupled block runs only when named
+    assert tune.blocks() == list(tune.ORDER) and ("piecewise-lrpow2", "2/2") not in tune.blocks(bits="2/2")
+    assert tune.blocks(method="piecewise-lrpow2") == [("piecewise-lrpow2", "2/2")]
+    with pytest.raises(SystemExit):
+        tune.blocks(bits="4/4", method="piecewise-lrpow2")
+
+
 def test_the_schedule_study_runs_every_run_once_in_order_with_its_own_name():
     from piecewise_nonlinearity import schedule_study
     calls = []

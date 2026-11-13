@@ -94,6 +94,11 @@ The search stops after step 3: if the re-check changes the learning rate, step 2
 - **Why neither is tuned:** in the MLP study, other ramp lengths and ramping β gave no gain (at 8/4, fixed β scored 0.2075 and ramped β 0.2082). With a small α_end, the stair changes little during the ramp, so its length matters little (this argument is weaker for the new grid, with α_end up to 10; the optional ramp-fraction check below covers it). Every extra tuned setting adds compute and selection noise on seed 0.
 - **Optional, after the main results:** ramp fraction ∈ {0.25, 0.5, 1.0} at the chosen setting at 2/2, reported as a sensitivity check and not used for tuning.
 
+**Learning rate tied to α (staircase, added on 2026-11-13).**
+- **Why:** after the 2/2 tuning, the supervisors suggested scheduling the learning rate with α. In the schedule study of 2026-11-12 (`schedule_study.py`, `results/qat/schedule/`: six 120-epoch runs at the tuned setting α_end 5, β 2, seed 0), dividing both learning rates by α² at every step, on top of the cosine, from lr 3e-3, scored 82.88 against 79.26 for the tuned run repeated in the same study (validation after re-estimation). Dividing by α scored 78.74. Removing the cosine cost 1.2 points (1.7 with the coupling), and removing the α ramp cost 3.4.
+- **Change:** the staircase's 2/2 block is tuned a second time with this coupling (`tune.py` block `piecewise-lrpow2`, `train_qat.py --lr-alpha-power 2`), with the same procedure, grids and edge rule; the learning rate of the grid is the rate at α = 1. Its selection goes to `selection_piecewise-lrpow2_w2a2.json`, and the first tuning is kept. Whether the 4/4 block uses the coupling is decided after this tuning.
+- **In the paper:** the staircase got this extra study and a second tuning, which the STE did not; the paper reports both. Decided on seed 0 only, without the test set.
+
 **Edge rule, fixed before tuning.** It applies to every ordered setting of every method (values in change 4). If the best value is at an edge of its grid, one value beyond that edge is run:
 - if it is not better, the previous best is kept: the optimum lies inside the grid;
 - if it is better, it is used, the grid is not extended again, and we report that the optimum may lie beyond the grid.
