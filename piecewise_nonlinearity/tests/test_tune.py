@@ -19,7 +19,7 @@ class FakeRuns:
         self.score, self.failed, self.calls = score, set(failed), []
 
     def __call__(self, method, bits, group, epochs, lr, settings, step):
-        settings = {k: float(v) for k, v in settings.items()}
+        settings = {k: v if isinstance(v, str) else float(v) for k, v in settings.items()}  # words stay words
         self.calls.append((lr, settings, step))
         key = (float(lr), tuple(sorted(settings.items())))
         fail = key in self.failed
@@ -184,6 +184,72 @@ def test_the_coupled_staircase_has_its_own_run_names_and_selection_and_runs_only
     assert tune.blocks(method="piecewise-lrpow2") == [("piecewise-lrpow2", "2/2")]
     with pytest.raises(SystemExit):
         tune.blocks(bits="4/4", method="piecewise-lrpow2")
+
+
+def test_the_slope_1_staircase_runs_the_same_procedure_with_the_slope_1_backward_in_every_run():
+    landscape = peak(1e-3, 5.0, 1.0)  # a beta edge and the re-check happen, so every part of the procedure runs
+    plain = FakeRuns(landscape)
+    sel_plain = tune.tune_block("piecewise", "2/2", 60, plain, write=False)
+    slope1, methods = FakeRuns(landscape), []
+
+    def run(method, bits, group, epochs, lr, settings, step):
+        methods.append(method)
+        return slope1(method, bits, group, epochs, lr, settings, step)
+    sel = tune.tune_block("piecewise-slope1", "2/2", 60, run, write=False)
+    assert set(methods) == {"piecewise"}  # train_qat.py trains the staircase
+    assert all(s["backward"] == "ste" for _, s, _ in slope1.calls)
+    assert not any("lr_alpha_power" in s for _, s, _ in slope1.calls)  # the learning rate is not tied to alpha
+    # the same runs, in the same order, at the same steps, once the backward is taken out
+    assert [(lr, {k: v for k, v in s.items() if k != "backward"}, step)
+            for lr, s, step in slope1.calls] == plain.calls
+    assert sel["chosen"] == {**sel_plain["chosen"], "backward": "ste"}
+    assert sel["n_runs"] == sel_plain["n_runs"] == 14
+
+
+def test_the_slope_1_staircase_has_its_own_run_names_and_selection_and_runs_only_when_named(tmp_path, monkeypatch):
+    monkeypatch.setattr(tune, "RESULTS", str(tmp_path / "results"))
+    monkeypatch.setattr(tune, "LOG", str(tmp_path / "tune.log"))
+    tune.tune_block("piecewise-slope1", "2/2", 60, FakeRuns(peak(1e-3, 5.0, 2.0)), write=True)
+    assert os.listdir(tmp_path / "results" / "tune") == ["selection_piecewise-slope1_w2a2.json"]
+    ref = {"alpha_end": 5.0, "beta": 2.0}
+
+    def parsed(settings):
+        return train_qat.parse_args(tune.argv_for("piecewise", "2/2", "tune", 120, 3e-3, settings))
+    args = parsed({**ref, **tune.METHODS["piecewise-slope1"]["fixed"]})
+    assert args.backward == "ste" and args.lr_alpha_power == 0.0  # slope 1, and no coupling
+    names = [train_qat.run_name(a) for a in (args, parsed(ref), parsed({**ref, "lr_alpha_power": 2.0}))]
+    assert names == ["piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a5b2-ste-r0.5_e120_s0",
+                     "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0",  # the first tuning's run
+                     "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a5b2-exact-r0.5-lrpow2_e120_s0"]  # the coupled one's
+    # the plan's blocks and their filters are unchanged; the slope-1 block runs only when named
+    assert tune.blocks() == list(tune.ORDER) and ("piecewise-slope1", "2/2") not in tune.blocks(bits="2/2")
+    assert tune.blocks(method="piecewise-slope1") == [("piecewise-slope1", "2/2")]
+    assert tune.blocks(method="piecewise-lrpow2") == [("piecewise-lrpow2", "2/2")]  # the coupled block is untouched
+    with pytest.raises(SystemExit):
+        tune.blocks(bits="4/4", method="piecewise-slope1")
+
+
+@pytest.mark.skipif(not os.path.exists(os.path.join(train_qat.HERE, "pretrained", "resnet20_cifar10_seed0.pt")),
+                    reason="the seed-0 float model is missing")
+def test_the_slope_1_block_trains_a_network_whose_every_staircase_has_the_slope_1_backward():
+    import torch
+    from piecewise_nonlinearity.quantizers.piecewise import Staircase
+    ref = tune.METHODS["piecewise-slope1"]["reference"]
+
+    def stairs(block):
+        settings = {**ref, **tune.METHODS[block].get("fixed", {})}
+        args = train_qat.parse_args(tune.argv_for("piecewise", "2/2", "tune", 120, 3e-3, settings))
+        model, _ = train_qat.build_model(args, torch.device("cpu"))
+        return [m for m in model.modules() if isinstance(m, Staircase)]
+    slope1, exact = stairs("piecewise-slope1"), stairs("piecewise")
+    assert len(slope1) == len(exact) > 0
+    assert {m.backward for m in slope1} == {"ste"} and {m.backward for m in exact} == {"exact"}
+    # the forward is S either way, with the gradient 1 in place of the slopes of S
+    x = torch.linspace(0.0, 1.0, 41, requires_grad=True)
+    y = slope1[0](x, 4)
+    y.sum().backward()
+    assert torch.equal(x.grad, torch.ones_like(x))
+    assert torch.allclose(y, exact[0](x, 4)) and not torch.allclose(y, slope1[0](x, 4, hard=True))
 
 
 def test_the_schedule_study_runs_every_run_once_in_order_with_its_own_name():

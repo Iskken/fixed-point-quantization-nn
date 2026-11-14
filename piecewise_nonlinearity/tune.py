@@ -8,6 +8,8 @@ staircase (changes 2 and 4). Every training run is one call of train_qat.py in i
     python -m piecewise_nonlinearity.tune all --method piecewise-lrpow2       # pilot, then the staircase with
                                                     # the learning rate divided by alpha^2, at 2/2 (runs only
                                                     # when named)
+    python -m piecewise_nonlinearity.tune all --method piecewise-slope1       # pilot, then the staircase with
+                                                    # the slope-1 backward, at 2/2 (runs only when named)
     python -m piecewise_nonlinearity.tune pilot     # only the pilot and its decision
     python -m piecewise_nonlinearity.tune status    # what is finished and what runs next (trains nothing;
                                                     # takes the same --bits / --method filters)
@@ -51,6 +53,13 @@ How the plan's rules are applied; where the text leaves room, the choice made he
     study of 2026-11-12 (schedule_study.py, seed 0), this schedule scored 82.88 at the tuned setting with
     lr 3e-3, against 79.26 for the tuned run repeated in the same study (validation after re-estimation).
     Its runs have their own names (-lrpow2) and its own selection file; the first tuning is kept.
+  - The staircase with the slope-1 backward, added on 2026-11-14 (block "piecewise-slope1"): the same
+    procedure, grids and edge rule, but every run uses train_qat.py --backward ste: the forward pass is
+    still S, and the backward pass uses slope 1 in place of the slopes of S. The learning rate is not tied to
+    alpha. At 4/4 this variant, tuned with the same procedure on laptop B (explore.py on the branch
+    feature/4_4_trainings), scored 92.38, against 91.84 for the tuned STE and 90.94 for the tuned staircase
+    (seed 0, validation after re-estimation). Its runs have their own names (-ste- in place of -exact-) and
+    its own selection file; the two earlier 2/2 tunings are kept.
 """
 
 import argparse
@@ -83,12 +92,14 @@ METHODS = {  # reference setting, the 3 x 3 grid of the method's own settings, e
 }
 # a block that trains `method` with settings `fixed` added to every run, and tunes the rest like `method`
 METHODS["piecewise-lrpow2"] = {**METHODS["piecewise"], "method": "piecewise", "fixed": {"lr_alpha_power": 2.0}}
+METHODS["piecewise-slope1"] = {**METHODS["piecewise"], "method": "piecewise", "fixed": {"backward": "ste"}}
 PILOT_BUDGETS = (30, 60, 120)
 PILOT_LR = 1e-3
 PILOT_SETTINGS = {"alpha_end": 2.0, "beta": 2.0}  # the pilot's staircase (change 1), independent of the tuning grid
 PILOT_THRESHOLD = 0.3
 ORDER = (("ste", "2/2"), ("piecewise", "2/2"), ("ste", "4/4"), ("piecewise", "4/4"))  # 2/2 first: the open question
-EXTRA = (("piecewise-lrpow2", "2/2"),)  # blocks outside the plan's order: they run only when their method is named
+# blocks outside the plan's order: they run only when their method is named
+EXTRA = (("piecewise-lrpow2", "2/2"), ("piecewise-slope1", "2/2"))
 
 
 class Stop(Exception):
