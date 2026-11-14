@@ -3,3 +3,5 @@ data/
 checkpoints/
 results/raw/
 reference/
+figures/
+REPORT.md

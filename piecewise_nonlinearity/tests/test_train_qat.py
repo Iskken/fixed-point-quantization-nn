@@ -120,7 +120,85 @@ def test_run_names_contain_every_setting():
     ["--method", "ste", "--bits", "32/32"],  # nothing quantized
     ["--method", "ste", "--bits", "2"],
     ["--method", "piecewise", "--bits", "2/2", "--ramp-fraction", "0"],
+    ["--method", "ste", "--bits", "2/2", "--lr-alpha-power", "1"],  # the STE has no alpha
+    ["--method", "piecewise", "--bits", "2/2", "--lr-alpha-power", "-1"],
+    ["--method", "piecewise", "--bits", "2/2", "--alpha-start", "3", "--alpha-end", "3", "--lr-alpha-power", "1"],
+    ["--method", "piecewise", "--bits", "2/2", "--lr-schedule", "step"],
 ])
 def test_invalid_arguments_are_rejected(argv):
     with pytest.raises(SystemExit):
         train_qat.parse_args(["--group", "tune", *argv])
+
+
+# ------------------------------------------------- exploratory learning-rate schedules (PLAN.md, exploratory runs)
+
+def test_schedule_names_and_the_default_is_unchanged():
+    base = ["--group", "explore", "--method", "piecewise", "--bits", "4/4", "--lr", "3e-4", "--alpha-end", "3"]
+    name = lambda *extra: train_qat.run_name(train_qat.parse_args(base + list(extra)))
+    assert name() == "piecewise_w4a4_lr3e-4_lrq1e-5_wd1e-4_a3b2-exact-r0.5_e60_s0"
+    assert name("--lr-alpha-power", "0") == name()  # p = 0 is the default run
+    assert name("--lr-schedule", "constant") == "piecewise_w4a4_lr3e-4_lrq1e-5_wd1e-4_sched-const_a3b2-exact-r0.5_e60_s0"
+    assert "_sched-cos-inv1_" in name("--lr-alpha-power", "1")
+    assert "_sched-const-inv1_" in name("--lr-alpha-power", "1", "--lr-schedule", "constant")
+    assert "_sched-const_" in train_qat.run_name(train_qat.parse_args(
+        ["--group", "explore", "--method", "ste", "--bits", "4/4", "--lr-schedule", "constant"]))
+    # at the defaults the new settings stay out of the config, so earlier runs keep matching their JSON
+    for m in ("ste", "piecewise"):
+        cfg = train_qat.settings_of(train_qat.parse_args(["--group", "tune", "--method", m, "--bits", "4/4"]))
+        assert not set(train_qat.OPTIONAL) & set(cfg)
+    cfg = train_qat.settings_of(train_qat.parse_args(base + ["--lr-alpha-power", "1", "--lr-schedule", "constant"]))
+    assert cfg["lr_alpha_power"] == 1.0 and cfg["lr_schedule"] == "constant"
+
+
+OLD_RUN = os.path.join(train_qat.HERE, "results", "qat", "tune",
+                       "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a3b2-exact-r0.5_e120_s0.json")
+
+
+@pytest.mark.skipif(not os.path.exists(OLD_RUN), reason="the 4/4 tuning result is not here")
+def test_a_finished_tuning_run_still_matches_its_config():
+    import json
+    with open(OLD_RUN) as f:
+        old = json.load(f)["config"]
+    args = train_qat.parse_args(["--group", "tune", "--method", "piecewise", "--bits", "4/4", "--seed", "0",
+                                 "--epochs", "120", "--lr", "1e-4", "--alpha-end", "3", "--beta", "2"])
+    assert train_qat.settings_of(args) == old
+
+
+def test_lr_factor_matches_the_cosine_recipe_and_couples_to_alpha():
+    import torch
+    args = train_qat.parse_args(["--group", "explore", "--method", "piecewise", "--bits", "4/4", "--epochs", "7",
+                                 "--alpha-end", "3", "--lr-alpha-power", "1"])
+    opt = torch.optim.Adam([torch.nn.Parameter(torch.zeros(1))], lr=1.0)
+    sch = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=7, eta_min=0.0)
+    for e in range(7):  # alpha = alpha_start: the factor is the cosine alone, as in the recipe
+        assert train_qat.lr_factor(args, e, alpha=1.0) == pytest.approx(opt.param_groups[0]["lr"], rel=1e-9)
+        opt.step()
+        sch.step()
+    assert train_qat.lr_factor(args, 0, alpha=2.0) == pytest.approx(0.5)  # inverse: lr ~ 1/alpha
+    args.lr_schedule = "constant"
+    assert train_qat.lr_factor(args, 5, alpha=1.0) == 1.0 and train_qat.lr_factor(args, 5, alpha=3.0) == pytest.approx(1 / 3)
+
+
+@needs_data
+def test_the_inverse_schedule_sets_the_rates_every_step_and_resumes(tmp_path):
+    sched = ["--method", "piecewise", "--lr-alpha-power", "1"]  # cosine x (1 / alpha); alpha = 1, 1.5, 2, 2
+    full = smoke_run(tmp_path / "full", *sched)
+    steps = np.load(tmp_path / "full" / "raw" / "smoke" / full["name"] / "steps.npz")
+    assert np.allclose(steps["alpha"], [1.0, 1.5, 2.0, 2.0])
+    assert np.allclose(steps["lr_factor"], [1.0, 1 / 1.5, 0.5 * 0.5, 0.5 * 0.5])  # cosine 1, then 0.5 in epoch 2
+    lr, lr_q = full["config"]["lr"], full["config"]["lr_q"]
+    assert full["history"]["lr"][1:] == pytest.approx([lr / 1.5, lr * 0.25], rel=1e-5)  # the last step of each epoch
+    assert full["history"]["lr_q"][1:] == pytest.approx([lr_q / 1.5, lr_q * 0.25], rel=1e-5)
+    assert "_sched-cos-inv1_" in full["name"] and full["config"]["lr_alpha_power"] == 1.0
+    assert smoke_run(tmp_path / "cut", *sched, "--stop-after", "1") is None
+    resumed = smoke_run(tmp_path / "cut", *sched)
+    assert np.allclose(resumed["history"]["train_loss"][1:], full["history"]["train_loss"][1:], rtol=1e-5)
+    assert resumed["history"]["lr"] == full["history"]["lr"]
+    assert np.allclose(np.load(tmp_path / "cut" / "raw" / "smoke" / full["name"] / "steps.npz")["lr_factor"],
+                       steps["lr_factor"])
+
+
+@needs_data
+def test_a_constant_schedule_keeps_the_rates(tmp_path):
+    r = smoke_run(tmp_path, "--method", "ste", "--lr-schedule", "constant")
+    assert r["history"]["lr"][1:] == [r["config"]["lr"]] * 2 and r["history"]["lr_q"][1:] == [r["config"]["lr_q"]] * 2

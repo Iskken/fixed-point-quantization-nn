@@ -1,0 +1,256 @@
+{
+ "method": "piecewise-slope1",
+ "bits": "4/4",
+ "epochs": 120,
+ "seed": 0,
+ "chosen": {
+  "lr": 0.003,
+  "alpha_end": 5.0,
+  "beta": 1.0
+ },
+ "chosen_run": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a5b1-ste-r0.5_e120_s0",
+ "chosen_val_acc_reest": 92.38,
+ "n_runs": 15,
+ "runs": [
+  {
+   "name": "piecewise_w4a4_lr3e-4_lrq1e-5_wd1e-4_a3b2-ste-r0.5_e120_s0",
+   "lr": 0.0003,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 2.0
+   },
+   "step": "step 1: learning rate",
+   "score": 91.1,
+   "val_acc_reest": 91.1,
+   "val_acc": 90.24,
+   "val_acc_soft": 91.62,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.11
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-3_lrq1e-5_wd1e-4_a3b2-ste-r0.5_e120_s0",
+   "lr": 0.001,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 2.0
+   },
+   "step": "step 1: learning rate",
+   "score": 91.46,
+   "val_acc_reest": 91.46,
+   "val_acc": 91.14,
+   "val_acc_soft": 91.86,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.09
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a3b2-ste-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 2.0
+   },
+   "step": "step 1: learning rate",
+   "score": 91.98,
+   "val_acc_reest": 91.98,
+   "val_acc": 91.54,
+   "val_acc_soft": 92.02,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.05
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-2_lrq1e-5_wd1e-4_a3b2-ste-r0.5_e120_s0",
+   "lr": 0.01,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 2.0
+   },
+   "step": "edge: learning rate",
+   "score": 91.06,
+   "val_acc_reest": 91.06,
+   "val_acc": 91.18,
+   "val_acc_soft": 91.24,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.03
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a3b1-ste-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 1.0
+   },
+   "step": "step 2: own settings",
+   "score": 91.42,
+   "val_acc_reest": 91.42,
+   "val_acc": 90.8,
+   "val_acc_soft": 91.48,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.03
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a3b3-ste-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 3.0
+   },
+   "step": "step 2: own settings",
+   "score": 92.0,
+   "val_acc_reest": 92.0,
+   "val_acc": 91.84,
+   "val_acc_soft": 92.12,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.07
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a5b1-ste-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 1.0
+   },
+   "step": "step 2: own settings",
+   "score": 92.38,
+   "val_acc_reest": 92.38,
+   "val_acc": 91.76,
+   "val_acc_soft": 92.04,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.08
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a5b2-ste-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0
+   },
+   "step": "step 2: own settings",
+   "score": 92.06,
+   "val_acc_reest": 92.06,
+   "val_acc": 91.64,
+   "val_acc_soft": 92.08,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.05
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a5b3-ste-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 3.0
+   },
+   "step": "step 2: own settings",
+   "score": 91.4,
+   "val_acc_reest": 91.4,
+   "val_acc": 91.34,
+   "val_acc_soft": 91.52,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.07
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a10b1-ste-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 1.0
+   },
+   "step": "step 2: own settings",
+   "score": 91.42,
+   "val_acc_reest": 91.42,
+   "val_acc": 91.36,
+   "val_acc_soft": 91.4,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.07
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a10b2-ste-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 2.0
+   },
+   "step": "step 2: own settings",
+   "score": 91.56,
+   "val_acc_reest": 91.56,
+   "val_acc": 91.7,
+   "val_acc_soft": 91.88,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.07
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a10b3-ste-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 3.0
+   },
+   "step": "step 2: own settings",
+   "score": 92.06,
+   "val_acc_reest": 92.06,
+   "val_acc": 91.86,
+   "val_acc_soft": 92.24,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.05
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a5b0.5-ste-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 0.5
+   },
+   "step": "edge: beta",
+   "score": 92.02,
+   "val_acc_reest": 92.02,
+   "val_acc": 91.72,
+   "val_acc_soft": 92.48,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.05
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-3_lrq1e-5_wd1e-4_a5b1-ste-r0.5_e120_s0",
+   "lr": 0.001,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 1.0
+   },
+   "step": "step 3: learning-rate re-check",
+   "score": 91.12,
+   "val_acc_reest": 91.12,
+   "val_acc": 90.94,
+   "val_acc_soft": 91.76,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.07
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-2_lrq1e-5_wd1e-4_a5b1-ste-r0.5_e120_s0",
+   "lr": 0.01,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 1.0
+   },
+   "step": "step 3: learning-rate re-check",
+   "score": 91.64,
+   "val_acc_reest": 91.64,
+   "val_acc": 91.4,
+   "val_acc_soft": 91.7,
+   "failed": false,
+   "failure": null,
+   "minutes": 62.05
+  }
+ ]
+}

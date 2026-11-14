@@ -20,6 +20,7 @@ Because the abstract cannot be edited after Nov 16, about 69 of those 94 GPU hou
 - **Steps 1–3 done:** folder structure, CIFAR-10/100 download, and three float ResNet-20 models (seeds 0–2). Their test accuracy is 91.17 / 91.16 / 91.23 (see [pretrained/](pretrained/)), which matches the papers' float baselines: EWGS 91.4, DSQ 90.78.
 - **Steps 4–6 done:** the shared quantizer, the STE, the pure staircase (`exact` or slope-1 backward, α schedule) and the sanity tests (29 passing, including BatchNorm re-estimation).
 - **`train_qat.py` written and tested (2026-11-09)** for the STE and the staircase: the pilot, tuning, fresh-seed and ablation runs can start. It passes 10 CPU smoke tests (39 tests in total) and ran 1–3 epochs on the GPU. EWGS and DSQ plug in at step 8.
+- **4/4 tuning done (2026-11-12, laptop B).** STE: lr 1e-2, lr_q 1e-5, weight decay 1e-4 → 91.84 (12 runs). Staircase: lr 1e-4, α_end 3, β 2 → 90.94 (15 runs). Both lrs are at the extended edge. The exploratory runs below started the same day.
 
 ## What holds
 
@@ -247,6 +248,67 @@ Otherwise we report a tie or a loss as such. The comparisons with EWGS and DSQ a
 3. Ablations at 2/2, on the 4 fresh seeds: staircase with slope-1 backward; weights only and activations only for both the STE and the staircase.
 4. MobileNetV2 at 4/4: STE vs staircase, 3 seeds, using ResNet-20's tuned settings. After the abstract.
 5. CIFAR-100, only if time is left. After the abstract.
+
+## Exploratory runs after the 4/4 tuning (2026-11-12)
+
+**Status: added after the 4/4 tuning results were seen. Seed 0 (validation) only; the test set stays untouched.** These runs are not part of the pre-registered procedure (changes 2 and 4).
+
+**Why.** The 4/4 tuning chose the STE at lr 1e-2 (91.84) and the staircase at lr 1e-4, α_end 3, β 2 (90.94).
+- **The staircase's lr hit the lowest allowed value (1e-4),** as at 2/2. Every higher lr ended below its start: 87.58, 80.30 and 55.34 at 3e-4, 1e-3 and 3e-3 (α_end 5).
+- **The curves show the pattern.**
+  - At lr ≥ 3e-4, the staircase's training loss rises during the α ramp even while the lr falls (α_end 3, lr 3e-4: 0.019 at epoch 10, 0.044 at epoch 60), and validation falls with it.
+  - At lr 1e-4 it fits the training set at once (loss 0.010 by epoch 5) but its quantized weights change level much less: 4% → 1% of the weights per epoch (epochs 1 → 60), against 11% → 7% for the STE at lr 3e-4. Its validation accuracy stays flat after epoch 30, while the STE's rises by 1.3 as its lr decays.
+
+**Supervisor's comment.** Two points:
+1. The lr is not scheduled with α. A low lr converges slowly; a high lr diverges as α grows and the problem becomes ill-conditioned.
+2. The cosine lr schedule and the α ramp run at the same time and may interfere, so they should be studied separately.
+
+A single lr cannot fix both, because inside S the steep slope is βα² times the flat one (18× at α 3, β 2). The runs below therefore test both directions: lowering the lr as α grows (C), removing either schedule (B), and the earlier follow-ups (A).
+
+**The new option.** Both learning rates (network and quantizer) are set before every step to
+
+  lr(t) = lr₀ · c(t) · (α_start / α(t))^p
+
+- c(t) is the cosine (`--lr-schedule cosine`, the recipe) or 1 (`--lr-schedule constant`).
+- p is `--lr-alpha-power`: 0 is the recipe; 1 is the inverse schedule, lr ∝ 1/α, which tracks the steepest slope of S.
+- At the defaults the run is the recipe, unchanged. Earlier runs keep their names and configs; all 49 finished runs were checked.
+
+**Runs.** ResNet-20, 4/4, seed 0, 120 epochs. Settings are α_end 3, β 2, lr_q 1e-5 and weight decay 1e-4 unless stated. Group `explore`, queued by `explore.py` in this order:
+
+| # | Question | Change from the chosen setting | lr₀ | Compare with (tuning) |
+|---|---|---|---|---|
+| C1 | inverse × cosine | p = 1 | 3e-4 | 89.66 (same lr, recipe) |
+| C2 | inverse × cosine | p = 1 | 1e-3 | 88.40, failed |
+| B1 | remove the cosine | constant lr | 1e-4 | 90.94 |
+| B2 | remove the α ramp | α fixed at 3 | 1e-4 | 90.94 |
+| B3 | remove both | α fixed at 3, constant lr | 1e-4 | B1, B2 |
+| A3 | are the exact slopes the cause? | slope-1 backward | 1e-3 | 88.40, failed |
+| C3 | inverse only | p = 1, constant | 3e-4 | 89.66 |
+| C4 | inverse only | p = 1, constant | 1e-3 | 88.40, failed |
+| A1 | slower ramp | α ramps until the end | 1e-4 | 90.94 |
+| A2 | slower ramp, higher lr | α ramps until the end | 3e-4 | 89.66 |
+| A4 | lower lr (edge question) | — | 3e-5 | 90.94 |
+| A4′ | the same extension for the STE | STE | 3e-2 | 91.84 |
+
+**Reading the B runs.** They form a 2×2, {α ramp, α fixed} × {cosine, constant}:
+- current run vs B2: what the ramp does under the cosine;
+- B1 vs B3: what the ramp does under a constant lr;
+- a clear difference between the two means the schedules interact.
+
+B1 alone is not compared with the recipe: without the decay, the weights cannot settle at the end.
+
+**Rules.**
+- **Score:** validation after re-estimation, as in the tuning.
+- **Promising:** a run must beat 90.94 by more than 0.3, because one run is noisy by about 0.2–0.3.
+- **Follow-ups, only if something is promising:**
+  - the same schedule at α_end 5, to see whether a larger α becomes usable;
+  - the STE on the same lr trajectory, so a gain is not just the lr schedule;
+  - the winner at 2/2.
+- **Adopting a winner:** replacing the tuned staircase recipe for the fresh-seed runs is a joint decision, recorded here as a change made after the tuning. The STE then gets the matched schedule too.
+
+**Prior evidence.** The MLP study tried an inverse schedule (p = 1 and 0.5) and several ramp lengths, with no gain that held on fresh seeds (results/torch_qat/study_claude/STUDY_LOG.md).
+
+**Cost.** 11 staircase runs at about 67 min and 1 STE run at about 44 min on laptop B: about 13 h.
 
 ## Compute budget
 

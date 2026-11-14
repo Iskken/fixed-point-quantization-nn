@@ -18,6 +18,10 @@ One run (PLAN.md, changes 1-5):
      scales (--lr-q, no weight decay), both with cosine decay to 0, stepped once per epoch.
      Staircase: alpha rises linearly from --alpha-start to --alpha-end over the first --ramp-fraction of
      all steps, updated before every step; beta stays fixed.
+     Exploratory schedules (PLAN.md, "Exploratory runs after the 4/4 tuning"): both learning rates are set
+     before every step to  lr * c(epoch) * (alpha_start / alpha)^p,  with c the same cosine (--lr-schedule
+     cosine) or 1 (constant), and p = --lr-alpha-power (staircase only; 1 = the inverse schedule, lr ~ 1/alpha).
+     The default (cosine, p = 0) is the recipe above, unchanged.
   4. After the last epoch, with no selection: validation and test accuracy with exact rounding, without and
      with BatchNorm re-estimation (models/quant_layers.reestimate_bn, on a copy). Validation after
      re-estimation is the tuning metric, test after re-estimation the primary metric. The test set is
@@ -72,10 +76,14 @@ from piecewise_nonlinearity.quantizers.piecewise import BACKWARDS, alpha_at, set
 HERE = os.path.dirname(os.path.abspath(__file__))
 METHODS = ("ste", "piecewise", "ewgs", "dsq")
 IMPLEMENTED = ("ste", "piecewise")  # EWGS and DSQ come with step 8
-GROUPS = ("pilot", "tune", "main", "ablation", "repro", "smoke")
+GROUPS = ("pilot", "tune", "main", "ablation", "repro", "explore", "smoke")
 DEV_SEED = 0  # the development seed: its runs choose settings, so they never evaluate the test set
 # the staircase's settings and their defaults; other methods reject them, so no setting is silently ignored
 STAIRCASE = {"alpha_end": 2.0, "beta": 2.0, "backward": "exact", "alpha_start": 1.0, "ramp_fraction": 0.5}
+LR_SCHEDULES = ("cosine", "constant")
+# settings added after the tuning: left out of a run's config at these defaults, so the configs (and so the
+# skip and resume checks) of every earlier run stay valid
+OPTIONAL = {"lr_schedule": "cosine", "lr_alpha_power": None}
 # arguments that do not change what is trained: paths, machine, checkpointing, tests
 NOT_SETTINGS = ("results_dir", "raw_dir", "ckpt_dir", "pretrained_dir", "workers", "device", "save_every",
                 "stop_after")
@@ -107,6 +115,8 @@ def parse_args(argv=None):
     p.add_argument("--lr", type=float, default=1e-3, help="learning rate of the network (Adam)")
     p.add_argument("--lr-q", type=float, default=1e-5, help="learning rate of l, u and the output scales (Adam)")
     p.add_argument("--weight-decay", type=float, default=1e-4, help="on the network parameters only")
+    p.add_argument("--lr-schedule", default="cosine", choices=LR_SCHEDULES,
+                   help="cosine: decay to 0 over the run (the recipe); constant: no decay. Both learning rates")
     p.add_argument("--batch-size", type=int, default=256)
     s = p.add_argument_group("staircase, --method piecewise only")
     s.add_argument("--alpha-end", type=float, help="alpha after the ramp (default 2)")
@@ -115,6 +125,9 @@ def parse_args(argv=None):
                    help="exact: the slopes of S (our method); ste: slope 1 (ablation). Default exact")
     s.add_argument("--alpha-start", type=float, help="alpha at the first step (default 1)")
     s.add_argument("--ramp-fraction", type=float, help="share of all steps over which alpha rises (default 0.5)")
+    s.add_argument("--lr-alpha-power", type=float,
+                   help="p: both learning rates are multiplied by (alpha_start / alpha)^p before every step; "
+                        "1 = the inverse schedule. Default 0 (not coupled)")
     p.add_argument("--reestimate-every", type=int, default=10,
                    help="epochs between validation points with BatchNorm re-estimation (0: start and end only)")
     p.add_argument("--save-every", type=int, default=10, help="epochs between resume checkpoints (0: never)")
@@ -145,7 +158,40 @@ def parse_args(argv=None):
             p.error("--ramp-fraction must be in (0, 1]")
     elif given:
         p.error(f"{', '.join('--' + k.replace('_', '-') for k in given)} only apply to --method piecewise")
+    if args.lr_alpha_power is not None:
+        if args.method != "piecewise":
+            p.error("--lr-alpha-power only applies to --method piecewise (it needs alpha)")
+        if args.lr_alpha_power < 0:
+            p.error("--lr-alpha-power must be >= 0")
+        if args.lr_alpha_power == 0:
+            args.lr_alpha_power = None  # the same run as without the flag, so the same name and config
+        elif args.alpha_start == args.alpha_end:
+            p.error("--lr-alpha-power has no effect when alpha is fixed (--alpha-start = --alpha-end)")
+        elif args.alpha_start <= 0:
+            p.error("--lr-alpha-power needs --alpha-start > 0")
     return args
+
+
+def settings_of(args):
+    """What is trained: every argument but paths, machine and checkpointing; the settings added after the
+    tuning only when they differ from their defaults (OPTIONAL)."""
+    return {k: v for k, v in vars(args).items()
+            if k not in NOT_SETTINGS and not (k in OPTIONAL and v == OPTIONAL[k])}
+
+
+def explicit_lr(args):
+    """True when the learning rates are set before every step (lr_factor) instead of by CosineAnnealingLR."""
+    return args.lr_schedule != "cosine" or args.lr_alpha_power is not None
+
+
+def lr_factor(args, epochs_done, alpha=None):
+    """Multiplier of --lr and --lr-q for a step in the epoch after `epochs_done` finished epochs:
+    c * (alpha_start / alpha)^p, with c = (1 + cos(pi epochs_done / epochs)) / 2 (what CosineAnnealingLR with
+    eta_min 0, stepped once per epoch, gives) or 1 for --lr-schedule constant."""
+    c = 0.5 * (1.0 + math.cos(math.pi * epochs_done / args.epochs)) if args.lr_schedule == "cosine" else 1.0
+    if args.lr_alpha_power is not None:
+        c *= (args.alpha_start / alpha) ** args.lr_alpha_power
+    return c
 
 
 def short(x):
@@ -163,6 +209,11 @@ def run_name(args):
     w, a = args.bits.split("/")
     parts = [args.method, f"w{w}a{a}", f"lr{short(args.lr)}", f"lrq{short(args.lr_q)}",
              f"wd{short(args.weight_decay)}"]
+    if explicit_lr(args):  # e.g. sched-const, sched-cos-inv1; nothing for the default, so old names stay
+        sched = "sched-" + {"cosine": "cos", "constant": "const"}[args.lr_schedule]
+        if args.lr_alpha_power is not None:
+            sched += f"-inv{short(args.lr_alpha_power)}"
+        parts.append(sched)
     if args.method == "piecewise":
         stair = f"a{short(args.alpha_end)}b{short(args.beta)}-{args.backward}-r{short(args.ramp_fraction)}"
         if args.alpha_start != STAIRCASE["alpha_start"]:
@@ -353,7 +404,7 @@ def fmt(x, spec="5.2f"):
 def run(args):
     device = torch.device(args.device)
     name = run_name(args)
-    settings = {k: v for k, v in vars(args).items() if k not in NOT_SETTINGS}
+    settings = settings_of(args)
     json_path = os.path.join(args.results_dir, args.group, f"{name}.json")
     raw_dir = os.path.join(args.raw_dir, args.group, name)
     resume_path = os.path.join(args.ckpt_dir, args.group, f"{name}_resume.pt")
@@ -389,7 +440,9 @@ def run(args):
     opt_net = torch.optim.Adam(net_params, lr=args.lr, weight_decay=args.weight_decay)
     opt_q = torch.optim.Adam(quant_params, lr=args.lr_q)
     optimizers = (opt_net, opt_q)
-    schedulers = [torch.optim.lr_scheduler.CosineAnnealingLR(o, T_max=args.epochs, eta_min=0.0) for o in optimizers]
+    # the recipe: CosineAnnealingLR, stepped once per epoch; the exploratory schedules set the rates every step
+    schedulers = ([] if explicit_lr(args) else
+                  [torch.optim.lr_scheduler.CosineAnnealingLR(o, T_max=args.epochs, eta_min=0.0) for o in optimizers])
 
     history, steps = {}, {"loss": [], "correct": []}
     levels = (None, None)  # quantized weight levels two epochs ago and one epoch ago
@@ -471,6 +524,12 @@ def run(args):
         step_loss, step_correct, step_size = [], [], []  # kept on the GPU: no synchronization inside the epoch
         for i, (x, y) in enumerate(batches(train_loader, args.max_batches)):
             hooks.on_step(model, (epoch - 1) * steps_per_epoch + i)
+            if explicit_lr(args):
+                f = lr_factor(args, epoch - 1, getattr(hooks, "alpha", None))
+                for o, base in zip(optimizers, (args.lr, args.lr_q)):
+                    for g in o.param_groups:
+                        g["lr"] = base * f
+                steps.setdefault("lr_factor", []).append(f)
             x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
             out = model(x)
             loss = F.cross_entropy(out, y)
