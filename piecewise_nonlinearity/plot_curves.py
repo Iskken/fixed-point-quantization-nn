@@ -14,6 +14,11 @@ re-estimation, the learning rate and alpha.
 Figure 4 (fig4_training_images_w2a2.png): the tuned run (repeated in the schedule study) and the best schedule
 of the study, on the 5,000 fixed training images and on the validation images: with S, with hard rounding as
 trained and after re-estimation. Learning rate and alpha below.
+Figure 5 (fig5_slope1_alpha_end_w2a2.png): the slope-1 staircase at lr 1e-2, beta 2, with alpha_end 3, 5, 10
+and 20. Validation with S and after re-estimation, and alpha.
+Figure 6 (fig6_best_of_each_tuning_w2a2.png): the chosen run of each 2/2 tuning (the STE, the staircase with the
+exact backward, the same with the learning rate divided by alpha^2, the staircase with the slope-1 backward).
+Validation after re-estimation, the learning rate and alpha.
 
 Epoch 0 is the start: the quantized network before any training, the same for every method.
 """
@@ -61,6 +66,16 @@ LR_RAMP = ["#86b6ef", "#3987e5", "#1c5cab", "#0d366b"]
 SCHEDULE_COLOUR = {"tuned": INK_2, "const": INK_2, "pow2": "#2a78d6", "pow2_const": "#2a78d6", "pow1": "#eb6834",
                    "from5": "#1baf7a"}
 NO_COSINE = (0, (3.5, 2.0))
+# the chosen run of each 2/2 tuning (results/qat/tune/): (legend label, run name, colour); the STE in grey
+BEST_OF_EACH = [
+    ("STE: lr 3e-3", BEST_STE, INK_2),
+    ("staircase, slope-1 backward: lr 1e-2, α_end 10, β 2",
+     "piecewise_w2a2_lr1e-2_lrq1e-5_wd1e-4_a10b2-ste-r0.5_e120_s0", "#2a78d6"),
+    ("staircase, exact backward, lr ÷ α²: lr 3e-3, α_end 3, β 3",
+     "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b3-exact-r0.5-lrpow2_e120_s0", "#eb6834"),
+    ("staircase, exact backward: lr 1e-4, α_end 5, β 2", BEST_STAIRCASE, "#1baf7a"),
+]
+SLOPE1_ALPHA_END = [(a, f"piecewise_w2a2_lr1e-2_lrq1e-5_wd1e-4_a{a}b2-ste-r0.5_e120_s0") for a in (3, 5, 10, 20)]
 LINE, MARKER = 1.6, 4.5
 
 plt.rcParams.update({
@@ -335,13 +350,88 @@ def figure_train_eval(out):
     return path
 
 
+def figure_best_of_each(out):
+    runs = [(label, load(name), colour) for label, name, colour in BEST_OF_EACH]
+    fig, axes = plt.subplots(3, 1, figsize=(7.4, 6.4), sharex=True,
+                             gridspec_kw={"height_ratios": [3.2, 1.4, 1.1], "hspace": 0.3})
+    reest, lr_ax, alpha = axes
+    for i, ax in enumerate(axes):
+        shade_ramp(ax, ramp_end(runs[1][1]), label=i == 0)
+    for _, r, colour in runs:
+        h = r["history"]
+        plot(reest, *series(h, "val_acc_reest"), colour, markers=True)
+        plot(lr_ax, *series(h, "lr"), colour)
+        if "alpha" in h:
+            plot(alpha, *series(h, "alpha"), colour)
+    alpha.text(0.97, 0.05, "the STE has no α: hard rounding throughout", transform=alpha.transAxes, ha="right",
+               va="bottom", color=MUTED, fontsize=7)
+    reest.set_ylim(60, 93)
+    reest.set_ylabel("validation, hard rounding,\nBN re-estimated (%)")
+    lr_ax.set_yscale("log")
+    lr_ax.set_ylim(1e-7, 2e-2)
+    lr_ax.set_ylabel("learning rate")
+    alpha.set_ylim(0, 11)
+    alpha.set_yticks([1, 3, 5, 10])
+    alpha.set_ylabel("α")
+    alpha.set_xlabel("epoch")
+    for ax in axes:
+        ax.set_xlim(0, 120)
+        ax.set_xticks(range(0, 121, 20))
+    handles = [Line2D([], [], color=c, lw=LINE, marker="o", ms=MARKER, mec=SURFACE) for _, _, c in runs]
+    fig.legend(handles, [label for label, _, _ in runs], loc="upper left", bbox_to_anchor=(0.1, 1.0), ncol=2,
+               fontsize=8, labelcolor=INK_2, handlelength=2.2, columnspacing=1.4)
+    fig.subplots_adjust(top=0.9, bottom=0.08, left=0.13, right=0.93)
+    end_labels(reest, 120, [(r["history"]["val_acc_reest"][-1], f"{r['history']['val_acc_reest'][-1]:.2f}")
+                            for _, r, _ in runs])
+    path = os.path.join(out, "fig6_best_of_each_tuning_w2a2.png")
+    fig.savefig(path, dpi=200)
+    plt.close(fig)
+    return path
+
+
+def figure_slope1_alpha_end(out):
+    runs = [(a, load(name)) for a, name in SLOPE1_ALPHA_END]
+    fig, axes = plt.subplots(3, 1, figsize=(7.4, 6.6), sharex=True,
+                             gridspec_kw={"height_ratios": [2.4, 2.4, 1.3], "hspace": 0.3})
+    soft, reest, alpha = axes
+    for i, ax in enumerate(axes):
+        shade_ramp(ax, ramp_end(runs[0][1]), label=i == 0)
+    for (a, r), colour in zip(runs, LR_RAMP):  # one blue ramp, light to dark, for the ordered alpha_end
+        h = r["history"]
+        plot(soft, *series(h, "val_acc_soft"), colour)
+        plot(reest, *series(h, "val_acc_reest"), colour, markers=True)
+        plot(alpha, *series(h, "alpha"), colour)
+    soft.set_ylim(55, 93)
+    soft.set_ylabel("validation,\nwith S (%)")
+    reest.set_ylim(55, 93)
+    reest.set_ylabel("validation, hard rounding,\nBN re-estimated (%)")
+    alpha.set_ylim(0, 21)
+    alpha.set_yticks([1, 5, 10, 20])
+    alpha.set_ylabel("α")
+    alpha.set_xlabel("epoch")
+    for ax in axes:
+        ax.set_xlim(0, 120)
+        ax.set_xticks(range(0, 121, 20))
+    handles = [Line2D([], [], color=c, lw=LINE, marker="o", ms=MARKER, mec=SURFACE) for c in LR_RAMP]
+    labels = [f"α_end {a}" + (" (edge run)" if a == 20 else "") for a, _ in runs]
+    fig.legend(handles, labels, loc="upper left", bbox_to_anchor=(0.1, 1.0), ncol=4, fontsize=8,
+               labelcolor=INK_2, handlelength=2.2, columnspacing=1.4)
+    fig.subplots_adjust(top=0.93, bottom=0.08, left=0.13, right=0.93)
+    for ax, key in ((soft, "val_acc_soft"), (reest, "val_acc_reest")):
+        end_labels(ax, 120, [(r["history"][key][-1], f"{r['history'][key][-1]:.2f}") for _, r in runs])
+    path = os.path.join(out, "fig5_slope1_alpha_end_w2a2.png")
+    fig.savefig(path, dpi=200)
+    plt.close(fig)
+    return path
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--out", default=os.path.join(HERE, "reports", "figures"))
     args = p.parse_args(argv)
     os.makedirs(args.out, exist_ok=True)
     for path in (figure_best(args.out), figure_lr_sweep(args.out), figure_schedule(args.out),
-                 figure_train_eval(args.out)):
+                 figure_train_eval(args.out), figure_slope1_alpha_end(args.out), figure_best_of_each(args.out)):
         print(path)
 
 

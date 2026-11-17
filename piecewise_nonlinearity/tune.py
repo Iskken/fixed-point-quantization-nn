@@ -127,8 +127,8 @@ def bits_tag(bits):
     return f"w{w}a{a}"
 
 
-def argv_for(method, bits, group, epochs, lr, settings):
-    argv = ["--group", group, "--method", method, "--bits", bits, "--seed", str(SEED),
+def argv_for(method, bits, group, epochs, lr, settings, seed=SEED):
+    argv = ["--group", group, "--method", method, "--bits", bits, "--seed", str(seed),
             "--epochs", str(epochs), "--lr", repr(float(lr))]
     for k, v in settings.items():  # numbers as floats; a few settings are words (--lr-schedule constant)
         argv += ["--" + k.replace("_", "-"), v if isinstance(v, str) else repr(float(v))]
