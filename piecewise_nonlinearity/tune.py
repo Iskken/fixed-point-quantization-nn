@@ -5,6 +5,11 @@ staircase (changes 2 and 4). Every training run is one call of train_qat.py in i
     python -m piecewise_nonlinearity.tune all       # pilot, then STE 2/2, staircase 2/2, STE 4/4, staircase 4/4
     python -m piecewise_nonlinearity.tune all --bits 2/2              # pilot, then only the 2/2 blocks
     python -m piecewise_nonlinearity.tune all --method piecewise --bits 4/4   # pilot, then one block
+    python -m piecewise_nonlinearity.tune all --method piecewise-lrpow2       # pilot, then the staircase with
+                                                    # the learning rate divided by alpha^2, at 2/2 (runs only
+                                                    # when named)
+    python -m piecewise_nonlinearity.tune all --method piecewise-slope1       # pilot, then the staircase with
+                                                    # the slope-1 backward, at 2/2 (runs only when named)
     python -m piecewise_nonlinearity.tune pilot     # only the pilot and its decision
     python -m piecewise_nonlinearity.tune status    # what is finished and what runs next (trains nothing;
                                                     # takes the same --bits / --method filters)
@@ -42,6 +47,19 @@ How the plan's rules are applied; where the text leaves room, the choice made he
     alpha_end 5, edges 2 / 20. On the development seed, at alpha_end = 2 the deployed (rounded) staircase was
     7.1-8.2 points below its accuracy with S and 6.7-8.4 points below the STE at every budget, so the grid
     moves towards exact rounding. Decided on seed 0 only; the test set was never used.
+  - The staircase with the learning rate tied to alpha, added on 2026-11-13 (block "piecewise-lrpow2"): the
+    same procedure, grids and edge rule, but every run divides both learning rates by alpha^2 at every step
+    (train_qat.py --lr-alpha-power 2); the learning rate of the grid is the rate at alpha = 1. In the schedule
+    study of 2026-11-12 (schedule_study.py, seed 0), this schedule scored 82.88 at the tuned setting with
+    lr 3e-3, against 79.26 for the tuned run repeated in the same study (validation after re-estimation).
+    Its runs have their own names (-lrpow2) and its own selection file; the first tuning is kept.
+  - The staircase with the slope-1 backward, added on 2026-11-14 (block "piecewise-slope1"): the same
+    procedure, grids and edge rule, but every run uses train_qat.py --backward ste: the forward pass is
+    still S, and the backward pass uses slope 1 in place of the slopes of S. The learning rate is not tied to
+    alpha. At 4/4 this variant, tuned with the same procedure on laptop B (explore.py on the branch
+    feature/4_4_trainings), scored 92.38, against 91.84 for the tuned STE and 90.94 for the tuned staircase
+    (seed 0, validation after re-estimation). Its runs have their own names (-ste- in place of -exact-) and
+    its own selection file; the two earlier 2/2 tunings are kept.
 """
 
 import argparse
@@ -72,11 +90,16 @@ METHODS = {  # reference setting, the 3 x 3 grid of the method's own settings, e
             "grid": {"lr_q": (1e-6, 1e-5, 1e-4), "weight_decay": (0.0, 1e-4, 5e-4)},
             "edges": {"lr_q": (1e-7, 1e-3), "weight_decay": (None, 1e-3)}},  # 0 is the lowest weight decay
 }
+# a block that trains `method` with settings `fixed` added to every run, and tunes the rest like `method`
+METHODS["piecewise-lrpow2"] = {**METHODS["piecewise"], "method": "piecewise", "fixed": {"lr_alpha_power": 2.0}}
+METHODS["piecewise-slope1"] = {**METHODS["piecewise"], "method": "piecewise", "fixed": {"backward": "ste"}}
 PILOT_BUDGETS = (30, 60, 120)
 PILOT_LR = 1e-3
 PILOT_SETTINGS = {"alpha_end": 2.0, "beta": 2.0}  # the pilot's staircase (change 1), independent of the tuning grid
 PILOT_THRESHOLD = 0.3
 ORDER = (("ste", "2/2"), ("piecewise", "2/2"), ("ste", "4/4"), ("piecewise", "4/4"))  # 2/2 first: the open question
+# blocks outside the plan's order: they run only when their method is named
+EXTRA = (("piecewise-lrpow2", "2/2"), ("piecewise-slope1", "2/2"))
 
 
 class Stop(Exception):
@@ -104,11 +127,11 @@ def bits_tag(bits):
     return f"w{w}a{a}"
 
 
-def argv_for(method, bits, group, epochs, lr, settings):
-    argv = ["--group", group, "--method", method, "--bits", bits, "--seed", str(SEED),
+def argv_for(method, bits, group, epochs, lr, settings, seed=SEED):
+    argv = ["--group", group, "--method", method, "--bits", bits, "--seed", str(seed),
             "--epochs", str(epochs), "--lr", repr(float(lr))]
-    for k, v in settings.items():
-        argv += ["--" + k.replace("_", "-"), repr(float(v))]
+    for k, v in settings.items():  # numbers as floats; a few settings are words (--lr-schedule constant)
+        argv += ["--" + k.replace("_", "-"), v if isinstance(v, str) else repr(float(v))]
     return argv
 
 
@@ -125,8 +148,8 @@ class Runner:
         args = train_qat.parse_args(argv)
         name = train_qat.run_name(args)
         path = os.path.join(args.results_dir, group, f"{name}.json")
-        summary = {"name": name, "lr": float(lr), "settings": {k: float(v) for k, v in settings.items()},
-                   "step": step}
+        summary = {"name": name, "lr": float(lr), "step": step,
+                   "settings": {k: v if isinstance(v, str) else float(v) for k, v in settings.items()}}
         if not os.path.exists(path):
             if self.dry:
                 raise NotDone(f"{name}  ({step})")
@@ -245,16 +268,21 @@ def pilot(run, write=True):
 # ------------------------------------------------------------------------------------------------ the tuning
 
 def tune_block(method, bits, epochs, run, write=True):
-    """The tuning procedure of PLAN.md, changes 2 and 4, for one method at one bit width. Returns the selection."""
+    """The tuning procedure of PLAN.md, changes 2 and 4, for one method at one bit width. Returns the selection.
+    A block with "fixed" settings trains its "method" with them added to every run (they are never tuned)."""
     spec = METHODS[method]
+    run_method, fixed = spec.get("method", method), spec.get("fixed", {})
     ref = spec["reference"]
     (a_key, a_grid), (b_key, b_grid) = spec["grid"].items()
     tried, memo = [], {}
 
+    def own(settings):  # the two tuned settings of a run, without the fixed ones
+        return {k: settings[k] for k in (a_key, b_key)}
+
     def go(lr, settings, step):
         key = (float(lr), tuple(sorted((k, float(v)) for k, v in settings.items())))
         if key not in memo:
-            memo[key] = run(method, bits, "tune", epochs, lr, settings, step)
+            memo[key] = run(run_method, bits, "tune", epochs, lr, {**settings, **fixed}, step)
             tried.append(memo[key])
         return memo[key]
 
@@ -271,8 +299,8 @@ def tune_block(method, bits, epochs, run, write=True):
     for key, grid in ((a_key, a_grid), (b_key, b_grid)):  # edge rule, one setting at a time
         ext = edge_value(current["settings"][key], grid, spec["edges"][key])
         if ext is not None:
-            current = best([current, go(lr, {**current["settings"], key: ext}, f"edge: {key}")])
-    chosen = current["settings"]
+            current = best([current, go(lr, {**own(current["settings"]), key: ext}, f"edge: {key}")])
+    chosen = own(current["settings"])
 
     # step 3: re-check the learning rate at the chosen setting, unless it is the reference
     if chosen != {k: float(v) for k, v in ref.items()}:
@@ -298,8 +326,10 @@ def tune_block(method, bits, epochs, run, write=True):
 # ---------------------------------------------------------------------------------------------------- main
 
 def blocks(bits=None, method=None):
-    """The tuning blocks of ORDER, in order, optionally only one bit width and/or one method."""
-    selected = [(m, b) for m, b in ORDER if bits in (None, b) and method in (None, m)]
+    """The tuning blocks of ORDER, in order, optionally only one bit width and/or one method. A block of EXTRA is
+    selected only when its method is named."""
+    pool = ORDER + (EXTRA if method is not None else ())
+    selected = [(m, b) for m, b in pool if bits in (None, b) and method in (None, m)]
     if not selected:
         raise SystemExit(f"no tuning block for --bits {bits} --method {method}")
     return selected
