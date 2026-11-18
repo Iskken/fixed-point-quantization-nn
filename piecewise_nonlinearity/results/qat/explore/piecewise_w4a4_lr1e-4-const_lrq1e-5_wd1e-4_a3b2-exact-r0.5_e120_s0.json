@@ -1,5 +1,5 @@
 {
- "name": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_sched-const_a3b2-exact-r0.5_e120_s0",
+ "name": "piecewise_w4a4_lr1e-4-const_lrq1e-5_wd1e-4_a3b2-exact-r0.5_e120_s0",
  "group": "explore",
  "failed": false,
  "failure": null,

@@ -80,9 +80,9 @@ RUNS = (
 REQUIRES = {"G3": "G1", "G4": "G2"}  # run only if that run finished without failing
 
 SLOPE1 = "piecewise-slope1"  # the method's name in the selection file and in tune.tune_block
-SLOPE1_SPEC = {"reference": {"alpha_end": 3.0, "beta": 2.0},
-               "grid": {"alpha_end": (3.0, 5.0, 10.0), "beta": (1.0, 2.0, 3.0)},
-               "edges": {"alpha_end": (2.0, 20.0), "beta": (0.5, 4.0)}}  # the staircase's grid and edges
+# tune.py's slope-1 block (the staircase's grid and edges, backward 'ste' fixed in every run), with the
+# reference this tuning used: alpha_end 3, beta 2 (tune.py's block uses the staircase's reference, 5 / 2)
+SLOPE1_SPEC = {**tune.METHODS[SLOPE1], "reference": {"alpha_end": 3.0, "beta": 2.0}}
 SLOPE1_SELECTION = os.path.join(RESULTS, GROUP, "selection_piecewise-slope1_w4a4.json")
 
 
@@ -176,11 +176,12 @@ def slope1_runner(dry=False, seen=None):
     raises tune.NotDone at the first missing run. Every summary is appended to `seen` if given."""
 
     def run(method, bits, group, epochs, lr, settings, step):
-        assert (method, bits, epochs) == (SLOPE1, BITS, EPOCHS), (method, bits, epochs)
+        assert (method, bits, epochs, settings.get("backward")) == ("piecewise", BITS, EPOCHS, "ste"), \
+            (method, bits, epochs, settings)
         argv = slope1_argv(lr, settings)
         _, name = json_path(argv)
-        summary = {"name": name, "lr": float(lr), "settings": {k: float(v) for k, v in settings.items()},
-                   "step": step}
+        summary = {"name": name, "lr": float(lr), "step": step,
+                   "settings": {k: v if isinstance(v, str) else float(v) for k, v in settings.items()}}
         if result(argv) is None:
             if dry:
                 raise tune.NotDone(f"{name}  ({step})")
@@ -203,14 +204,14 @@ def slope1_runner(dry=False, seen=None):
 
 
 def tune_slope1(run):
-    """tune.tune_block for the slope-1 staircase. Its spec is added to tune.METHODS only for this call."""
-    added = SLOPE1 not in tune.METHODS
+    """tune.tune_block for the slope-1 staircase, with SLOPE1_SPEC in place of tune.py's block for this call
+    only (tune.METHODS is restored afterwards)."""
+    saved = tune.METHODS[SLOPE1]
     tune.METHODS[SLOPE1] = SLOPE1_SPEC
     try:
         return tune.tune_block(SLOPE1, BITS, EPOCHS, run, write=False)
     finally:
-        if added:
-            del tune.METHODS[SLOPE1]
+        tune.METHODS[SLOPE1] = saved
 
 
 def slope1():
