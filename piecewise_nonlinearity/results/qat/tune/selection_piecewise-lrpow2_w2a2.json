@@ -1,0 +1,289 @@
+{
+ "method": "piecewise-lrpow2",
+ "bits": "2/2",
+ "epochs": 120,
+ "seed": 0,
+ "chosen": {
+  "lr": 0.003,
+  "alpha_end": 3.0,
+  "beta": 3.0,
+  "lr_alpha_power": 2.0
+ },
+ "chosen_run": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b3-exact-r0.5-lrpow2_e120_s0",
+ "chosen_val_acc_reest": 84.58,
+ "n_runs": 16,
+ "runs": [
+  {
+   "name": "piecewise_w2a2_lr3e-4_lrq1e-5_wd1e-4_a5b2-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.0003,
+   "step": "step 1: learning rate",
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 78.08,
+   "val_acc_reest": 78.08,
+   "val_acc": 63.84,
+   "val_acc_soft": 86.84,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.85
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-3_lrq1e-5_wd1e-4_a5b2-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.001,
+   "step": "step 1: learning rate",
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 80.52,
+   "val_acc_reest": 80.52,
+   "val_acc": 71.82,
+   "val_acc_soft": 87.18,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.87
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a5b2-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.003,
+   "step": "step 1: learning rate",
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 83.74,
+   "val_acc_reest": 83.74,
+   "val_acc": 80.9,
+   "val_acc_soft": 86.58,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.89
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-2_lrq1e-5_wd1e-4_a5b2-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.01,
+   "step": "edge: learning rate",
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 80.04,
+   "val_acc_reest": 80.04,
+   "val_acc": 50.0,
+   "val_acc_soft": 83.04,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.88
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b1-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.003,
+   "step": "step 2: own settings",
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 1.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 83.4,
+   "val_acc_reest": 83.4,
+   "val_acc": 72.1,
+   "val_acc_soft": 90.12,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.89
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b2-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.003,
+   "step": "step 2: own settings",
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 2.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 84.24,
+   "val_acc_reest": 84.24,
+   "val_acc": 77.86,
+   "val_acc_soft": 89.16,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.87
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b3-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.003,
+   "step": "step 2: own settings",
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 3.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 84.58,
+   "val_acc_reest": 84.58,
+   "val_acc": 77.88,
+   "val_acc_soft": 88.12,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.85
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a5b1-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.003,
+   "step": "step 2: own settings",
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 1.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 83.46,
+   "val_acc_reest": 83.46,
+   "val_acc": 79.34,
+   "val_acc_soft": 88.36,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.85
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a5b3-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.003,
+   "step": "step 2: own settings",
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 3.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 83.9,
+   "val_acc_reest": 83.9,
+   "val_acc": 81.48,
+   "val_acc_soft": 86.08,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.89
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a10b1-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.003,
+   "step": "step 2: own settings",
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 1.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 80.68,
+   "val_acc_reest": 80.68,
+   "val_acc": 79.6,
+   "val_acc_soft": 84.78,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.87
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a10b2-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.003,
+   "step": "step 2: own settings",
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 2.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 81.92,
+   "val_acc_reest": 81.92,
+   "val_acc": 78.52,
+   "val_acc_soft": 83.38,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.89
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a10b3-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.003,
+   "step": "step 2: own settings",
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 3.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 80.64,
+   "val_acc_reest": 80.64,
+   "val_acc": 80.44,
+   "val_acc_soft": 83.16,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.89
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a2b3-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.003,
+   "step": "edge: alpha_end",
+   "settings": {
+    "alpha_end": 2.0,
+    "beta": 3.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 84.58,
+   "val_acc_reest": 84.58,
+   "val_acc": 75.32,
+   "val_acc_soft": 89.44,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.85
+  },
+  {
+   "name": "piecewise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b4-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.003,
+   "step": "edge: beta",
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 4.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 82.64,
+   "val_acc_reest": 82.64,
+   "val_acc": 76.2,
+   "val_acc_soft": 87.88,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.87
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-3_lrq1e-5_wd1e-4_a3b3-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.001,
+   "step": "step 3: learning-rate re-check",
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 3.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 80.48,
+   "val_acc_reest": 80.48,
+   "val_acc": 70.02,
+   "val_acc_soft": 88.38,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.91
+  },
+  {
+   "name": "piecewise_w2a2_lr1e-2_lrq1e-5_wd1e-4_a3b3-exact-r0.5-lrpow2_e120_s0",
+   "lr": 0.01,
+   "step": "step 3: learning-rate re-check",
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 3.0,
+    "lr_alpha_power": 2.0
+   },
+   "score": 83.36,
+   "val_acc_reest": 83.36,
+   "val_acc": 80.2,
+   "val_acc_soft": 86.4,
+   "failed": false,
+   "failure": null,
+   "minutes": 52.88
+  }
+ ]
+}

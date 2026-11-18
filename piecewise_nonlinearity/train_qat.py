@@ -15,7 +15,8 @@ One run (PLAN.md, changes 1-5):
      rounding: every method with the same seed starts from the same quantized network ("the start",
      logged as epoch 0).
   3. The EWGS training recipe: Adam for the network (--lr, --weight-decay) and Adam for l, u and the output
-     scales (--lr-q, no weight decay), both with cosine decay to 0, stepped once per epoch.
+     scales (--lr-q, no weight decay), both with cosine decay to 0, stepped once per epoch
+     (--lr-schedule constant: no decay).
      Staircase: alpha rises linearly from --alpha-start to --alpha-end over the first --ramp-fraction of
      all steps, updated before every step; beta stays fixed.
      Exploratory schedules (PLAN.md, "Exploratory runs after the 4/4 tuning"): both learning rates are set
@@ -32,7 +33,10 @@ A run that ends below its start (validation after re-estimation) or hits a non-f
 Logged per epoch: training loss and accuracy (with the training forward), validation accuracy with exact
 rounding, for the staircase also with its forward S (the forward gap), with re-estimation every
 --reestimate-every epochs, the share of weights that changed level and the share that went back to the
-level of two epochs before, l, u and the output scale of every layer, alpha, and the time.
+level of two epochs before, l, u and the output scale of every layer, alpha, and the time. The fit to the
+training data is also measured like validation, on --train-eval-size fixed training images without
+augmentation (train_eval_*: exact rounding, S, and exact rounding after re-estimation when it is done);
+this measurement does not change what is trained.
 
 The order and the augmentation of the training images depend only on --seed (the training loader has its
 own generator, and with --workers > 0 the augmentation runs in the workers), so they are the same for every
@@ -66,7 +70,8 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-from piecewise_nonlinearity.datasets import DATASETS, get_bn_loader, get_loaders, split_fingerprint
+from piecewise_nonlinearity.datasets import (DATASETS, get_bn_loader, get_loaders, get_train_eval_loader,
+                                             split_fingerprint)
 from piecewise_nonlinearity.models.quant_layers import (QConv2d, init_quantizers, load_float_weights,
                                                          qconv_factory, quantizers, reestimate_bn,
                                                          split_parameters)
@@ -86,7 +91,7 @@ LR_SCHEDULES = ("cosine", "constant")
 OPTIONAL = {"lr_schedule": "cosine", "lr_alpha_power": None}
 # arguments that do not change what is trained: paths, machine, checkpointing, tests
 NOT_SETTINGS = ("results_dir", "raw_dir", "ckpt_dir", "pretrained_dir", "workers", "device", "save_every",
-                "stop_after")
+                "stop_after", "train_eval_size")
 
 
 # ----------------------------------------------------------------------------------------------- arguments
@@ -130,6 +135,9 @@ def parse_args(argv=None):
                         "1 = the inverse schedule. Default 0 (not coupled)")
     p.add_argument("--reestimate-every", type=int, default=10,
                    help="epochs between validation points with BatchNorm re-estimation (0: start and end only)")
+    p.add_argument("--train-eval-size", type=int, default=5000,
+                   help="fixed training images, without augmentation, evaluated every epoch like validation "
+                        "(exact rounding, and S for the staircase); 0: none")
     p.add_argument("--save-every", type=int, default=10, help="epochs between resume checkpoints (0: never)")
     p.add_argument("--max-batches", type=int, help="smoke tests: cut every epoch and evaluation to this many batches")
     p.add_argument("--stop-after", type=int, help="tests: stop after this epoch, as if interrupted")
@@ -149,6 +157,8 @@ def parse_args(argv=None):
         p.error(str(e))
     if args.epochs < 1:
         p.error("--epochs must be at least 1")
+    if args.train_eval_size < 0:
+        p.error("--train-eval-size must be 0 or more")
     given = [k for k in STAIRCASE if getattr(args, k) is not None]
     if args.method == "piecewise":
         for k, default in STAIRCASE.items():
@@ -204,6 +214,13 @@ def short(x):
     return f"{mantissa.rstrip('0').rstrip('.')}e{int(exponent)}"
 
 
+def run_settings(args):
+    """What the run's result depends on: every argument except NOT_SETTINGS, and the settings added later
+    only when they are not at their default."""
+    return {k: v for k, v in vars(args).items()
+            if k not in NOT_SETTINGS and not (k in LATER_DEFAULTS and v in (None, LATER_DEFAULTS[k]))}
+
+
 def run_name(args):
     """Every setting of the run, so two different runs never share a name."""
     w, a = args.bits.split("/")
@@ -218,6 +235,8 @@ def run_name(args):
         stair = f"a{short(args.alpha_end)}b{short(args.beta)}-{args.backward}-r{short(args.ramp_fraction)}"
         if args.alpha_start != STAIRCASE["alpha_start"]:
             stair += f"-from{short(args.alpha_start)}"
+        if args.lr_alpha_power != STAIRCASE["lr_alpha_power"]:
+            stair += f"-lrpow{short(args.lr_alpha_power)}"
         parts.append(stair)
     parts += [f"e{args.epochs}", f"s{args.seed}"]
     if args.batch_size != 256:
@@ -344,6 +363,10 @@ class MethodHooks:
     def on_step(self, model, step):
         pass
 
+    def lr_scale(self):
+        """Factor on every learning rate in the current step, on top of the schedule (1: the schedule alone)."""
+        return 1.0
+
     def logged(self):
         """Values recorded once per epoch in the history, and once per step in steps.npz."""
         return {}
@@ -351,10 +374,12 @@ class MethodHooks:
 
 class StaircaseHooks(MethodHooks):
     """alpha rises linearly from alpha_start to alpha_end over the first ramp_fraction of all training steps,
-    set before every step; beta stays fixed (PLAN.md, change 2)."""
+    set before every step; beta stays fixed (PLAN.md, change 2). With lr_alpha_power p, the learning rates
+    follow alpha: they are multiplied by (alpha / alpha_start)^-p in every step."""
 
     def __init__(self, args, total_steps):
         self.start, self.end, self.ramp = args.alpha_start, args.alpha_end, args.ramp_fraction
+        self.lr_power = args.lr_alpha_power
         self.total_steps = total_steps
         self.alpha = self.start
 
@@ -362,8 +387,27 @@ class StaircaseHooks(MethodHooks):
         self.alpha = alpha_at(step / self.total_steps, self.start, self.end, "linear", self.ramp)
         set_staircase(model, alpha=self.alpha)
 
+    def lr_scale(self):
+        return 1.0 if not self.lr_power else (self.alpha / self.start) ** -self.lr_power
+
     def logged(self):
         return {"alpha": self.alpha}
+
+
+def scaled_step(optimizer, scale):
+    """optimizer.step() with every learning rate multiplied by `scale` for this step only. The rates are put
+    back afterwards, so the epoch scheduler, which reads and updates them, never sees the factor."""
+    if scale == 1.0:
+        optimizer.step()
+        return
+    scheduled = [g["lr"] for g in optimizer.param_groups]
+    for g in optimizer.param_groups:
+        g["lr"] = g["lr"] * scale
+    try:
+        optimizer.step()
+    finally:
+        for g, lr in zip(optimizer.param_groups, scheduled):
+            g["lr"] = lr
 
 
 # ---------------------------------------------------------------------------------------------------- saving
@@ -430,6 +474,8 @@ def run(args):
     train_loader, val_loader, test_loader = get_loaders(args.dataset, batch_size=args.batch_size, seed=0,
                                                         num_workers=args.workers, generator=generator)
     bn_loader = get_bn_loader(args.dataset, batch_size=args.batch_size, num_workers=args.workers)
+    train_eval_loader = (get_train_eval_loader(args.dataset, args.train_eval_size, batch_size=args.batch_size,
+                                               num_workers=args.workers) if args.train_eval_size > 0 else None)
     model, float_path = build_model(args, device)
     steps_per_epoch = len(train_loader) if args.max_batches is None else min(len(train_loader), args.max_batches)
     total_steps = args.epochs * steps_per_epoch
@@ -449,8 +495,9 @@ def run(args):
     start_epoch, failure, reest = 0, None, None
 
     def validate(epoch, last=False):
-        """Validation metrics; with BatchNorm re-estimation at the start, every --reestimate-every epochs and
-        at the end. Returns (metrics, the re-estimated copy or None)."""
+        """Validation metrics, and the same on the fixed training images (train_eval_*); with BatchNorm
+        re-estimation at the start, every --reestimate-every epochs and at the end. Returns (metrics, the
+        re-estimated copy or None)."""
         val = {"val_acc": None, "val_loss": None, "val_acc_soft": None, "val_loss_soft": None,
                "val_acc_reest": None, "val_loss_reest": None}
         val["val_acc"], val["val_loss"] = evaluate(model, val_loader, device, args.max_batches)
@@ -460,6 +507,16 @@ def run(args):
         if last or epoch == 0 or (args.reestimate_every > 0 and epoch % args.reestimate_every == 0):
             copy_ = reestimated(model, bn_loader, device, args.max_batches)
             val["val_acc_reest"], val["val_loss_reest"] = evaluate(copy_, val_loader, device, args.max_batches)
+        if train_eval_loader is not None:  # the fit to the training data, measured the same way
+            fit = {f"train_eval_{k}": None for k in ("acc", "loss", "acc_soft", "loss_soft", "acc_reest", "loss_reest")}
+            fit["train_eval_acc"], fit["train_eval_loss"] = evaluate(model, train_eval_loader, device, args.max_batches)
+            if soft:
+                fit["train_eval_acc_soft"], fit["train_eval_loss_soft"] = evaluate(
+                    model, train_eval_loader, device, args.max_batches, soft=True)
+            if copy_ is not None:
+                fit["train_eval_acc_reest"], fit["train_eval_loss_reest"] = evaluate(
+                    copy_, train_eval_loader, device, args.max_batches)
+            val.update(fit)
         return val, copy_
 
     def log_epoch(epoch, train_loss, train_acc, lrs, val, train_seconds, eval_seconds):
@@ -471,8 +528,9 @@ def run(args):
                  **val, "level_changed": changed, "level_back": back, "level_changed_layers": changed_layers,
                  "level_back_layers": back_layers, **quantizer_values(model), **hooks.logged(),
                  "train_seconds": round(train_seconds, 2), "eval_seconds": round(eval_seconds, 2)}
+        n_before = len(history.get("epoch", []))  # a key that is new (e.g. after a resume) gets None before
         for k, v in entry.items():
-            history.setdefault(k, []).append(v)
+            history.setdefault(k, [None] * n_before).append(v)
         return changed
 
     def save_resume(epoch):
@@ -536,8 +594,9 @@ def run(args):
             for o in optimizers:
                 o.zero_grad(set_to_none=True)
             loss.backward()
+            scale = hooks.lr_scale()  # 1 unless the learning rates follow alpha
             for o in optimizers:
-                o.step()
+                scaled_step(o, scale)
             step_loss.append(loss.detach())
             step_correct.append((out.argmax(1) == y).sum())
             step_size.append(y.numel())
@@ -553,7 +612,7 @@ def run(args):
         seen = sum(step_size)
         loss_sum = sum(v * n for v, n in zip(step_loss, step_size))
         correct = sum(step_correct)
-        lrs = [rounded(o.param_groups[0]["lr"]) for o in optimizers]
+        lrs = [rounded(o.param_groups[0]["lr"] * hooks.lr_scale()) for o in optimizers]  # as used in the last step
         for sch in schedulers:
             sch.step()
         train_seconds = time.perf_counter() - t0
@@ -568,6 +627,12 @@ def run(args):
         if "alpha" in history:
             line += f"  alpha {history['alpha'][-1]:.3f}"
         line += f"  train loss {fmt(history['train_loss'][-1], '.3f')} acc {fmt(history['train_acc'][-1])}"
+        if "train_eval_acc" in val:
+            line += f"  train set {fmt(val['train_eval_acc'])}"
+            if soft:
+                line += f" (S {fmt(val['train_eval_acc_soft'])})"
+            if val["train_eval_acc_reest"] is not None:
+                line += f" (re-estimated {fmt(val['train_eval_acc_reest'])})"
         line += f"  val {fmt(val['val_acc'])}"
         if soft:
             line += f" (S {fmt(val['val_acc_soft'])})"
