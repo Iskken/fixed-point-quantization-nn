@@ -25,7 +25,7 @@ def test_each_run_changes_only_what_the_plan_says():
     assert (r["A1"].ramp_fraction, r["A1"].lr) == (1.0, 1e-4) and (r["A2"].ramp_fraction, r["A2"].lr) == (1.0, 3e-4)
     assert (r["A3"].backward, r["A3"].lr) == ("ste", 1e-3)
     assert r["A4"].lr == 3e-5 and (r["A4'"].method, r["A4'"].lr) == ("ste", 3e-2)
-    assert (r["B1"].lr_schedule, r["B1"].alpha_start, r["B1"].lr_alpha_power) == ("constant", 1.0, None)
+    assert (r["B1"].lr_schedule, r["B1"].alpha_start, r["B1"].lr_alpha_power) == ("constant", 1.0, 0.0)
     assert (r["B2"].lr_schedule, r["B2"].alpha_start) == ("cosine", 3.0)
     assert (r["B3"].lr_schedule, r["B3"].alpha_start) == ("constant", 3.0)
     for run_id, schedule, lr in (("C1", "cosine", 3e-4), ("C2", "cosine", 1e-3),
@@ -33,7 +33,7 @@ def test_each_run_changes_only_what_the_plan_says():
         assert (r[run_id].lr_schedule, r[run_id].lr_alpha_power, r[run_id].lr) == (schedule, 1.0, lr)
     # everything not named keeps the recipe
     for run_id in ("A1", "A2", "A3", "A4", "B2"):
-        assert r[run_id].lr_schedule == "cosine" and r[run_id].lr_alpha_power is None
+        assert r[run_id].lr_schedule == "cosine" and r[run_id].lr_alpha_power == 0.0
 
 
 def test_the_references_are_the_tuning_runs():
@@ -49,7 +49,7 @@ def test_the_gentler_staircase_changes_only_alpha_beta_and_lr():
                                         ("G3", 2.0, 1.0, 3e-3), ("G4", 2.0, 2.0, 3e-3)):
         a = r[run_id]
         assert (a.alpha_end, a.beta, a.lr, a.backward) == (alpha_end, beta, lr, "exact"), run_id
-        assert (a.alpha_start, a.ramp_fraction, a.lr_schedule, a.lr_alpha_power) == (1.0, 0.5, "cosine", None)
+        assert (a.alpha_start, a.ramp_fraction, a.lr_schedule, a.lr_alpha_power) == (1.0, 0.5, "cosine", 0.0)
         assert (a.lr_q, a.weight_decay) == (1e-5, 1e-4)
 
 
@@ -94,7 +94,7 @@ def test_slope1_tuning_follows_the_procedure_and_leaves_tune_untouched(monkeypat
     score = {(3e-4,): 91.0, (1e-3,): 91.4, (3e-3,): 91.6, (1e-2,): 91.5}  # best lr 3e-3 after the edge 1e-2
 
     def fake_run(method, bits, group, epochs, lr, settings, step):
-        assert method == explore.SLOPE1
+        assert method == "piecewise" and settings["backward"] == "ste"  # tune.py's fixed setting
         s = score[(lr,)] + 0.1 * (settings["alpha_end"] == 10.0) + 0.05 * (settings["beta"] == 1.0)
         return {"name": f"{lr}-{settings}", "lr": lr, "settings": dict(settings), "step": step, "score": s,
                 "val_acc_reest": s, "failed": False}
@@ -105,9 +105,10 @@ def test_slope1_tuning_follows_the_procedure_and_leaves_tune_untouched(monkeypat
     assert lrs_step1 == [3e-4, 1e-3, 3e-3, 1e-2]
     grid = [r for r in sel["runs"] if r["step"] == "step 2: own settings"]
     assert len(grid) == 8 and all(r["lr"] == 3e-3 for r in grid)  # the reference cell is reused from step 1
-    assert {"alpha_end": 3.0, "beta": 2.0} not in [r["settings"] for r in grid]
+    assert {"alpha_end": 3.0, "beta": 2.0, "backward": "ste"} not in [r["settings"] for r in grid]
     # alpha_end 10 and beta 1 win, both at an edge of the grid: alpha_end 20 and beta 0.5 are tried
-    assert {"alpha_end": 20.0, "beta": 1.0} in [r["settings"] for r in sel["runs"]]
+    assert {"alpha_end": 20.0, "beta": 1.0, "backward": "ste"} in [r["settings"] for r in sel["runs"]]
+    assert sel["chosen"]["backward"] == "ste"
     assert sel["chosen"]["lr"] == 3e-3 and sel["chosen"]["alpha_end"] == 10.0 and sel["chosen"]["beta"] == 1.0
 
 
