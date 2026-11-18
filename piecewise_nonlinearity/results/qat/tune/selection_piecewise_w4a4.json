@@ -1,0 +1,256 @@
+{
+ "method": "piecewise",
+ "bits": "4/4",
+ "epochs": 120,
+ "seed": 0,
+ "chosen": {
+  "lr": 0.0001,
+  "alpha_end": 3.0,
+  "beta": 2.0
+ },
+ "chosen_run": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a3b2-exact-r0.5_e120_s0",
+ "chosen_val_acc_reest": 90.94,
+ "n_runs": 15,
+ "runs": [
+  {
+   "name": "piecewise_w4a4_lr3e-4_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0",
+   "lr": 0.0003,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0
+   },
+   "step": "step 1: learning rate",
+   "score": null,
+   "val_acc_reest": 87.58,
+   "val_acc": 86.8,
+   "val_acc_soft": 87.6,
+   "failed": true,
+   "failure": "ended below its start: validation accuracy after re-estimation 87.58 < 89.42",
+   "minutes": 66.82
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-3_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0",
+   "lr": 0.001,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0
+   },
+   "step": "step 1: learning rate",
+   "score": null,
+   "val_acc_reest": 80.3,
+   "val_acc": 80.5,
+   "val_acc_soft": 80.44,
+   "failed": true,
+   "failure": "ended below its start: validation accuracy after re-estimation 80.30 < 89.42",
+   "minutes": 66.81
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-3_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0
+   },
+   "step": "step 1: learning rate",
+   "score": null,
+   "val_acc_reest": 55.34,
+   "val_acc": 54.74,
+   "val_acc_soft": 55.56,
+   "failed": true,
+   "failure": "ended below its start: validation accuracy after re-estimation 55.34 < 89.42",
+   "minutes": 66.83
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a5b2-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 2.0
+   },
+   "step": "edge: learning rate",
+   "score": 90.36,
+   "val_acc_reest": 90.36,
+   "val_acc": 90.04,
+   "val_acc_soft": 90.58,
+   "failed": false,
+   "failure": null,
+   "minutes": 67.3
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a3b1-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 1.0
+   },
+   "step": "step 2: own settings",
+   "score": 90.82,
+   "val_acc_reest": 90.82,
+   "val_acc": 90.14,
+   "val_acc_soft": 91.4,
+   "failed": false,
+   "failure": null,
+   "minutes": 66.82
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a3b2-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 2.0
+   },
+   "step": "step 2: own settings",
+   "score": 90.94,
+   "val_acc_reest": 90.94,
+   "val_acc": 90.66,
+   "val_acc_soft": 91.14,
+   "failed": false,
+   "failure": null,
+   "minutes": 66.82
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a3b3-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 3.0
+   },
+   "step": "step 2: own settings",
+   "score": 90.52,
+   "val_acc_reest": 90.52,
+   "val_acc": 90.46,
+   "val_acc_soft": 91.08,
+   "failed": false,
+   "failure": null,
+   "minutes": 66.84
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a5b1-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 1.0
+   },
+   "step": "step 2: own settings",
+   "score": 90.7,
+   "val_acc_reest": 90.7,
+   "val_acc": 90.24,
+   "val_acc_soft": 90.48,
+   "failed": false,
+   "failure": null,
+   "minutes": 66.82
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a5b3-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 3.0
+   },
+   "step": "step 2: own settings",
+   "score": 90.38,
+   "val_acc_reest": 90.38,
+   "val_acc": 90.4,
+   "val_acc_soft": 90.36,
+   "failed": false,
+   "failure": null,
+   "minutes": 66.8
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a10b1-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 1.0
+   },
+   "step": "step 2: own settings",
+   "score": null,
+   "val_acc_reest": 89.02,
+   "val_acc": 89.02,
+   "val_acc_soft": 89.44,
+   "failed": true,
+   "failure": "ended below its start: validation accuracy after re-estimation 89.02 < 89.42",
+   "minutes": 66.8
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a10b2-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 2.0
+   },
+   "step": "step 2: own settings",
+   "score": null,
+   "val_acc_reest": 88.58,
+   "val_acc": 88.58,
+   "val_acc_soft": 88.52,
+   "failed": true,
+   "failure": "ended below its start: validation accuracy after re-estimation 88.58 < 89.42",
+   "minutes": 66.81
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a10b3-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 10.0,
+    "beta": 3.0
+   },
+   "step": "step 2: own settings",
+   "score": 89.42,
+   "val_acc_reest": 89.42,
+   "val_acc": 89.84,
+   "val_acc_soft": 89.64,
+   "failed": false,
+   "failure": null,
+   "minutes": 66.82
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-4_lrq1e-5_wd1e-4_a2b2-exact-r0.5_e120_s0",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 2.0,
+    "beta": 2.0
+   },
+   "step": "edge: alpha_end",
+   "score": 90.82,
+   "val_acc_reest": 90.82,
+   "val_acc": 89.88,
+   "val_acc_soft": 91.24,
+   "failed": false,
+   "failure": null,
+   "minutes": 66.83
+  },
+  {
+   "name": "piecewise_w4a4_lr3e-4_lrq1e-5_wd1e-4_a3b2-exact-r0.5_e120_s0",
+   "lr": 0.0003,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 2.0
+   },
+   "step": "step 3: learning-rate re-check",
+   "score": 89.66,
+   "val_acc_reest": 89.66,
+   "val_acc": 89.4,
+   "val_acc_soft": 89.96,
+   "failed": false,
+   "failure": null,
+   "minutes": 66.84
+  },
+  {
+   "name": "piecewise_w4a4_lr1e-3_lrq1e-5_wd1e-4_a3b2-exact-r0.5_e120_s0",
+   "lr": 0.001,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 2.0
+   },
+   "step": "step 3: learning-rate re-check",
+   "score": null,
+   "val_acc_reest": 88.4,
+   "val_acc": 88.06,
+   "val_acc_soft": 88.56,
+   "failed": true,
+   "failure": "ended below its start: validation accuracy after re-estimation 88.40 < 89.42",
+   "minutes": 66.83
+  }
+ ]
+}
