@@ -272,3 +272,18 @@ def test_a_real_tiny_run_on_a_fresh_seed_evaluates_the_test_set(tmp_path, monkey
     assert r["group"] == "main" and r["config"]["seed"] == 1 and r["config"]["backward"] == "ste"
     assert r["final"]["test_acc_reest"] is not None and r["final"]["test_acc"] is not None  # a fresh seed
     assert "done  " + item["name"] in read_log()
+
+
+def test_the_4w4a_queue_runs_the_tuned_settings_with_the_slope1_backward_and_two_controls():
+    from piecewise_nonlinearity import train_qat
+    items, rows = fresh_seeds.plan("4/4")
+    main = [train_qat.parse_args(it["argv"]) for it in items if it["kind"] == "main"]
+    assert [(a.seed, a.method, a.lr) for a in main[:3]] == [(1, "ste", 1e-2), (1, "piecewise", 1e-4),
+                                                            (1, "piecewise", 3e-3)]
+    assert [a.seed for a in main] == [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4]
+    assert all(a.group == "main" and a.bits == "4/4" and a.epochs == 120 for a in main)
+    exact, slope1 = main[1], main[2]
+    assert (exact.alpha_end, exact.beta, exact.backward) == (3.0, 2.0, "exact")
+    assert (slope1.alpha_end, slope1.beta, slope1.backward) == (5.0, 1.0, "ste")
+    controls = sorted({train_qat.parse_args(it["argv"]).lr for it in items if it["kind"] == "control"})
+    assert controls == [1e-4, 3e-3]

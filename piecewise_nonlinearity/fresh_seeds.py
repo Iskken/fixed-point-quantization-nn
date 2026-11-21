@@ -29,6 +29,10 @@ tuning:
        STE                                        results/qat/tune/selection_ste_w2a2.json
        staircase, slope-1 backward                results/qat/tune/selection_piecewise-slope1_w2a2.json
        staircase, exact backward, lr / alpha^2    results/qat/tune/selection_piecewise-lrpow2_w2a2.json
+     At 4/4 (--bits 4/4, laptop B):
+       STE                                        results/qat/tune/selection_ste_w4a4.json
+       staircase, exact backward                  results/qat/tune/selection_piecewise_w4a4.json
+       staircase, slope-1 backward                results/qat/tune/selection_piecewise-slope1_w4a4.json
      Seed by seed, so that the paired comparison has complete seeds as early as possible. Each run uses the
      float model and QAT seed with the same number (change 3).
   3. The control: the STE, with its chosen settings, at the learning rate of every staircase variant whose
@@ -84,6 +88,11 @@ BLOCKS = {  # per bit width, in run order: (row label, tuning block of tune.py);
     "2/2": (("STE", "ste"),
             ("staircase, slope-1 backward", "piecewise-slope1"),
             ("staircase, exact backward, lr / alpha^2", "piecewise-lrpow2")),
+    # 4/4 (laptop B): the pre-registered staircase and the slope-1 staircase. The slope-1 selection was tuned
+    # by explore.py with the reference alpha_end 3, beta 2 (see the note in its selection file)
+    "4/4": (("STE", "ste"),
+            ("staircase, exact backward", "piecewise"),
+            ("staircase, slope-1 backward", "piecewise-slope1")),
 }
 WIN_P = 0.025  # change 5: p < 0.05 with a Bonferroni correction for the 2 bit widths
 WIN_SEEDS = 3  # change 5: higher on at least 3 of the 4 seeds
