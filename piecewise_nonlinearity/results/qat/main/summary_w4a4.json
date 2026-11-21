@@ -1,0 +1,426 @@
+{
+ "bits": "4/4",
+ "epochs": 120,
+ "seeds": [
+  1,
+  2,
+  3,
+  4
+ ],
+ "metric": "test accuracy after the last epoch, exact rounding, after BatchNorm re-estimation (PLAN.md, change 5)",
+ "win_rule": "higher mean, paired t-test p < 0.025 (two-sided), higher on at least 3 of 4 seeds (PLAN.md, change 5)",
+ "complete": true,
+ "rows": [
+  {
+   "row": "float model",
+   "kind": "float",
+   "block": null,
+   "lr": null,
+   "settings": null,
+   "control_for": null,
+   "per_seed": {
+    "1": {
+     "test": 91.16,
+     "test_plain": null,
+     "val": 91.64,
+     "failed": false,
+     "failure": null,
+     "minutes": 54.6589
+    },
+    "2": {
+     "test": 91.23,
+     "test_plain": null,
+     "val": 91.86,
+     "failed": false,
+     "failure": null,
+     "minutes": 54.9033
+    },
+    "3": {
+     "test": 91.09,
+     "test_plain": null,
+     "val": 91.86,
+     "failed": false,
+     "failure": null,
+     "minutes": 55.0447
+    },
+    "4": {
+     "test": 91.02,
+     "test_plain": null,
+     "val": 91.62,
+     "failed": false,
+     "failure": null,
+     "minutes": 55.2575
+    }
+   },
+   "mean": 91.125,
+   "std": 0.0904,
+   "mean_without_reestimation": null,
+   "std_without_reestimation": null
+  },
+  {
+   "row": "STE",
+   "kind": "main",
+   "block": "ste",
+   "lr": 0.01,
+   "settings": {
+    "lr_q": 1e-05,
+    "weight_decay": 0.0001
+   },
+   "control_for": null,
+   "per_seed": {
+    "1": {
+     "test": 91.47,
+     "test_plain": 91.41,
+     "val": 91.24,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.56
+    },
+    "2": {
+     "test": 91.33,
+     "test_plain": 91.08,
+     "val": 91.92,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.56
+    },
+    "3": {
+     "test": 91.18,
+     "test_plain": 91.15,
+     "val": 91.84,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.53
+    },
+    "4": {
+     "test": 91.26,
+     "test_plain": 91.06,
+     "val": 91.66,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.56
+    }
+   },
+   "mean": 91.31,
+   "std": 0.123,
+   "mean_without_reestimation": 91.175,
+   "std_without_reestimation": 0.1613
+  },
+  {
+   "row": "staircase, exact backward",
+   "kind": "main",
+   "block": "piecewise",
+   "lr": 0.0001,
+   "settings": {
+    "alpha_end": 3.0,
+    "beta": 2.0
+   },
+   "control_for": null,
+   "per_seed": {
+    "1": {
+     "test": 89.44,
+     "test_plain": 88.79,
+     "val": 90.48,
+     "failed": false,
+     "failure": null,
+     "minutes": 72.22
+    },
+    "2": {
+     "test": 89.8,
+     "test_plain": 89.63,
+     "val": 90.7,
+     "failed": false,
+     "failure": null,
+     "minutes": 72.54
+    },
+    "3": {
+     "test": 89.39,
+     "test_plain": 89.2,
+     "val": 91.22,
+     "failed": false,
+     "failure": null,
+     "minutes": 72.22
+    },
+    "4": {
+     "test": 89.9,
+     "test_plain": 89.42,
+     "val": 90.4,
+     "failed": false,
+     "failure": null,
+     "minutes": 72.17
+    }
+   },
+   "mean": 89.6325,
+   "std": 0.2553,
+   "mean_without_reestimation": 89.26,
+   "std_without_reestimation": 0.3592
+  },
+  {
+   "row": "staircase, slope-1 backward",
+   "kind": "main",
+   "block": "piecewise-slope1",
+   "lr": 0.003,
+   "settings": {
+    "alpha_end": 5.0,
+    "beta": 1.0,
+    "backward": "ste"
+   },
+   "control_for": null,
+   "per_seed": {
+    "1": {
+     "test": 90.94,
+     "test_plain": 91.1,
+     "val": 91.56,
+     "failed": false,
+     "failure": null,
+     "minutes": 67.82
+    },
+    "2": {
+     "test": 91.05,
+     "test_plain": 90.72,
+     "val": 91.82,
+     "failed": false,
+     "failure": null,
+     "minutes": 67.08
+    },
+    "3": {
+     "test": 91.31,
+     "test_plain": 91.03,
+     "val": 91.66,
+     "failed": false,
+     "failure": null,
+     "minutes": 67.69
+    },
+    "4": {
+     "test": 91.06,
+     "test_plain": 91.03,
+     "val": 90.86,
+     "failed": false,
+     "failure": null,
+     "minutes": 67.1
+    }
+   },
+   "mean": 91.09,
+   "std": 0.1564,
+   "mean_without_reestimation": 90.97,
+   "std_without_reestimation": 0.1699
+  },
+  {
+   "row": "STE at lr 1e-4 (control)",
+   "kind": "control",
+   "block": "ste",
+   "lr": 0.0001,
+   "settings": {
+    "lr_q": 1e-05,
+    "weight_decay": 0.0001
+   },
+   "control_for": [
+    "staircase, exact backward"
+   ],
+   "per_seed": {
+    "1": {
+     "test": 90.51,
+     "test_plain": 90.38,
+     "val": 91.06,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.57
+    },
+    "2": {
+     "test": 90.77,
+     "test_plain": 90.59,
+     "val": 91.22,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.59
+    },
+    "3": {
+     "test": 90.27,
+     "test_plain": 90.45,
+     "val": 91.52,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.57
+    },
+    "4": {
+     "test": 90.56,
+     "test_plain": 90.47,
+     "val": 90.94,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.56
+    }
+   },
+   "mean": 90.5275,
+   "std": 0.2053,
+   "mean_without_reestimation": 90.4725,
+   "std_without_reestimation": 0.0873
+  },
+  {
+   "row": "STE at lr 3e-3 (control)",
+   "kind": "control",
+   "block": "ste",
+   "lr": 0.003,
+   "settings": {
+    "lr_q": 1e-05,
+    "weight_decay": 0.0001
+   },
+   "control_for": [
+    "staircase, slope-1 backward"
+   ],
+   "per_seed": {
+    "1": {
+     "test": 91.28,
+     "test_plain": 91.32,
+     "val": 91.58,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.57
+    },
+    "2": {
+     "test": 91.32,
+     "test_plain": 91.2,
+     "val": 92.24,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.58
+    },
+    "3": {
+     "test": 90.94,
+     "test_plain": 90.88,
+     "val": 91.7,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.55
+    },
+    "4": {
+     "test": 91.48,
+     "test_plain": 91.48,
+     "val": 91.66,
+     "failed": false,
+     "failure": null,
+     "minutes": 45.9
+    }
+   },
+   "mean": 91.255,
+   "std": 0.2271,
+   "mean_without_reestimation": 91.22,
+   "std_without_reestimation": 0.254
+  }
+ ],
+ "comparisons": [
+  {
+   "a": "staircase, exact backward",
+   "b": "STE",
+   "kind": "against the STE",
+   "seeds": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n": 4,
+   "differences": [
+    -2.03,
+    -1.53,
+    -1.79,
+    -1.36
+   ],
+   "mean": -1.6775,
+   "std": 0.2941,
+   "t": -11.4079,
+   "df": 3,
+   "p": 0.0014,
+   "higher_on": 0,
+   "lower_on": 4,
+   "win_rule_met": false,
+   "swapped_rule_met": true,
+   "verdict": "loss (the same rule with the roles swapped)"
+  },
+  {
+   "a": "staircase, slope-1 backward",
+   "b": "STE",
+   "kind": "against the STE",
+   "seeds": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n": 4,
+   "differences": [
+    -0.53,
+    -0.28,
+    0.13,
+    -0.2
+   ],
+   "mean": -0.22,
+   "std": 0.2724,
+   "t": -1.6153,
+   "df": 3,
+   "p": 0.2047,
+   "higher_on": 1,
+   "lower_on": 3,
+   "win_rule_met": false,
+   "swapped_rule_met": false,
+   "verdict": "tie"
+  },
+  {
+   "a": "staircase, exact backward",
+   "b": "STE at lr 1e-4 (control)",
+   "kind": "the same learning rate (control)",
+   "seeds": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n": 4,
+   "differences": [
+    -1.07,
+    -0.97,
+    -0.88,
+    -0.66
+   ],
+   "mean": -0.895,
+   "std": 0.1748,
+   "t": -10.2383,
+   "df": 3,
+   "p": 0.002,
+   "higher_on": 0,
+   "lower_on": 4,
+   "win_rule_met": false,
+   "swapped_rule_met": true,
+   "verdict": "loss (the same rule with the roles swapped)"
+  },
+  {
+   "a": "staircase, slope-1 backward",
+   "b": "STE at lr 3e-3 (control)",
+   "kind": "the same learning rate (control)",
+   "seeds": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "n": 4,
+   "differences": [
+    -0.34,
+    -0.27,
+    0.37,
+    -0.42
+   ],
+   "mean": -0.165,
+   "std": 0.3619,
+   "t": -0.9119,
+   "df": 3,
+   "p": 0.4291,
+   "higher_on": 1,
+   "lower_on": 3,
+   "win_rule_met": false,
+   "swapped_rule_met": false,
+   "verdict": "tie"
+  }
+ ],
+ "written": "2026-11-19 21:04:19"
+}
