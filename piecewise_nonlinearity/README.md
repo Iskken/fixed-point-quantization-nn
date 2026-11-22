@@ -75,6 +75,8 @@ piecewise_nonlinearity/
 │   └── resnet20.py       ResNet-20 for CIFAR-10
 ├── train_float.py        float pre-training (shared starting point)
 ├── train_qat.py          QAT fine-tuning, one entry point for all methods
+├── train_layerwise.py    layer-by-layer fine-tuning with the staircase (PLAN.md, added 2026-11-21)
+├── fresh_seeds.py        the chosen settings on fresh seeds 1-4, and the paired comparison with the STE
 ├── configs/              one config file per experiment
 ├── results/              per-run JSON summaries (committed)
 ├── tests/                sanity checks for the quantizers
@@ -91,6 +93,7 @@ Run everything from the repository root as a module, for example:
 python -m piecewise_nonlinearity.datasets
 python -m piecewise_nonlinearity.train_float --seed 0
 python -m piecewise_nonlinearity.train_qat --group tune --method piecewise --bits 2/2 --seed 0 --alpha-end 2 --beta 2
+python -m piecewise_nonlinearity.train_layerwise --group explore --bits 2/2 --seed 0 --lr 3e-3 --alpha-end 3 --beta 3 --lr-alpha-power 2
 python -m pytest piecewise_nonlinearity/tests
 ```
 
