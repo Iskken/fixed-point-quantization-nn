@@ -3,7 +3,8 @@
 # step 1 of the tuning procedure (PLAN.md, change 4: the learning rate 3e-4, 1e-3, 3e-3) at the exact
 # staircase's chosen setting with the learning rate tied to alpha (alpha_end 3, beta 3, lr / alpha^2;
 # results/qat/tune/selection_piecewise-lrpow2_w2a2.json), with the default stages (alpha ramp of 2 epochs,
-# patience 3, at most 15 epochs per stage). Group "explore": seed 0 never evaluates the test set.
+# patience 3, at most 15 epochs per stage, early stopping on validation accuracy after BatchNorm
+# re-estimation, layers frozen with re-estimated statistics). Group "explore": seed 0 never evaluates the test set.
 # Compare with the seed-0 validation accuracy after re-estimation: STE 90.88, exact staircase lr / alpha^2
 # 84.58 (single runs differ by up to about 0.9).
 #

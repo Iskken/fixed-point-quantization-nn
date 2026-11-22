@@ -14,12 +14,16 @@ With CIFAR-10 and the float models (smoke runs of 2 batches of 32 images on the 
   - a run trains all 18 stages in order, writes its JSON with aligned curves, removes its checkpoint, and is
     skipped when started again;
   - after every stage the network is back at the stage's best epoch, and a frozen layer never changes again;
+  - layers are frozen with BatchNorm statistics re-estimated for the rounded network, so the final
+    re-estimation changes nothing; results from before this rule are not reused;
   - alpha restarts in every stage;
   - an interrupted run resumes and ends like an uninterrupted one;
   - the start is the same quantized network as for train_qat.py; seed 0 never evaluates the test set, seed 1 does.
 """
 
+import json
 import os
+import shutil
 
 import numpy as np
 import pytest
@@ -160,10 +164,10 @@ def test_early_stopping(ramp, patience, maximum, metrics, best, stopped_at):
 
 def test_run_names_contain_every_setting():
     a = args("--lr", "3e-3", "--alpha-end", "3", "--beta", "3", "--lr-alpha-power", "2")
-    assert lw.run_name(a) == "layerwise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b3-exact-lrpow2_ramp2-pat3-max15_s0"
+    assert lw.run_name(a) == "layerwise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b3-exact-lrpow2_ramp2-pat3-max15-reest_s0"
     b = args("--seed", "2", "--backward", "ste", "--stage-ramp-epochs", "0", "--patience", "5",
-             "--max-stage-epochs", "20", "--stage-metric", "val_acc_reest", "--alpha-start", "2")
-    assert lw.run_name(b) == "layerwise_w2a2_lr1e-3_lrq1e-5_wd1e-4_a2b2-ste-from2_ramp0-pat5-max20-reest_s2"
+             "--max-stage-epochs", "20", "--stage-metric", "val_acc", "--alpha-start", "2")
+    assert lw.run_name(b) == "layerwise_w2a2_lr1e-3_lrq1e-5_wd1e-4_a2b2-ste-from2_ramp0-pat5-max20_s2"
     assert "stop_after" not in lw.run_settings(args("--stop-after", "3"))  # not a setting
 
 
@@ -231,11 +235,51 @@ def test_every_stage_goes_back_to_its_best_epoch_and_frozen_layers_never_change(
     h = r["history"]
     for s in r["stages"]:
         i = next(i for i in range(len(h["epoch"])) if h["stage"][i] == s["stage"] and h["stage_epoch"][i] == s["best_epoch"])
-        assert s["val_acc"] == h["val_acc"][i] == s["best_metric"]  # the rolled-back network is the best epoch's
+        # the rolled-back network is the best epoch's; the default metric is the one after re-estimation
+        assert s["val_acc"] == h["val_acc"][i] and s["val_acc_reest"] == h["val_acc_reest"][i] == s["best_metric"]
         j = s["stage"] - 1  # the layer's index in the per-layer lists
         later = [n for n in range(len(h["epoch"])) if h["stage"][n] is not None and h["stage"][n] > s["stage"]]
         for key in ("w_l", "w_u", "a_l", "a_u", "output_scale"):
             assert {h[key][n][j] for n in later} <= {h[key][i][j]}, (key, s["layer"])
+
+
+def test_the_default_early_stopping_metric_is_after_batchnorm_re_estimation():
+    assert args().stage_metric == "val_acc_reest"  # the supervisor, 2026-11-21
+
+
+@needs_data
+def test_every_epoch_is_validated_after_re_estimation_ramp_epochs_included(tmp_path):
+    r = smoke_run(tmp_path, "--stage-ramp-epochs", "2", "--max-stage-epochs", "3")  # epoch 1 of a stage: ramp
+    h = r["history"]
+    assert [h["tracking"][i] for i in range(1, len(h["epoch"])) if h["stage_epoch"][i] == 1] == [False] * 18
+    assert all(v is not None for v in h["val_acc_reest"]) and all(v is not None for v in h["train_eval_acc_reest"])
+
+
+@needs_data
+def test_layers_are_frozen_with_the_batchnorm_statistics_of_the_rounded_network(full):
+    """Every BatchNorm is re-estimated with exact rounding before its layer is frozen, so re-estimating the
+    deployed network at the end changes nothing: the later layers trained on the statistics that are kept."""
+    out, r = full
+    saved = torch.load(out / "raw" / "smoke" / r["name"] / "final.pt", weights_only=True)
+    reest = saved["bn_reestimated"]
+    assert reest and all(k in saved["model"] for k in reest)
+    for k, v in reest.items():
+        if not k.endswith("num_batches_tracked"):
+            assert torch.allclose(saved["model"][k], v, rtol=1e-4, atol=1e-6), k
+    assert r["final"]["val_acc"] == r["final"]["val_acc_reest"]
+    assert r["frozen_bn"] == lw.FROZEN_BN
+
+
+@needs_data
+def test_a_result_from_before_the_re_estimation_at_freezing_is_not_reused(full, tmp_path):
+    out, r = full
+    shutil.copytree(out / "results", tmp_path / "results")
+    path = tmp_path / "results" / "smoke" / f"{r['name']}.json"
+    old = json.loads(path.read_text())
+    del old["frozen_bn"]
+    path.write_text(json.dumps(old))
+    with pytest.raises(SystemExit, match="before BatchNorm re-estimation"):
+        smoke_run(tmp_path)
 
 
 @needs_data

@@ -9,30 +9,39 @@ final evaluation as train_qat.py, so its results compare directly with the other
 The 18 quantized block convolutions are trained one after another, from the input to the output, in 18
 stages. In stage k (k = 1 ... 18):
   - layers 1 ... k-1 are frozen at exact rounding: their weights, quantizer bounds, output scales and
-    BatchNorms (parameters and running statistics; eval mode) no longer change;
+    BatchNorms (parameters and running statistics; eval mode) no longer change. Their running statistics are
+    those of the rounded network, re-estimated over the full training split just before the layer was frozen;
   - layer k is trained with the staircase: forward S_{alpha,beta}, backward the exact slopes of S
     (--backward ste: slope 1, for an ablation). alpha starts at --alpha-start in every stage, rises linearly
     to --alpha-end over the first --stage-ramp-epochs epochs of the stage, and then stays there;
   - layers k+1 ... 18 are trained with the STE (exact rounding forward, slope 1 backward), and so is the
     float head (the last BatchNorm and the linear layer).
 Every stage ends by early stopping with rollback. After every epoch the network is validated the way it will
-be deployed: exact rounding in every layer, on the validation split. The weights of the best epoch are kept;
-once --patience epochs in a row bring no improvement, or after --max-stage-epochs epochs, the network goes
-back to the best epoch and layer k is frozen. The epochs of the alpha ramp are never chosen and do not count
-towards the patience: tracking starts with the epoch that ends the ramp. After stage 18 every layer rounds
-exactly, which is the deployed network.
+be deployed: exact rounding in every layer, with BatchNorm re-estimated for that rounded network, on the
+validation split. The weights of the best epoch are kept; once --patience epochs in a row bring no
+improvement, or after --max-stage-epochs epochs, the network goes back to the best epoch, every BatchNorm is
+re-estimated with exact rounding over the full training split, and layer k is frozen with these statistics.
+During the stage, layer k's BatchNorm collected statistics of S, not of rounding; freezing them would leave a
+mismatch that the later layers adapt to and that the final re-estimation then undoes. The stem is frozen from
+the start, so the same re-estimation is done once before stage 1. The epochs of the alpha ramp are never chosen
+and do not count towards the patience: tracking starts with the epoch that ends the ramp. After stage 18 every
+layer rounds exactly, which is the deployed network, and its statistics are already those of that network.
 
 Decided with the supervisor (2026-11-19): frozen layers round exactly; the optimized layer uses the staircase
 with the exact backward; the layers after it use the STE; no fixed number of epochs per stage, but early
 stopping with rollback. The choices made here where that left room (the open questions in the diagram):
   1. alpha: a ramp in every stage, over --stage-ramp-epochs epochs (default 2; 0: alpha_end from the start).
-  2. Early-stopping metric: validation accuracy with exact rounding, with the BatchNorm statistics as trained
-     (--stage-metric val_acc, the default), or after re-estimation (val_acc_reest, about 6 s more per epoch).
+  2. Early-stopping metric: validation accuracy with exact rounding after BatchNorm re-estimation
+     (--stage-metric val_acc_reest, the default), or with the statistics as trained (val_acc; those were
+     collected with S in layer k). Either way, every epoch, the ramp epochs included, is validated both without
+     and after re-estimation, as the supervisor asked on 2026-11-21 (about 6 s more per epoch).
   3. --patience (default 3) and --max-stage-epochs (default 15). Every stage gets new Adam optimizers at the
      constant rates --lr and --lr-q, with no decay: early stopping ends the stage. With --lr-alpha-power p,
      the rates of layer k (not those of the later layers) are multiplied by (alpha / alpha_start)^-p at every
      step: only layer k's gradients pass through the slopes of S.
-  4. Frozen means everything: weights, l, u, output scale, BatchNorm parameters and statistics (not a setting).
+  4. Frozen means everything: weights, l, u, output scale, BatchNorm parameters and statistics, the statistics
+     re-estimated with exact rounding over the full training split first (the supervisor, 2026-11-21; not a
+     setting).
   5. The float first convolution comes before layer 1, so it stays frozen at the float model's weights; the
      float head comes after layer 18, so it is trained in every stage (not a setting).
   6. The comparison with the STE (120 epochs, no early stopping) is left to the analysis: every result
@@ -45,8 +54,8 @@ Logged per epoch: the stage, its layer and epoch, alpha, the learning rates, the
 the validation accuracy with exact rounding and with S in layer k, the same on --train-eval-size fixed
 training images, the early-stopping metric with the best value so far and the epochs since, the share of
 weights that changed level, l, u and the output scale of every layer, and the time. Per stage: its epochs,
-the chosen epoch, why it stopped, and the validation accuracy after the rollback, without and with BatchNorm
-re-estimation.
+the chosen epoch, why it stopped, and the validation accuracy after the rollback, with the statistics as
+trained (val_acc) and after the re-estimation that the layer is frozen with (val_acc_reest).
 
 Outputs, as for train_qat.py; <name> contains every setting, for example
 layerwise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b3-exact-lrpow2_ramp2-pat3-max15_s0:
@@ -83,6 +92,9 @@ from piecewise_nonlinearity.train_qat import (batches, evaluate, file_hash, fmt,
 HERE = train_qat.HERE
 METHOD = "layerwise"
 METRICS = ("val_acc", "val_acc_reest")
+# How a layer's BatchNorm statistics are frozen; stored in every result and resume checkpoint. Runs made before
+# 2026-11-22 froze the statistics collected during training (with S) and have no such entry: they are not reused.
+FROZEN_BN = "reestimated"
 NOT_SETTINGS = train_qat.NOT_SETTINGS  # paths, machine, checkpointing, tests, the training-data measurement
 
 
@@ -113,8 +125,8 @@ def parse_args(argv=None):
     e.add_argument("--patience", type=int, default=3,
                    help="a stage ends after this many epochs in a row without a better validation accuracy")
     e.add_argument("--max-stage-epochs", type=int, default=15, help="a stage ends after this many epochs at most")
-    e.add_argument("--stage-metric", choices=METRICS, default="val_acc",
-                   help="validation accuracy with exact rounding, without (val_acc) or after (val_acc_reest) "
+    e.add_argument("--stage-metric", choices=METRICS, default="val_acc_reest",
+                   help="validation accuracy with exact rounding, after (val_acc_reest) or without (val_acc) "
                         "BatchNorm re-estimation")
     p.add_argument("--train-eval-size", type=int, default=5000,
                    help="fixed training images, without augmentation, evaluated every epoch like validation; 0: none")
@@ -367,6 +379,9 @@ def run(args):
             done = json.load(f)
         if done["config"] != settings:
             raise SystemExit(f"{json_path} exists with different settings; delete it to run again")
+        if done.get("frozen_bn") != FROZEN_BN:
+            raise SystemExit(f"{json_path} was made before BatchNorm re-estimation at freezing (2026-11-22); "
+                             f"move it away to run again")
         print(f"{name}: done already, skipped ({json_path})")
         return done
     for d in (os.path.dirname(json_path), raw_dir, os.path.dirname(resume_path)):
@@ -429,7 +444,7 @@ def run(args):
 
     def save_resume(k, epoch, stage=None, stopper=None, best=None):
         """The position after `epoch` of stage k (epoch 0: stage k has not started; k = n_stages + 1: all done)."""
-        state = {"settings": settings, "stage": k, "epoch": epoch, "model": model.state_dict(),
+        state = {"settings": settings, "frozen_bn": FROZEN_BN, "stage": k, "epoch": epoch, "model": model.state_dict(),
                  "optimizers": [o.state_dict() for o in stage.optimizers] if epoch else None,
                  "stopper": stopper.state() if epoch else None, "best": best if epoch else None,
                  "rng": {"python": random.getstate(), "numpy": np.random.get_state(), "torch": torch.get_rng_state(),
@@ -451,6 +466,9 @@ def run(args):
         resumed = torch.load(resume_path, map_location="cpu", weights_only=False)
         if resumed["settings"] != settings:
             raise SystemExit(f"{resume_path} was made with different settings; delete it or use the same ones")
+        if resumed.get("frozen_bn") != FROZEN_BN:
+            raise SystemExit(f"{resume_path} was made before BatchNorm re-estimation at freezing (2026-11-22); "
+                             f"delete it to start again")
         model.load_state_dict(resumed["model"])
         rng = resumed["rng"]
         random.setstate(rng["python"])
@@ -466,7 +484,8 @@ def run(args):
         images, _ = next(iter(train_loader))  # EWGS: the first training batch, as in train_qat.py
         init_quantizers(model, images.to(device))
         t0 = time.perf_counter()
-        val, _ = validate(None, reest=True)
+        val, reest = validate(None, reest=True)
+        model.load_state_dict(reest.state_dict())  # the stem is frozen from stage 1 on: freeze it re-estimated
         append_history(history, {"epoch": 0, "stage": None, "stage_epoch": None, **val,
                                  **level_entry(), **quantizer_values(model), "train_seconds": 0.0,
                                  "eval_seconds": round(time.perf_counter() - t0, 2)})
@@ -496,7 +515,9 @@ def run(args):
             train_seconds = time.perf_counter() - t0
 
             t0 = time.perf_counter()
-            val, _ = validate(stage, reest=args.stage_metric == "val_acc_reest" and stopper.tracking(epoch))
+            # every epoch, ramp epochs included, is also validated after BatchNorm re-estimation (the supervisor,
+            # 2026-11-21): the ramp epochs are never chosen, but their curves stay comparable with the others
+            val, _ = validate(stage, reest=True)
             is_best, stop = stopper.update(epoch, val[args.stage_metric])  # ramp epochs: never best, no patience
             if is_best:
                 best = snapshot(model)
@@ -538,11 +559,14 @@ def run(args):
         if failure is not None:
             break
 
-        # the end of the stage: back to the best epoch, freeze layer k (the next Stage does), measure the rollback
+        # the end of the stage: back to the best epoch, measure it, re-estimate every BatchNorm with exact rounding
+        # over the full training split (layer k's statistics were collected with S), and freeze layer k with these
+        # statistics (the next Stage freezes it)
         t0 = time.perf_counter()
         model.load_state_dict(best)
         levels = (None, weight_levels(model))
-        after, _ = validate(None, reest=True)
+        after, reest = validate(None, reest=True)
+        model.load_state_dict(reest.state_dict())
         in_stage = [i for i, s in enumerate(history["stage"]) if s == k]
         stages.append({"stage": k, "layer": stage.layer, "epochs": epoch, "best_epoch": stopper.best_epoch,
                        "best_metric": stopper.best_metric, "stopped_by": stopper.reason(),
@@ -589,7 +613,8 @@ def run(args):
 
     commit, dirty = git_state()
     result = {
-        "name": name, "method": METHOD, "group": args.group, "failed": failure is not None, "failure": failure,
+        "name": name, "method": METHOD, "group": args.group, "frozen_bn": FROZEN_BN,
+        "failed": failure is not None, "failure": failure,
         "final": final, "start": start, "config": settings, "n_epochs": n_epochs(), "stages": stages,
         "layers": [n for n, _ in quantized_convs(model)], "steps_per_epoch": steps_per_epoch,
         "float_model": {"file": os.path.relpath(float_path, HERE), "sha256": file_hash(float_path)},
