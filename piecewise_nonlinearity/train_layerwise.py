@@ -4,7 +4,7 @@ reports/figures/layerwise_staircase_method.png). One run per call, with the same
 final evaluation as train_qat.py, so its results compare directly with the other methods.
 
     python -m piecewise_nonlinearity.train_layerwise --group explore --bits 2/2 --seed 0 \
-        --lr 3e-3 --alpha-end 3 --beta 3 --lr-alpha-power 2
+        --lr 3e-3 --alpha-end 3 --beta 3
 
 The 18 quantized block convolutions are trained one after another, from the input to the output, in 18
 stages. In stage k (k = 1 ... 18):
@@ -35,10 +35,15 @@ stopping with rollback. The choices made here where that left room (the open que
      (--stage-metric val_acc_reest, the default), or with the statistics as trained (val_acc; those were
      collected with S in layer k). Either way, every epoch, the ramp epochs included, is validated both without
      and after re-estimation, as the supervisor asked on 2026-11-21 (about 6 s more per epoch).
-  3. --patience (default 3) and --max-stage-epochs (default 15). Every stage gets new Adam optimizers at the
-     constant rates --lr and --lr-q, with no decay: early stopping ends the stage. With --lr-alpha-power p,
-     the rates of layer k (not those of the later layers) are multiplied by (alpha / alpha_start)^-p at every
-     step: only layer k's gradients pass through the slopes of S.
+  3. --patience (default 3) and --max-stage-epochs (default 15). Every stage gets new Adam optimizers that start
+     at the full rates --lr and --lr-q. With --lr-schedule cosine (the default; agreed with the supervisor on
+     2026-11-23) every rate, layer k's and the later layers', decays by a cosine over --max-stage-epochs epochs,
+     stepped once per epoch as in train_qat.py: stage epoch e uses lr * (1 + cos(pi (e - 1) / max)) / 2, from
+     epoch 1 of the stage (the ramp included), and the next stage restarts at the full rate. The length of a
+     stage is not known in advance, so the cosine assumes the longest one and early stopping may cut it short;
+     every stage records the rate of its chosen epoch (lr_best). --lr-schedule constant keeps the rates fixed.
+     With --lr-alpha-power p, the rates of layer k (not those of the later layers) are also multiplied by
+     (alpha / alpha_start)^-p at every step: only layer k's gradients pass through the slopes of S.
   4. Frozen means everything: weights, l, u, output scale, BatchNorm parameters and statistics, the statistics
      re-estimated with exact rounding over the full training split first (the supervisor, 2026-11-21; not a
      setting).
@@ -54,11 +59,12 @@ Logged per epoch: the stage, its layer and epoch, alpha, the learning rates, the
 the validation accuracy with exact rounding and with S in layer k, the same on --train-eval-size fixed
 training images, the early-stopping metric with the best value so far and the epochs since, the share of
 weights that changed level, l, u and the output scale of every layer, and the time. Per stage: its epochs,
-the chosen epoch, why it stopped, and the validation accuracy after the rollback, with the statistics as
+the chosen epoch and layer k's learning rate in it, why it stopped, and the validation accuracy after the rollback, with the statistics as
 trained (val_acc) and after the re-estimation that the layer is frozen with (val_acc_reest).
 
 Outputs, as for train_qat.py; <name> contains every setting, for example
-layerwise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b3-exact-lrpow2_ramp2-pat3-max15_s0:
+layerwise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b3-exact_ramp2-pat3-max15-reest_s0 (with --lr-schedule constant:
+lr3e-3-const):
   results/qat/<group>/<name>.json            config, start, stages, per-epoch curves, final metrics (committed)
   results/raw/qat/<group>/<name>/final.pt    final weights and re-estimated BatchNorm statistics (local)
   results/raw/qat/<group>/<name>/steps.npz   loss, correct predictions, alpha and stage at every step (local)
@@ -106,8 +112,11 @@ def parse_args(argv=None):
     p.add_argument("--seed", type=int, default=0, help="QAT seed, and the float model the run starts from")
     p.add_argument("--group", required=True, choices=train_qat.GROUPS, help="subfolder of the results")
     p.add_argument("--dataset", default="cifar10", choices=sorted(DATASETS))
-    p.add_argument("--lr", type=float, default=1e-3, help="learning rate of the network (Adam), constant in a stage")
+    p.add_argument("--lr", type=float, default=1e-3, help="learning rate of the network (Adam) at the start of every stage")
     p.add_argument("--lr-q", type=float, default=1e-5, help="learning rate of l, u and the output scales (Adam)")
+    p.add_argument("--lr-schedule", choices=("cosine", "constant"), default="cosine",
+                   help="every rate: cosine decay over --max-stage-epochs, stepped once per epoch from epoch 1 of "
+                        "the stage and restarted in every stage (early stopping may cut it short), or constant")
     p.add_argument("--weight-decay", type=float, default=1e-4, help="on the network parameters only")
     p.add_argument("--batch-size", type=int, default=256)
     s = p.add_argument_group("the staircase of the optimized layer")
@@ -173,7 +182,8 @@ def run_name(args):
     stop = f"ramp{args.stage_ramp_epochs}-pat{args.patience}-max{args.max_stage_epochs}"
     if args.stage_metric != "val_acc":
         stop += "-reest"
-    parts = [METHOD, f"w{w}a{a}", f"lr{short(args.lr)}", f"lrq{short(args.lr_q)}", f"wd{short(args.weight_decay)}",
+    lr = f"lr{short(args.lr)}" + ("-const" if args.lr_schedule == "constant" else "")
+    parts = [METHOD, f"w{w}a{a}", lr, f"lrq{short(args.lr_q)}", f"wd{short(args.weight_decay)}",
              stair, stop, f"s{args.seed}"]
     if args.batch_size != 256:
         parts.append(f"bs{args.batch_size}")
@@ -260,6 +270,7 @@ class Stage:
                            torch.optim.Adam(groups(current_q, later_q, args.lr_q), lr=args.lr_q))
         self.alpha_start, self.alpha_end, self.power = args.alpha_start, args.alpha_end, args.lr_alpha_power
         self.ramp_steps = args.stage_ramp_epochs * steps_per_epoch
+        self.steps_per_epoch, self.max_epochs, self.schedule = steps_per_epoch, args.max_stage_epochs, args.lr_schedule
         self.alpha = None
         self.set_step(0)
 
@@ -270,15 +281,24 @@ class Stage:
             return self.alpha_end
         return self.alpha_start + (self.alpha_end - self.alpha_start) * min(1.0, (step + 1) / self.ramp_steps)
 
+    def decay(self, step):
+        """The factor of every rate at training step `step` of the stage (from 0): a cosine over max_epochs epochs,
+        constant within an epoch (as train_qat.py), 1 in the first epoch; 1 throughout with a constant schedule."""
+        if self.schedule == "constant":
+            return 1.0
+        return 0.5 * (1.0 + math.cos(math.pi * (step // self.steps_per_epoch) / self.max_epochs))
+
     def set_step(self, step):
-        """Before training step `step`: layer k's alpha, and the learning rates (layer k's follow alpha)."""
+        """Before training step `step`: layer k's alpha, and the learning rates (all follow the schedule; layer
+        k's also follow alpha with --lr-alpha-power)."""
         self.alpha = self.alpha_at(step)
         for q in self.quantizers:
             q.discretizer.alpha = self.alpha
         scale = 1.0 if not self.power else (self.alpha / self.alpha_start) ** -self.power
+        decay = self.decay(step)
         for o in self.optimizers:
             for g in o.param_groups:
-                g["lr"] = g["base_lr"] * (scale if g["name"] == "current" else 1.0)
+                g["lr"] = g["base_lr"] * decay * (scale if g["name"] == "current" else 1.0)
 
     def train_mode(self):
         """Train mode for the trained layers; the frozen ones stay in eval mode (BatchNorm statistics fixed)."""
@@ -568,15 +588,17 @@ def run(args):
         after, reest = validate(None, reest=True)
         model.load_state_dict(reest.state_dict())
         in_stage = [i for i, s in enumerate(history["stage"]) if s == k]
+        lr_best = next(history["lr"][i] for i in in_stage if history["stage_epoch"][i] == stopper.best_epoch)
         stages.append({"stage": k, "layer": stage.layer, "epochs": epoch, "best_epoch": stopper.best_epoch,
-                       "best_metric": stopper.best_metric, "stopped_by": stopper.reason(),
+                       "best_metric": stopper.best_metric, "lr_best": lr_best, "stopped_by": stopper.reason(),
                        "first_epoch": history["epoch"][in_stage[0]],
                        "val_acc": after["val_acc"], "val_loss": after["val_loss"],
                        "val_acc_reest": after["val_acc_reest"], "val_loss_reest": after["val_loss_reest"],
                        "train_eval_acc": after.get("train_eval_acc"), "train_eval_acc_reest": after.get("train_eval_acc_reest"),
                        "minutes": round((sum(history["train_seconds"][i] + history["eval_seconds"][i] for i in in_stage)
                                          + time.perf_counter() - t0) / 60, 2)})
-        print(f"stage {k:2d} done: {epoch} epochs ({stopper.reason()}), back to epoch {stopper.best_epoch}: "
+        print(f"stage {k:2d} done: {epoch} epochs ({stopper.reason()}), back to epoch {stopper.best_epoch} "
+              f"(lr {lr_best:.1e}): "
               f"val {fmt(after['val_acc'])}, after re-estimation {fmt(after['val_acc_reest'])}", flush=True)
         save_resume(k + 1, 0)
         if args.stop_after is not None and n_epochs() >= args.stop_after and k < n_stages:

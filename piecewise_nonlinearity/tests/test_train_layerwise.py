@@ -8,6 +8,8 @@ Without data (a randomly initialized quantized ResNet-20 on the CPU):
   - training steps in stage k change layer k, the later layers and the head, and nothing before layer k
     (weights, quantizer bounds, output scales, BatchNorm parameters and statistics);
   - alpha ramps from alpha_start to alpha_end in every stage; the learning rates of layer k (only) follow alpha;
+  - every learning rate decays by a cosine over --max-stage-epochs, once per epoch from epoch 1 of the stage,
+    and restarts in every stage; --lr-schedule constant keeps them fixed;
   - early stopping: ramp epochs never count, ties are no improvement, the patience and the maximum end a stage;
   - run names contain every setting; invalid settings are rejected.
 With CIFAR-10 and the float models (smoke runs of 2 batches of 32 images on the CPU):
@@ -16,7 +18,7 @@ With CIFAR-10 and the float models (smoke runs of 2 batches of 32 images on the 
   - after every stage the network is back at the stage's best epoch, and a frozen layer never changes again;
   - layers are frozen with BatchNorm statistics re-estimated for the rounded network, so the final
     re-estimation changes nothing; results from before this rule are not reused;
-  - alpha restarts in every stage;
+  - alpha and the learning rates restart in every stage, and every stage records the rate of its chosen epoch;
   - an interrupted run resumes and ends like an uninterrupted one;
   - the start is the same quantized network as for train_qat.py; seed 0 never evaluates the test set, seed 1 does.
 """
@@ -134,7 +136,8 @@ def test_training_in_stage_k_changes_layer_k_and_after_and_nothing_before():
 def test_alpha_ramps_in_every_stage_and_only_layer_ks_rates_follow_it():
     model = tiny_model()
     stage = lw.Stage(model, 3, args("--alpha-end", "3", "--stage-ramp-epochs", "2", "--lr", "1e-3",
-                                    "--lr-q", "1e-5", "--lr-alpha-power", "2"), steps_per_epoch=4)
+                                    "--lr-q", "1e-5", "--lr-alpha-power", "2", "--lr-schedule", "constant"),
+                     steps_per_epoch=4)
     assert stage.alpha_at(0) == pytest.approx(1.25) and stage.alpha_at(3) == pytest.approx(2.0)
     assert stage.alpha_at(7) == 3.0 and stage.alpha_at(50) == 3.0  # alpha_end at the last step of the ramp
     stage.set_step(7)
@@ -145,6 +148,32 @@ def test_alpha_ramps_in_every_stage_and_only_layer_ks_rates_follow_it():
     flat = lw.Stage(model, 3, args("--alpha-end", "3", "--stage-ramp-epochs", "0"), steps_per_epoch=4)
     assert flat.alpha_at(0) == 3.0
     assert {g["lr"] for g in flat.optimizers[0].param_groups} == {1e-3}  # no coupling by default
+
+
+def test_every_rate_follows_a_cosine_over_the_longest_stage_from_its_first_epoch():
+    model = tiny_model()
+    stage = lw.Stage(model, 3, args("--lr", "1e-3", "--lr-q", "1e-5", "--max-stage-epochs", "15"), steps_per_epoch=4)
+
+    def rates(step):
+        stage.set_step(step)
+        return {(i, g["name"]): g["lr"] for i, o in enumerate(stage.optimizers) for g in o.param_groups}
+
+    full = {(0, "current"): 1e-3, (0, "later"): 1e-3, (1, "current"): 1e-5, (1, "later"): 1e-5}
+    for step in range(4):  # the whole first epoch (a ramp epoch) at the full rates
+        assert rates(step) == pytest.approx(full)
+    for epoch in range(1, 15):  # stage epoch e = epoch + 1: lr (1 + cos(pi (e - 1) / 15)) / 2, constant in the epoch
+        factor = 0.5 * (1 + np.cos(np.pi * epoch / 15))
+        assert rates(4 * epoch) == pytest.approx({k: v * factor for k, v in full.items()})
+        assert rates(4 * epoch + 3) == rates(4 * epoch)
+    assert rates(4 * 14)[(0, "later")] == pytest.approx(1e-3 * 0.0109, rel=1e-2)  # the last epoch: about 1 %
+    nxt = lw.Stage(model, 4, args("--lr", "1e-3", "--lr-q", "1e-5", "--max-stage-epochs", "15"), steps_per_epoch=4)
+    assert {g["lr"] for o in nxt.optimizers for g in o.param_groups} == {1e-3, 1e-5}  # the next stage restarts
+
+    coupled = lw.Stage(model, 3, args("--lr", "1e-3", "--alpha-end", "3", "--lr-alpha-power", "2"), steps_per_epoch=4)
+    coupled.set_step(4 * 5)  # stage epoch 6, after the ramp: both factors multiply, only layer k is coupled
+    factor = 0.5 * (1 + np.cos(np.pi * 5 / 15))
+    lrs = {g["name"]: g["lr"] for g in coupled.optimizers[0].param_groups}
+    assert lrs == pytest.approx({"current": 1e-3 * factor / 9, "later": 1e-3 * factor})
 
 
 @pytest.mark.parametrize("ramp, patience, maximum, metrics, best, stopped_at", [
@@ -166,14 +195,15 @@ def test_run_names_contain_every_setting():
     a = args("--lr", "3e-3", "--alpha-end", "3", "--beta", "3", "--lr-alpha-power", "2")
     assert lw.run_name(a) == "layerwise_w2a2_lr3e-3_lrq1e-5_wd1e-4_a3b3-exact-lrpow2_ramp2-pat3-max15-reest_s0"
     b = args("--seed", "2", "--backward", "ste", "--stage-ramp-epochs", "0", "--patience", "5",
-             "--max-stage-epochs", "20", "--stage-metric", "val_acc", "--alpha-start", "2")
-    assert lw.run_name(b) == "layerwise_w2a2_lr1e-3_lrq1e-5_wd1e-4_a2b2-ste-from2_ramp0-pat5-max20_s2"
+             "--max-stage-epochs", "20", "--stage-metric", "val_acc", "--alpha-start", "2", "--lr-schedule", "constant")
+    assert lw.run_name(b) == "layerwise_w2a2_lr1e-3-const_lrq1e-5_wd1e-4_a2b2-ste-from2_ramp0-pat5-max20_s2"
     assert "stop_after" not in lw.run_settings(args("--stop-after", "3"))  # not a setting
 
 
 @pytest.mark.parametrize("extra", [
     ["--patience", "0"], ["--stage-ramp-epochs", "-1"], ["--stage-ramp-epochs", "5", "--max-stage-epochs", "4"],
     ["--alpha-end", "0"], ["--stage-metric", "loss"], ["--backward", "hybrid"], ["--train-eval-size", "-1"],
+    ["--lr-schedule", "step"],
 ])
 def test_invalid_arguments_are_rejected(extra):
     with pytest.raises(SystemExit):
@@ -290,6 +320,20 @@ def test_alpha_restarts_in_every_stage(full):
         alphas = steps["alpha"][steps["stage"] == s["stage"]]
         assert np.allclose(alphas, [1.5] + [2.0] * (len(alphas) - 1))  # ramp over epoch 1 (2 steps), then alpha_end
     assert len(steps["loss"]) == 2 * r["n_epochs"]
+
+
+@needs_data
+def test_the_learning_rate_restarts_in_every_stage_and_the_chosen_epochs_rate_is_recorded(full):
+    _, r = full
+    h = r["history"]
+    for s in r["stages"]:
+        epochs = [i for i, k in enumerate(h["stage"]) if k == s["stage"]]
+        for i in epochs:  # the smoke default: lr 1e-3, a cosine over --max-stage-epochs 3
+            factor = 0.5 * (1 + np.cos(np.pi * (h["stage_epoch"][i] - 1) / 3))
+            assert h["lr"][i] == pytest.approx(1e-3 * factor, rel=1e-3)
+            assert h["lr_later"][i] == pytest.approx(1e-3 * factor, rel=1e-3)
+        assert h["lr"][epochs[0]] == pytest.approx(1e-3, rel=1e-3)
+        assert s["lr_best"] == h["lr"][epochs[s["best_epoch"] - 1]]
 
 
 @needs_data
