@@ -353,6 +353,13 @@ B1 alone is not compared with the recipe: without the decay, the weights cannot 
 - Not included: the layer-wise STE control (layer k rounding with the STE) and the STE with early stopping (supervisor's point 6); the comparison with the STE is against its 120-epoch run.
 - **Cost:** about 40 s per epoch on laptop B (measured 2026-11-23, re-estimation at every epoch included) and 145–270 epochs per run: 1.6–3 h per run, 8–15 h for the 5 runs.
 
+**Layer-wise controls at 4/4 (`run_layerwise_controls_4w4a.sh`, decided 2026-11-25, before the runs).** In the 4/4 layer-wise runs most of the gain came in stage 1, where 17 layers train with the STE (REPORT.md section 10.3). Two seed-0 runs at the best run's setting (lr 3e-4, ramp 2, α_end 3, β 2), each changing only layer k's discretizer:
+- a, the STE control (`--current-layer ste`): layer k rounds and uses slope 1, like every other trained layer ("progressive freezing with the STE"); α and β have no effect;
+- b, the slope-1 staircase (`--backward ste`): S forward, slope 1 backward in layer k.
+With the exact staircase (91.56) they separate the forward pass (a vs b) from the backward pass (b vs exact). About 1 h each. The fresh seeds (the exact staircase and the STE control on seeds 1–4) are decided after these two runs. Slope-1 goes to fresh seeds only if it beats 91.56 by more than about 0.3.
+
+**Layer-wise on fresh seeds at 4/4 (`run_layerwise_seeds_4w4a.sh`, decided 2026-11-25, before the runs).** Seed 0 gave a 91.28 (STE control), b 91.16 (slope-1), so slope-1 stops there. c, the exact staircase, and d, the STE control, run on seeds 1–4 in group `main`, at the seed-0 setting (lr 3e-4, ramp 2, α_end 3, β 2), alternating seed by seed so a stop leaves complete pairs. Metric: test accuracy after re-estimation after the last stage. Comparisons, with the win rule of change 5 (higher mean, paired t-test p < 0.025, higher on at least 3 of 4 seeds): c vs d (does the staircase help inside the layer-wise method) and c vs the plain STE (91.31 ± 0.12; `results/qat/main/summary_w4a4.json`). About 8 runs × 1 h.
+
 ## Compute budget
 
 Totals are in GPU hours, for one job at a time. "Measured" uses the per-epoch times above; "estimated" assumes EWGS and DSQ cost about as much as the staircase, and that MobileNetV2 QAT costs about 1.5 times our earlier placeholder measurement.
