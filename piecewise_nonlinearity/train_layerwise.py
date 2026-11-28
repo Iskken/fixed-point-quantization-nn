@@ -16,6 +16,9 @@ stages. In stage k (k = 1 ... 18):
     to --alpha-end over the first --stage-ramp-epochs epochs of the stage, and then stays there;
   - layers k+1 ... 18 are trained with the STE (exact rounding forward, slope 1 backward), and so is the
     float head (the last BatchNorm and the linear layer).
+With --current-layer ste (the control) layer k is trained with the STE as well: it rounds exactly like every
+other layer, alpha has no effect, and everything else (stages, freezing, early stopping, the alpha-ramp epochs
+that are never chosen, the learning rates) stays the same, so only layer k's discretizer differs.
 Every stage ends by early stopping with rollback. After every epoch the network is validated the way it will
 be deployed: exact rounding in every layer, with BatchNorm re-estimated for that rounded network, on the
 validation split. The weights of the best epoch are kept; once --patience epochs in a row bring no
@@ -125,6 +128,9 @@ def parse_args(argv=None):
     s.add_argument("--alpha-start", type=float, default=1.0, help="alpha at the first step of every stage")
     s.add_argument("--backward", choices=BACKWARDS, default="exact",
                    help="exact: the slopes of S (the method); ste: slope 1 (ablation)")
+    s.add_argument("--current-layer", choices=("staircase", "ste"), default="staircase",
+                   help="the optimized layer k: the staircase (the method) or the STE (the control: every trained "
+                        "layer is the STE; alpha, beta and --backward then have no effect)")
     s.add_argument("--lr-alpha-power", type=float, default=0.0,
                    help="the learning rates of the optimized layer follow alpha: multiplied by "
                         "(alpha / alpha_start)^-p at every step (default 0: they do not)")
@@ -175,6 +181,8 @@ def run_name(args):
     """Every setting of the run, so two different runs never share a name."""
     w, a = args.bits.split("/")
     stair = f"a{short(args.alpha_end)}b{short(args.beta)}-{args.backward}"
+    if args.current_layer == "ste":
+        stair = "kste-" + stair  # the control: layer k is the STE too, so the staircase settings do nothing
     if args.alpha_start != 1.0:
         stair += f"-from{short(args.alpha_start)}"
     if args.lr_alpha_power:
@@ -256,8 +264,10 @@ class Stage:
         for q in quantizers(model):  # frozen layers round; the later ones round too, and as the STE they train
             q.force_hard = True
         self.quantizers = [q for q in (self.conv.wq, self.conv.aq) if q is not None]
-        for q in self.quantizers:  # layer k: S in training, exact rounding in eval mode
-            q.force_hard = False
+        if args.current_layer == "staircase":
+            for q in self.quantizers:  # layer k: S in training, exact rounding in eval mode
+                q.force_hard = False
+        # the control (--current-layer ste): layer k keeps rounding, so it is trained with the STE like the later layers
         current_net, current_q = split_params([self.conv, self.bn])
         later_net, later_q = split_params(later)
 

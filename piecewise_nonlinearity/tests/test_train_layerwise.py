@@ -94,6 +94,27 @@ def test_a_stage_sets_every_layers_mode(k):
         lw.Stage(model, 0, args(), steps_per_epoch=4)  # the stem is never a stage
 
 
+@pytest.mark.parametrize("k", [1, 7, 18])
+def test_in_the_ste_control_layer_k_rounds_like_the_later_layers_and_nothing_else_changes(k):
+    model, control = tiny_model(), tiny_model()
+    stage = lw.Stage(model, k, args(), steps_per_epoch=4)
+    ctrl = lw.Stage(control, k, args("--current-layer", "ste"), steps_per_epoch=4)
+    assert all(q.force_hard for q in quantizers(control))  # every layer rounds, layer k included
+    assert [q.force_hard for q in quantizers(model)].count(False) == 2  # the method: layer k's two use S
+    assert [p.requires_grad for p in model.parameters()] == [p.requires_grad for p in control.parameters()]
+    groups = [[[(g["name"], len(g["params"]), g["lr"]) for g in o.param_groups] for o in s.optimizers]
+              for s in (stage, ctrl)]
+    assert groups[0] == groups[1]  # the same trained parameters at the same rates
+    ctrl.train_mode()
+    x = torch.randn(1000) * 2
+    for q in ctrl.quantizers:  # in training, layer k's quantizers give exact rounding
+        assert q.training
+        x_n = ((x - q.l) / (q.u - q.l)).clamp(0, 1)
+        rounded = torch.round(x_n * (q.levels - 1)) / (q.levels - 1)
+        expected = 2 * (rounded - 0.5) if q.kind == "weight" else rounded
+        assert torch.equal(q(x), expected)
+
+
 def test_a_layer_after_k_is_the_ste():
     torch.manual_seed(0)
     x = torch.randn(1000) * 2
@@ -197,13 +218,15 @@ def test_run_names_contain_every_setting():
     b = args("--seed", "2", "--backward", "ste", "--stage-ramp-epochs", "0", "--patience", "5",
              "--max-stage-epochs", "20", "--stage-metric", "val_acc", "--alpha-start", "2", "--lr-schedule", "constant")
     assert lw.run_name(b) == "layerwise_w2a2_lr1e-3-const_lrq1e-5_wd1e-4_a2b2-ste-from2_ramp0-pat5-max20_s2"
+    c = args("--lr", "3e-4", "--alpha-end", "3", "--current-layer", "ste")
+    assert lw.run_name(c) == "layerwise_w2a2_lr3e-4_lrq1e-5_wd1e-4_kste-a3b2-exact_ramp2-pat3-max15-reest_s0"
     assert "stop_after" not in lw.run_settings(args("--stop-after", "3"))  # not a setting
 
 
 @pytest.mark.parametrize("extra", [
     ["--patience", "0"], ["--stage-ramp-epochs", "-1"], ["--stage-ramp-epochs", "5", "--max-stage-epochs", "4"],
     ["--alpha-end", "0"], ["--stage-metric", "loss"], ["--backward", "hybrid"], ["--train-eval-size", "-1"],
-    ["--lr-schedule", "step"],
+    ["--lr-schedule", "step"], ["--current-layer", "float"],
 ])
 def test_invalid_arguments_are_rejected(extra):
     with pytest.raises(SystemExit):
